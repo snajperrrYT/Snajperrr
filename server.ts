@@ -69,6 +69,25 @@ player = new Player(client);
 
 // 1. Listen immediately
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
+
+app.get('/api/status', (req, res) => {
+    const hasToken = !!(process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE");
+    const isReady = client && client.isReady();
+    const inviteUrl = process.env.DISCORD_CLIENT_ID
+        ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&scope=bot+applications.commands&permissions=8`
+        : undefined;
+    res.json({
+        state: isReady ? 'online' : 'offline',
+        tag: isReady ? (client.user?.tag || botStatus.tag) : botStatus.tag,
+        guilds: isReady ? client.guilds.cache.size : botStatus.guilds,
+        ping: isReady ? client.ws.ping : botStatus.ping,
+        uptime: botStartTime > 0 ? Math.floor((Date.now() - botStartTime) / 1000) : 0,
+        mockMode: !hasToken,
+        inviteUrl,
+        supportServerUrl: process.env.DISCORD_SERVER_INVITE || 'https://discord.gg/MRN4WDUMKv',
+    });
+});
+
 const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`[Startup] Port ${PORT} opened.`);
 });
@@ -758,6 +777,7 @@ player.events.on('emptyChannel', (queue) => {
 client.on('ready', async () => {
   botStatus.state = 'online';
   botStatus.tag = client.user?.tag || '';
+  botStatus.guilds = client.guilds.cache.size;
   botStartTime = Date.now();
   
   if (client.user) {
