@@ -28,7 +28,9 @@ import db from './src/db.js';
 import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.js';
 
 const app = express();
-const PORT = 3000;
+const portEnv = process.env.PORT;
+const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
+const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 
 // Shared globally
@@ -67,6 +69,25 @@ player = new Player(client);
 
 // 1. Listen immediately
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
+
+app.get('/api/status', (req, res) => {
+    const hasToken = !!(process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE");
+    const isReady = client && client.isReady();
+    const inviteUrl = process.env.DISCORD_CLIENT_ID
+        ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&scope=bot+applications.commands&permissions=8`
+        : undefined;
+    res.json({
+        state: isReady ? 'online' : 'offline',
+        tag: isReady ? (client.user?.tag || botStatus.tag) : botStatus.tag,
+        guilds: isReady ? client.guilds.cache.size : botStatus.guilds,
+        ping: isReady ? client.ws.ping : botStatus.ping,
+        uptime: botStartTime > 0 ? Math.floor((Date.now() - botStartTime) / 1000) : 0,
+        mockMode: !hasToken,
+        inviteUrl,
+        supportServerUrl: process.env.DISCORD_SERVER_INVITE || 'https://discord.gg/MRN4WDUMKv',
+    });
+});
+
 const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`[Startup] Port ${PORT} opened.`);
 });
@@ -300,6 +321,15 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ success: true });
 });
 
+function parsePremiumSettings(raw: string | null): object | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
 app.get('/api/me', (req, res) => {
   const token = req.cookies.auth_token;
   if (!token) return res.json({ loggedIn: false });
@@ -316,6 +346,9 @@ app.get('/api/me', (req, res) => {
       user.premium_expires_at = null;
     }
 
+    // Parse premium_settings JSON
+    user.premium_settings = parsePremiumSettings(user.premium_settings);
+
     res.json({ loggedIn: true, user });
   } catch(err) {
     res.json({ loggedIn: false });
@@ -328,13 +361,27 @@ app.post('/api/user/settings', async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    const { audioQuality } = req.body;
-    
-    if (!['standard', 'high', 'ultra'].includes(audioQuality)) {
+    const { audioQuality, premiumSettings } = req.body;
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user) return res.status(404).json({ success: false, error: 'Użytkownik nie znaleziony.' });
+
+    if (audioQuality !== undefined) {
+      if (!['standard', 'high', 'ultra'].includes(audioQuality)) {
         return res.status(400).json({ success: false, error: 'Nieprawidłowy poziom jakości.' });
+      }
+      db.prepare('UPDATE users SET audio_quality = ? WHERE id = ?').run(audioQuality, decoded.id);
     }
 
-    db.prepare('UPDATE users SET audio_quality = ? WHERE id = ?').run(audioQuality, decoded.id);
+    if (premiumSettings !== undefined) {
+      if (user.premium !== 1) {
+        return res.status(403).json({ success: false, error: 'Ustawienia premium wymagają subskrypcji Premium.' });
+      }
+      const existing = parsePremiumSettings(user.premium_settings) ?? {};
+      const merged = { ...existing, ...premiumSettings };
+      db.prepare('UPDATE users SET premium_settings = ? WHERE id = ?').run(JSON.stringify(merged), decoded.id);
+    }
+
     res.json({ success: true });
   } catch(err) {
     res.status(500).json({ success: false });
@@ -756,6 +803,7 @@ player.events.on('emptyChannel', (queue) => {
 client.on('ready', async () => {
   botStatus.state = 'online';
   botStatus.tag = client.user?.tag || '';
+  botStatus.guilds = client.guilds.cache.size;
   botStartTime = Date.now();
   
   if (client.user) {
