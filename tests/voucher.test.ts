@@ -215,11 +215,27 @@ describe('Voucher redemption', () => {
   });
 
   it('rejects a fully used-up voucher', () => {
+    // Single-use vouchers are deleted from the table once redeemed.
+    // A subsequent attempt therefore returns "invalid code" rather than
+    // "already used up" – both are correct rejection scenarios.
     seedVoucher('MAXED', 'user_premium', 1);
     const user2 = 'user2';
     db.prepare('INSERT INTO users (id, username) VALUES (?, ?)').run(user2, 'User2');
-    redeemVoucher('MAXED', user2); // first redemption exhausts it
-    const result = redeemVoucher('MAXED', USER_ID); // second should fail
+    redeemVoucher('MAXED', user2); // first redemption exhausts and deletes the voucher
+    const result = redeemVoucher('MAXED', USER_ID); // second attempt should fail
+
+    expect(result.success).toBe(false);
+    // The voucher is deleted after the last use, so the lookup returns nothing
+    expect(result.error).toBe('Nieprawidłowy kod vouchera.');
+  });
+
+  it('rejects redemption when voucher uses have reached max_uses (not yet deleted)', () => {
+    // Manually insert a voucher that is already at max_uses without triggering deletion
+    db.prepare(
+      'INSERT INTO vouchers (code, type, duration, max_uses, uses, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run('EXHAUST', 'user_premium', null, 2, 2, 'admin', Date.now());
+
+    const result = redeemVoucher('EXHAUST', USER_ID);
 
     expect(result.success).toBe(false);
     expect(result.error).toContain('w pełni wykorzystany');
