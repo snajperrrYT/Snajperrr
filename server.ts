@@ -7,7 +7,9 @@ import type { Player } from "discord-player";
 import type Stripe from "stripe";
 
 const app = express();
-const PORT = 3000;
+const portEnv = process.env.PORT;
+const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
+const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
 
 // 1. IMMEDIATE LISTEN to pass Cloud Run health checks
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
@@ -1231,13 +1233,13 @@ app.post("/api/players/:guildId/play", async (req, res) => {
             console.error('Failed to init Vite middleware:', err);
         }
     } else {
-        const distPath = path.join(process.cwd(), 'dist');
+        const distPath = path.join(process.cwd(), 'build');
         app.use(express.static(distPath));
     }
 
     // Final SPA fallback for production (MUST be after all routes)
     if (process.env.NODE_ENV === "production") {
-        const distPath = path.join(process.cwd(), 'dist');
+        const distPath = path.join(process.cwd(), 'build');
         app.get('*', (req, res) => {
             res.sendFile(path.join(distPath, 'index.html'));
         });
@@ -1248,4 +1250,3 @@ app.post("/api/players/:guildId/play", async (req, res) => {
 }
 
 bootstrap();
-
