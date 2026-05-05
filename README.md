@@ -8,6 +8,8 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/2a72fa6c-ff03-48c4-a569-3648cdeda93c
 
+GitHub Repository: https://github.com/bbbbbbbbbc/Snajperrr
+
 ## Run Locally
 
 **Prerequisites:**  Node.js
