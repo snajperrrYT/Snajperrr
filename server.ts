@@ -84,7 +84,7 @@ app.get('/api/status', (req, res) => {
         uptime: botStartTime > 0 ? Math.floor((Date.now() - botStartTime) / 1000) : 0,
         mockMode: !hasToken,
         inviteUrl,
-        supportServerUrl: process.env.DISCORD_SERVER_INVITE || undefined,
+        supportServerUrl: process.env.DISCORD_SERVER_INVITE || 'https://discord.gg/MRN4WDUMKv',
     });
 });
 
