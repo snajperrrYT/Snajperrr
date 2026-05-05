@@ -319,6 +319,24 @@ export default function App() {
     }
   };
 
+  const handleUpdateQuality = async (quality: string) => {
+    try {
+      const res = await fetch('/api/user/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ audioQuality: quality })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUser((prev: any) => ({ ...prev, audio_quality: quality }));
+      } else {
+        alert(data.error || 'Błąd przy aktualizacji ustawień.');
+      }
+    } catch (err) {
+      alert('Wystąpił błąd sieciowy.');
+    }
+  };
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     setUser(null);
@@ -606,46 +624,20 @@ export default function App() {
   };
 
   const handleAnalyzeWithAI = async (logId: number) => {
-    const log = systemLogs.find(l => l.id === logId);
-    if (!log) return;
-
     setAnalyzingLogId(logId);
     try {
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_KEY nie jest skonfigurowany w środowisku.');
-      }
-
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `
-        Jesteś ekspertem systemów Discord i Node.js. Przeanalizuj poniższy błąd z logów aplikacji:
-        
-        WIADOMOŚĆ: ${log.message}
-        POZIOM: ${log.level}
-        ŹRÓDŁO: ${log.source}
-        SZCZEGÓŁY: ${log.details || 'Brak dodatkowych szczegółów'}
-        
-        Zadanie:
-        1. Wyjaśnij krótko, co dokładnie się stało.
-        2. Podaj konkretne kroki (rozwiązanie), aby naprawić ten błąd.
-        3. Jeśli to błąd "signature decipher" lub "n decipher", zasugeruj aktualizację youtubei.js.
-        
-        Odpowiedz w języku polskim, używając Markdown dla czytelności.
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt
-      });
-
-      const text = response.text;
-      if (text) {
-        setAiAnalysis(prev => ({ ...prev, [logId]: text }));
+      const res = await fetch(`/api/admin/logs/${logId}/analyze`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        setAiAnalysis(prev => ({ ...prev, [logId]: data.analysis }));
+        // Also refresh logs to get the solution if it was saved
+        fetchAdminLogs();
       } else {
-        throw new Error('Brak odpowiedzi od AI.');
+        alert(data.error || 'Błąd podczas analizy AI.');
       }
     } catch (err: any) {
       console.error(err);
-      alert(err.message || 'Błąd podczas analizy AI.');
+      alert('Wystąpił błąd sieciowy podczas analizy.');
     } finally {
       setAnalyzingLogId(null);
     }
@@ -1056,6 +1048,39 @@ export default function App() {
                           <span className="text-white font-bold">{user?.premium === 1 ? 'Priorytetowa' : 'Dostępna'}</span>
                         </div>
                       </div>
+                    </div>
+
+                    <div className="bg-black/20 rounded-2xl p-4 border border-white/5">
+                      <p className="text-xs text-slate-500 font-bold uppercase mb-3 flex items-center gap-2">
+                        <Activity className="w-3 h-3" />
+                        Preferowana Jakość Audio
+                      </p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: 'standard', label: 'Standard' },
+                          { id: 'high', label: 'High' },
+                          { id: 'ultra', label: 'Ultra HD' }
+                        ].map((q) => (
+                          <button
+                            key={q.id}
+                            onClick={() => handleUpdateQuality(q.id)}
+                            disabled={q.id === 'ultra' && user?.premium !== 1}
+                            className={cn(
+                              "py-2.5 rounded-xl text-[10px] font-black uppercase transition-all border",
+                              (user?.audio_quality || 'standard') === q.id 
+                                ? "bg-indigo-500 border-indigo-400 text-white shadow-lg shadow-indigo-500/20" 
+                                : "bg-[#18181B] border-white/5 text-slate-400 hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            )}
+                          >
+                            {q.label}
+                          </button>
+                        ))}
+                      </div>
+                      {user?.premium !== 1 && (
+                        <p className="text-[9px] text-slate-500 mt-2 italic font-medium">
+                          * Opcja Ultra HD zarezerwowana dla subskrybcji Premium
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

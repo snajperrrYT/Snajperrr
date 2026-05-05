@@ -88,4 +88,8 @@ try {
   db.exec('ALTER TABLE users ADD COLUMN premium_expires_at INTEGER DEFAULT NULL;');
 } catch (e) {}
 
+try {
+  db.exec('ALTER TABLE users ADD COLUMN audio_quality TEXT DEFAULT "standard";');
+} catch (e) {}
+
 export default db;

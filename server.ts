@@ -60,7 +60,7 @@ async function bootstrap() {
         { Player },
         { DefaultExtractors },
         { YoutubeiExtractor },
-        jwt,
+        jwtModule,
         { default: Stripe },
         crypto,
         { default: ms },
@@ -82,6 +82,7 @@ async function bootstrap() {
         import('./src/adminCommands')
     ]);
 
+    const jwt = (jwtModule as any).default || jwtModule;
     const JWT_SECRET_INNER = process.env.JWT_SECRET || 'dev_secret_jwt';
 
     // Initialize bots
@@ -97,6 +98,26 @@ async function bootstrap() {
         ],
     });
     player = new Player(client);
+
+    // Dynamic stream options based on user preference
+    player.onBeforeCreateStream = async (track: any, queryType: any, queue: any) => {
+        const userId = queue.metadata?.user?.id || queue.metadata?.member?.id || (queue.metadata?.interaction?.user?.id);
+        if (!userId) return;
+
+        const user = db.prepare('SELECT audio_quality, premium FROM users WHERE id = ?').get(userId) as any;
+        if (!user) return;
+
+        let quality = user.audio_quality || 'standard';
+        if (user.premium !== 1 && quality === 'ultra') quality = 'high';
+
+        if (track.source === 'youtube') {
+            return {
+                quality: quality === 'ultra' ? 'highestaudio' : (quality === 'high' ? 'highestaudio' : 'lowestaudio'),
+                filter: 'audioonly',
+                highWaterMark: quality === 'ultra' ? 1024 * 1024 * 64 : (quality === 'high' ? 1024 * 1024 * 32 : 1024 * 1024 * 8)
+            };
+        }
+    };
 
     // Make functions available inside bootstrap closure
     const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
@@ -149,7 +170,7 @@ async function bootstrap() {
                 useServerAbrStream: true,
                 streamOptions: {
                     highWaterMark: 1024 * 1024 * 4,
-                    useClient: 'TV_EMBEDDED',
+                    useClient: 'ANDROID',
                 }
             });
             await player.extractors.loadMulti(DefaultExtractors);
@@ -177,14 +198,14 @@ async function bootstrap() {
         }
     });
 
-    let lastRepairAttempt = 0;
-    let repairCooldown = false;
-    const playbackHistory = new Map<string, any[]>();
+    // Use global variables already declared at the top level
+    lastRepairAttempt = 0;
+    repairCooldown = false;
+    playbackHistory.clear();
 
-let stripeClient: any = null;
-if (process.env.STRIPE_SECRET_KEY) {
-  stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
-}
+    if (process.env.STRIPE_SECRET_KEY) {
+      stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
+    }
 
 // OAuth and Stripe endpoints will go here...
 function getRedirectUri(req: express.Request) {
@@ -338,6 +359,25 @@ app.get('/api/me', (req, res) => {
   }
 });
 
+app.post('/api/user/settings', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const { audioQuality } = req.body;
+    
+    if (!['standard', 'high', 'ultra'].includes(audioQuality)) {
+        return res.status(400).json({ success: false, error: 'Nieprawidłowy poziom jakości.' });
+    }
+
+    db.prepare('UPDATE users SET audio_quality = ? WHERE id = ?').run(audioQuality, decoded.id);
+    res.json({ success: true });
+  } catch(err) {
+    res.status(500).json({ success: false });
+  }
+});
+
 app.get('/api/admin/users', async (req, res) => {
   const token = req.cookies.auth_token;
   if (!token) return res.status(401).json({ success: false });
@@ -461,6 +501,48 @@ app.get('/api/admin/logs', async (req, res) => {
     const logs = db.prepare('SELECT * FROM system_logs ORDER BY created_at DESC LIMIT 200').all() as any[];
     res.json({ success: true, logs });
   } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/admin/logs/:id/analyze', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    const log = db.prepare('SELECT * FROM system_logs WHERE id = ?').get(req.params.id) as any;
+    if (!log) return res.status(404).json({ error: "Log not found" });
+
+    if (!aiAssistant) return res.status(503).json({ error: "System AI nieaktywny" });
+
+    const prompt = `
+        Jesteś ekspertem systemów Discord i Node.js. Przeanalizuj błąd:
+        WIADOMOŚĆ: ${log.message}
+        SZCZEGÓŁY: ${log.details || 'Brak'}
+        
+        Zadanie:
+        1. Wyjaśnij krótko co się stało.
+        2. Podaj konkretne kroki naprawcze.
+        Odpowiedz w języku polskim (Markdown).
+    `;
+
+    const response = await aiAssistant.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt
+    });
+
+    const analysis = response.text;
+    
+    if (!log.solution) {
+      db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(analysis, log.id);
+    }
+
+    res.json({ success: true, analysis });
+  } catch (err: any) {
+    console.error('AI Analysis Error:', err);
+    res.status(500).json({ success: false, error: "Błąd podczas analizy AI" });
+  }
 });
 
 app.get('/api/admin/system/stats', async (req, res) => {
@@ -728,7 +810,7 @@ client.on('ready', async () => {
           useServerAbrStream: true,
           streamOptions: {
               highWaterMark: 1024 * 1024 * 4, // Increased to 4MB for better buffering
-              useClient: 'TV_EMBEDDED', // Changed to TV_EMBEDDED for better format availability
+              useClient: 'ANDROID', // Changed to ANDROID for better stability
           }
       });
       
@@ -812,8 +894,6 @@ async function bootstrapBot() {
   }
 }
 
-}
-
 // Admin and Bot status helpers
 
 // API Routes
@@ -843,36 +923,41 @@ app.get("/api/status", (req, res) => {
 
 app.get("/api/players", (req, res) => {
   const playersInfo = [];
-  if (client.isReady() && player.nodes) {
-    for (const [guildId, queue] of player.nodes.cache) {
-      if (!queue) continue;
-      const currentTrack = queue.currentTrack;
-      playersInfo.push({
-        guildId: guildId,
-        guildName: queue.guild.name,
-        channelName: queue.channel?.name || 'Voice',
-        nowPlaying: currentTrack ? {
-          title: currentTrack.title,
-          author: currentTrack.author,
-          duration: Math.floor(currentTrack.durationMS / 1000),
-          current: Math.floor(queue.node.streamTime / 1000),
-          thumbnail: currentTrack.thumbnail
-        } : null,
-        queueLength: queue.tracks.size,
-        queue: queue.tracks.toArray().map((t, idx) => ({
-          id: t.id,
-          title: t.title,
-          author: t.author,
-          duration: Math.floor(t.durationMS / 1000),
-          thumbnailColor: "bg-indigo-500"
-        })),
-        history: playbackHistory.get(guildId) || [],
-        state: queue.node.isPaused() ? "paused" : "playing",
-        volume: queue.node.volume
-      });
+  try {
+    if (client && client.isReady() && player && player.nodes) {
+      for (const [guildId, queue] of player.nodes.cache) {
+        if (!queue) continue;
+        const currentTrack = queue.currentTrack;
+        playersInfo.push({
+          guildId: guildId,
+          guildName: queue.guild.name,
+          channelName: queue.channel?.name || 'Voice',
+          nowPlaying: currentTrack ? {
+            title: currentTrack.title,
+            author: currentTrack.author,
+            duration: Math.floor(currentTrack.durationMS / 1000),
+            current: Math.floor(queue.node.streamTime / 1000),
+            thumbnail: currentTrack.thumbnail
+          } : null,
+          queueLength: queue.tracks.size,
+          queue: queue.tracks.toArray().map((t, idx) => ({
+            id: t.id,
+            title: t.title,
+            author: t.author,
+            duration: Math.floor(t.durationMS / 1000),
+            thumbnailColor: "bg-indigo-500"
+          })),
+          history: playbackHistory.get(guildId) || [],
+          state: queue.node.isPaused() ? "paused" : "playing",
+          volume: queue.node.volume
+        });
+      }
     }
+    res.json(playersInfo);
+  } catch (err) {
+    console.error("Error in /api/players:", err);
+    res.status(500).json({ error: "Interal server error" });
   }
-  res.json(playersInfo);
 });
 
 app.delete("/api/players/:guildId/queue/:trackId", (req, res) => {
@@ -1188,8 +1273,8 @@ app.get("/api/search", async (req, res) => {
   if (!query || typeof query !== "string") {
     return res.status(400).json({ error: "Missing query" });
   }
-  if (!client.isReady()) {
-    return res.status(503).json({ error: "Bot not ready" });
+  if (!client || !client.isReady() || !player) {
+    return res.status(503).json({ error: "Bot not ready or initializing" });
   }
   try {
     const results = await player.search(query, { searchEngine: "auto" });
@@ -1232,6 +1317,10 @@ app.post("/api/players/:guildId/play", async (req, res) => {
   }
 });
 
+    // Start the bot (non-blocking)
+    bootstrapBot().catch(err => console.error('Bot bootstrap failed:', err));
+}
+
 // 2. Setup Static serving / Vite middleware
 async function setupVite(app: express.Express) {
     const { createServer: createViteServer } = await import("vite");
@@ -1257,8 +1346,11 @@ async function setupVite(app: express.Express) {
 // API Routes (Registered synchronously at the top level)
 
 async function start() {
+    console.log('[Startup] Executing bootstrap...');
     await bootstrap();
+    console.log('[Startup] Bootstrap complete. Setting up Vite...');
     await setupVite(app);
+    console.log('[Startup] Server fully initialized and ready.');
 }
 
 start();
