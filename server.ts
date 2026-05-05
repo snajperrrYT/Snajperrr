@@ -337,6 +337,15 @@ app.get('/api/me', (req, res) => {
       user.premium_expires_at = null;
     }
 
+    // Parse premium_settings JSON
+    if (user.premium_settings) {
+      try {
+        user.premium_settings = JSON.parse(user.premium_settings);
+      } catch (e) {
+        user.premium_settings = null;
+      }
+    }
+
     res.json({ loggedIn: true, user });
   } catch(err) {
     res.json({ loggedIn: false });
@@ -349,13 +358,27 @@ app.post('/api/user/settings', async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    const { audioQuality } = req.body;
-    
-    if (!['standard', 'high', 'ultra'].includes(audioQuality)) {
+    const { audioQuality, premiumSettings } = req.body;
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user) return res.status(404).json({ success: false, error: 'Użytkownik nie znaleziony.' });
+
+    if (audioQuality !== undefined) {
+      if (!['standard', 'high', 'ultra'].includes(audioQuality)) {
         return res.status(400).json({ success: false, error: 'Nieprawidłowy poziom jakości.' });
+      }
+      db.prepare('UPDATE users SET audio_quality = ? WHERE id = ?').run(audioQuality, decoded.id);
     }
 
-    db.prepare('UPDATE users SET audio_quality = ? WHERE id = ?').run(audioQuality, decoded.id);
+    if (premiumSettings !== undefined) {
+      if (user.premium !== 1) {
+        return res.status(403).json({ success: false, error: 'Ustawienia premium wymagają subskrypcji Premium.' });
+      }
+      const existing = user.premium_settings ? JSON.parse(user.premium_settings) : {};
+      const merged = { ...existing, ...premiumSettings };
+      db.prepare('UPDATE users SET premium_settings = ? WHERE id = ?').run(JSON.stringify(merged), decoded.id);
+    }
+
     res.json({ success: true });
   } catch(err) {
     res.status(500).json({ success: false });
