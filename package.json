@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "tsx server.ts",
     "start": "tsx server.ts",
-    "build": "vite build",
+    "build": "vite build && echo 'Build completed successfully'",
     "preview": "vite preview",
-    "clean": "rm -rf build",
+    "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

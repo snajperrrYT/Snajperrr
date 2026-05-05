@@ -7,15 +7,42 @@ import type { Player } from "discord-player";
 import type Stripe from "stripe";
 
 const app = express();
-const portEnv = process.env.PORT;
-const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
-const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
+const PORT = 3000;
+
+// Shared globally
+let client: any = null;
+let player: any = null;
+let botStartTime = 0;
+let botStatus: any = { 
+    state: 'offline', 
+    guilds: 0, 
+    ping: 0, 
+    tag: '',
+    uptime: 0
+};
+let playbackHistory = new Map<string, any[]>();
+let stripeClient: any = null;
+let aiAssistant: any = null;
+let repairCooldown = false;
+let lastRepairAttempt = 0;
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 
 // 1. IMMEDIATE LISTEN to pass Cloud Run health checks
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`[Startup] Port ${PORT} opened. Initializing heavy modules...`);
 });
+
+// JSON and Cookie middlewares registered IMMEDIATELY
+app.use((req, res, next) => {
+    if (req.originalUrl === '/api/stripe/webhook') {
+        next();
+    } else {
+        express.json()(req, res, next);
+    }
+});
+app.use(cookieParser());
 
 // Catch all unhandled process errors early
 process.on('unhandledRejection', (reason) => {
@@ -55,39 +82,21 @@ async function bootstrap() {
         import('./src/adminCommands')
     ]);
 
-    const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
+    const JWT_SECRET_INNER = process.env.JWT_SECRET || 'dev_secret_jwt';
 
-    app.use((req, res, next) => {
-        if (req.originalUrl === '/api/stripe/webhook') {
-            next();
-        } else {
-            express.json()(req, res, next);
-        }
-    });
-    app.use(cookieParser());
-
-    // Scope variables to bootstrap
-    let aiAssistant: any = null;
+    // Initialize bots
     if (process.env.GEMINI_API_KEY) {
         aiAssistant = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     }
 
-    const client: any = new Client({
+    client = new Client({
         intents: [
             GatewayIntentBits.Guilds, 
             GatewayIntentBits.GuildVoiceStates,
             GatewayIntentBits.GuildMessages,
         ],
     });
-    const player: any = new Player(client);
-    let botStartTime = 0;
-    let botStatus: any = { 
-        state: 'offline', 
-        guilds: 0, 
-        ping: 0, 
-        tag: '',
-        uptime: 0
-    };
+    player = new Player(client);
 
     // Make functions available inside bootstrap closure
     const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
@@ -803,11 +812,13 @@ async function bootstrapBot() {
   }
 }
 
+}
+
 // Admin and Bot status helpers
 
 // API Routes
 app.get("/api/status", (req, res) => {
-  if (client.isReady()) {
+  if (client && client.isReady()) {
     botStatus.guilds = client.guilds.cache.size;
     botStatus.ping = client.ws.ping;
     botStatus.uptime = Math.floor((Date.now() - botStartTime) / 1000);
@@ -816,7 +827,7 @@ app.get("/api/status", (req, res) => {
   if (botStatus.state === 'online') {
     res.json({
       ...botStatus,
-      inviteUrl: client.user ? `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=3148800&scope=bot%20applications.commands` : null
+      inviteUrl: client?.user ? `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=3148800&scope=bot%20applications.commands` : null
     });
   } else {
     res.json({
@@ -1221,7 +1232,9 @@ app.post("/api/players/:guildId/play", async (req, res) => {
   }
 });
 
-    // Initialize Vite/Static serving after all API routes
+// 2. Setup Static serving / Vite middleware
+async function setupVite(app: express.Express) {
+    const { createServer: createViteServer } = await import("vite");
     if (process.env.NODE_ENV !== "production") {
         try {
             const vite = await createViteServer({
@@ -1233,20 +1246,20 @@ app.post("/api/players/:guildId/play", async (req, res) => {
             console.error('Failed to init Vite middleware:', err);
         }
     } else {
-        const distPath = path.join(process.cwd(), 'build');
+        const distPath = path.join(process.cwd(), 'dist');
         app.use(express.static(distPath));
-    }
-
-    // Final SPA fallback for production (MUST be after all routes)
-    if (process.env.NODE_ENV === "production") {
-        const distPath = path.join(process.cwd(), 'build');
         app.get('*', (req, res) => {
             res.sendFile(path.join(distPath, 'index.html'));
         });
     }
-
-    // Start the bot
-    await bootstrapBot();
 }
 
-bootstrap();
+// API Routes (Registered synchronously at the top level)
+
+async function start() {
+    await bootstrap();
+    await setupVite(app);
+}
+
+start();
+
