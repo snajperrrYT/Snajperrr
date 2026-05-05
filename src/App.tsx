@@ -994,7 +994,7 @@ export default function App() {
                   "text-sm font-medium",
                   status?.state === 'online' ? "text-emerald-400" : "text-slate-400"
                 )}>
-                  {status?.state === 'online' ? 'Online' : (status ? 'Offline' : 'Ładowanie...')}
+                  {status?.state === 'online' ? 'Online' : (status ? 'Offline' : 'Loading...')}
                 </span>
               </div>
             )}
