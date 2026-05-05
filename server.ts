@@ -7,7 +7,9 @@ import type { Player } from "discord-player";
 import type Stripe from "stripe";
 
 const app = express();
-const PORT = Number.parseInt(process.env.PORT || '', 10) || 3000;
+const portEnv = process.env.PORT;
+const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
+const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
 
 // 1. IMMEDIATE LISTEN to pass Cloud Run health checks
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
