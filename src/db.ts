@@ -92,8 +92,4 @@ try {
   db.exec('ALTER TABLE users ADD COLUMN audio_quality TEXT DEFAULT "standard";');
 } catch (e) {}
 
-try {
-  db.exec('ALTER TABLE users ADD COLUMN premium_settings TEXT DEFAULT NULL;');
-} catch (e) {}
-
 export default db;
