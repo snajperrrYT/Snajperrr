@@ -979,10 +979,23 @@ export default function App() {
                 Zaproś Bota
               </a>
             )}
-            {status?.mockMode && (
+            {status?.mockMode ? (
               <div className="bg-[#18181B] border border-white/10 px-4 py-2 rounded-full flex gap-3 items-center h-[44px]">
                 <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium text-slate-300">Token Missing • <span className="text-blue-400">Demo Mode</span></span>
+              </div>
+            ) : (
+              <div className="bg-[#18181B] border border-white/10 px-4 py-2 rounded-full flex gap-3 items-center h-[44px]">
+                <div className={cn(
+                  "w-2 h-2 rounded-full",
+                  status?.state === 'online' ? "bg-emerald-500 animate-pulse" : "bg-slate-500"
+                )} />
+                <span className={cn(
+                  "text-sm font-medium",
+                  status?.state === 'online' ? "text-emerald-400" : "text-slate-400"
+                )}>
+                  {status?.state === 'online' ? 'Online' : (status ? 'Offline' : 'Ładowanie...')}
+                </span>
               </div>
             )}
           </div>
