@@ -102,10 +102,10 @@ async function bootstrap() {
     // Dynamic stream options based on user preference
     player.onBeforeCreateStream = async (track: any, queryType: any, queue: any) => {
         const userId = queue.metadata?.user?.id || queue.metadata?.member?.id || (queue.metadata?.interaction?.user?.id);
-        if (!userId) return;
+        if (!userId) return null;
 
         const user = db.prepare('SELECT audio_quality, premium FROM users WHERE id = ?').get(userId) as any;
-        if (!user) return;
+        if (!user) return null;
 
         let quality = user.audio_quality || 'standard';
         if (user.premium !== 1 && quality === 'ultra') quality = 'high';
@@ -117,6 +117,8 @@ async function bootstrap() {
                 highWaterMark: quality === 'ultra' ? 1024 * 1024 * 64 : (quality === 'high' ? 1024 * 1024 * 32 : 1024 * 1024 * 8)
             };
         }
+
+        return null;
     };
 
     // Make functions available inside bootstrap closure
@@ -150,7 +152,7 @@ async function bootstrap() {
         try {
             const prompt = `Jesteś systemem autodiagnostyki bota muzycznego. Wystąpił błąd:\nWIADOMOŚĆ: ${message}\nSZCZEGÓŁY: ${details}\n\nPodaj krótkie, konkretne rozwiązanie (max 2 zdania). Jeśli to błąd YouTube (decipher), zasugeruj "Restart Silnika Extractors".\nOdpowiedz w JSON: {"solution": "treść", "canAutoFix": true/false}`;
             const response = await aiAssistant.models.generateContent({
-                model: 'gemini-3-flash-preview',
+                model: 'gemini-2.0-flash',
                 contents: prompt,
                 config: { responseMimeType: "application/json" }
             });
@@ -167,10 +169,9 @@ async function bootstrap() {
         try {
             try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
             await player.extractors.register(YoutubeiExtractor, {
-                useServerAbrStream: true,
                 streamOptions: {
                     highWaterMark: 1024 * 1024 * 4,
-                    useClient: 'ANDROID',
+                    useClient: 'WEB',
                 }
             });
             await player.extractors.loadMulti(DefaultExtractors);
@@ -528,7 +529,7 @@ app.post('/api/admin/logs/:id/analyze', async (req, res) => {
     `;
 
     const response = await aiAssistant.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-2.0-flash",
         contents: prompt
     });
 
@@ -805,12 +806,10 @@ client.on('ready', async () => {
   setTimeout(async () => {
     try {
       console.log('[Discord] Loading primary YouTube extractor...');
-      // Use higher quality settings for YouTubei
       await player.extractors.register(YoutubeiExtractor, {
-          useServerAbrStream: true,
           streamOptions: {
-              highWaterMark: 1024 * 1024 * 4, // Increased to 4MB for better buffering
-              useClient: 'ANDROID', // Changed to ANDROID for better stability
+              highWaterMark: 1024 * 1024 * 4,
+              useClient: 'WEB',
           }
       });
       
@@ -956,7 +955,7 @@ app.get("/api/players", (req, res) => {
     res.json(playersInfo);
   } catch (err) {
     console.error("Error in /api/players:", err);
-    res.status(500).json({ error: "Interal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -1347,8 +1346,13 @@ async function setupVite(app: express.Express) {
 
 async function start() {
     console.log('[Startup] Executing bootstrap...');
-    await bootstrap();
-    console.log('[Startup] Bootstrap complete. Setting up Vite...');
+    try {
+        await bootstrap();
+        console.log('[Startup] Bootstrap complete.');
+    } catch (err) {
+        console.error('[Startup] Bootstrap failed, server will run without bot functionality:', err);
+    }
+    console.log('[Startup] Setting up Vite...');
     await setupVite(app);
     console.log('[Startup] Server fully initialized and ready.');
 }

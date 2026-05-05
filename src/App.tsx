@@ -47,7 +47,6 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import ReactMarkdown from 'react-markdown';
-import { GoogleGenAI } from "@google/genai";
 
 // --- Types ---
 type BotStatus = {
