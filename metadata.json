@@ -1,0 +1,6 @@
+{
+  "name": "Discord Music Bot Dashboard",
+  "description": "A full-stack Discord music bot with a real-time web control dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
