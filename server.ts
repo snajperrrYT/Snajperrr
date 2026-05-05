@@ -28,7 +28,9 @@ import db from './src/db.js';
 import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.js';
 
 const app = express();
-const PORT = 3000;
+const portEnv = process.env.PORT;
+const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
+const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 
 // Shared globally
