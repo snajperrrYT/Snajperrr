@@ -2,16 +2,38 @@ import express from "express";
 import path from "path";
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
-import type { Client, GuildMember, REST, SlashCommandBuilder, StringSelectMenuBuilder } from "discord.js";
-import type { Player } from "discord-player";
-import type Stripe from "stripe";
+import { 
+    Client, 
+    GatewayIntentBits, 
+    ActivityType, 
+    REST, 
+    Routes, 
+    SlashCommandBuilder, 
+    GuildMember, 
+    StringSelectMenuBuilder, 
+    StringSelectMenuOptionBuilder, 
+    ActionRowBuilder, 
+    ComponentType, 
+    MessageFlags 
+} from "discord.js";
+import { Player } from "discord-player";
+import { DefaultExtractors } from "@discord-player/extractor";
+import { YoutubeiExtractor } from "discord-player-youtubei";
+import jwt from 'jsonwebtoken';
+import Stripe from 'stripe';
+import crypto from 'crypto';
+import ms from 'ms';
+import { GoogleGenAI } from "@google/genai";
+import db from './src/db.js';
+import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.js';
 
 const app = express();
 const PORT = 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 
 // Shared globally
-let client: any = null;
-let player: any = null;
+let client: Client;
+let player: Player;
 let botStartTime = 0;
 let botStatus: any = { 
     state: 'offline', 
@@ -21,17 +43,32 @@ let botStatus: any = {
     uptime: 0
 };
 let playbackHistory = new Map<string, any[]>();
-let stripeClient: any = null;
-let aiAssistant: any = null;
+let stripeClient: Stripe | null = null;
+let aiAssistant: GoogleGenAI | null = null;
 let repairCooldown = false;
 let lastRepairAttempt = 0;
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
+// Initialize clients
+if (process.env.GEMINI_API_KEY) {
+    aiAssistant = new (GoogleGenAI as any)(process.env.GEMINI_API_KEY);
+}
+if (process.env.STRIPE_SECRET_KEY) {
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
+}
 
-// 1. IMMEDIATE LISTEN to pass Cloud Run health checks
+client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+    ],
+});
+player = new Player(client);
+
+// 1. Listen immediately
 app.get('/api/health', (req, res) => res.status(200).send('OK'));
 const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`[Startup] Port ${PORT} opened. Initializing heavy modules...`);
+    console.log(`[Startup] Port ${PORT} opened.`);
 });
 
 // JSON and Cookie middlewares registered IMMEDIATELY
@@ -52,112 +89,65 @@ process.on('uncaughtException', (error) => {
   console.error(`Uncaught Exception:`, error);
 });
 
-async function bootstrap() {
-    console.log('[Startup] Loading dynamic imports...');
-    const [
-        { createServer: createViteServer },
-        { Client, GatewayIntentBits, ActivityType, REST, Routes, SlashCommandBuilder, GuildMember, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ComponentType, MessageFlags },
-        { Player },
-        { DefaultExtractors },
-        { YoutubeiExtractor },
-        jwtModule,
-        { default: Stripe },
-        crypto,
-        { default: ms },
-        { GoogleGenAI },
-        { default: db },
-        { adminCommandsDefinitions, handleAdminCommands }
-    ] = await Promise.all([
-        import("vite"),
-        import("discord.js"),
-        import("discord-player"),
-        import("@discord-player/extractor"),
-        import("discord-player-youtubei"),
-        import('jsonwebtoken'),
-        import('stripe'),
-        import('crypto'),
-        import('ms'),
-        import("@google/genai"),
-        import('./src/db'),
-        import('./src/adminCommands')
-    ]);
+// Dynamic stream options
+(player as any).onBeforeCreateStream = async (track: any, queryType: any, queue: any) => {
+    const userId = queue.metadata?.user?.id || queue.metadata?.member?.id || (queue.metadata?.interaction?.user?.id);
+    if (!userId) return;
 
-    const jwt = (jwtModule as any).default || jwtModule;
-    const JWT_SECRET_INNER = process.env.JWT_SECRET || 'dev_secret_jwt';
+    const user = db.prepare('SELECT audio_quality, premium FROM users WHERE id = ?').get(userId) as any;
+    if (!user) return;
 
-    // Initialize bots
-    if (process.env.GEMINI_API_KEY) {
-        aiAssistant = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    }
+    let quality = user.audio_quality || 'standard';
+    if (user.premium !== 1 && quality === 'ultra') quality = 'high';
 
-    client = new Client({
-        intents: [
-            GatewayIntentBits.Guilds, 
-            GatewayIntentBits.GuildVoiceStates,
-            GatewayIntentBits.GuildMessages,
-        ],
-    });
-    player = new Player(client);
-
-    // Dynamic stream options based on user preference
-    player.onBeforeCreateStream = async (track: any, queryType: any, queue: any) => {
-        const userId = queue.metadata?.user?.id || queue.metadata?.member?.id || (queue.metadata?.interaction?.user?.id);
-        if (!userId) return;
-
-        const user = db.prepare('SELECT audio_quality, premium FROM users WHERE id = ?').get(userId) as any;
-        if (!user) return;
-
-        let quality = user.audio_quality || 'standard';
-        if (user.premium !== 1 && quality === 'ultra') quality = 'high';
-
-        if (track.source === 'youtube') {
-            return {
-                quality: quality === 'ultra' ? 'highestaudio' : (quality === 'high' ? 'highestaudio' : 'lowestaudio'),
-                filter: 'audioonly',
+    if (track.extractor?.identifier === 'youtubei' || track.source === 'youtube') {
+        console.log(`[YouTube] Extracting stream for: ${track.title} (Client: TV_EMBEDDED)`);
+        return {
+            useServerAbrStream: true,
+            disableStreamPreExtraction: true,
+            streamOptions: {
+                useClient: 'TV_EMBEDDED',
                 highWaterMark: quality === 'ultra' ? 1024 * 1024 * 64 : (quality === 'high' ? 1024 * 1024 * 32 : 1024 * 1024 * 8)
-            };
-        }
-    };
-
-    // Make functions available inside bootstrap closure
-    const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
-        try {
-            const detailsStr = details ? (typeof details === 'string' ? details : JSON.stringify(details)) : null;
-            const result = db.prepare('INSERT INTO system_logs (level, source, message, details, created_at) VALUES (?, ?, ?, ?, ?)')
-                .run(level, source, message, detailsStr, Date.now());
-            
-            const logId = result.lastInsertRowid as number;
-
-            if (level === 'error' && aiAssistant) {
-                analyzeAndStoreSolution(logId, message, detailsStr || '');
-                const msg = message.toLowerCase();
-                if (msg.includes('decipher') || msg.includes('signature') || msg.includes('youtubejs') || msg.includes('streaming data not available')) {
-                    performSystemRepair();
-                }
             }
-            
-            const time = new Date().toLocaleTimeString();
-            if (level === 'error') console.log(`\x1b[31m[${time}] [ERROR] [${source}] ${message}\x1b[0m`);
-            else if (level === 'warn') console.log(`\x1b[33m[${time}] [WARN] [${source}] ${message}\x1b[0m`);
-            else console.log(`\x1b[32m[${time}] [INFO] [${source}] ${message}\x1b[0m`);
-        } catch (err) {
-            console.error('Failed to write to system_logs:', err);
-        }
-    };
+        };
+    }
+};
 
-    const analyzeAndStoreSolution = async (logId: number, message: string, details: string) => {
-        if (!aiAssistant) return;
-        try {
-            const prompt = `Jesteś systemem autodiagnostyki bota muzycznego. Wystąpił błąd:\nWIADOMOŚĆ: ${message}\nSZCZEGÓŁY: ${details}\n\nPodaj krótkie, konkretne rozwiązanie (max 2 zdania). Jeśli to błąd YouTube (decipher), zasugeruj "Restart Silnika Extractors".\nOdpowiedz w JSON: {"solution": "treść", "canAutoFix": true/false}`;
-            const response = await aiAssistant.models.generateContent({
-                model: 'gemini-3-flash-preview',
-                contents: prompt,
-                config: { responseMimeType: "application/json" }
-            });
-            const data = JSON.parse(response.text);
-            db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(data.solution, logId);
-        } catch (err) {}
-    };
+const analyzeAndStoreSolution = async (logId: number, message: string, details: string) => {
+    if (!aiAssistant) return;
+    try {
+        const prompt = `Jesteś systemem autodiagnostyki bota muzycznego. Wystąpił błąd:\nWIADOMOŚĆ: ${message}\nSZCZEGÓŁY: ${details}\n\nPodaj krótkie, konkretne rozwiązanie (max 2 zdania). Jeśli to błąd YouTube (decipher), zasugeruj "Restart Silnika Extractors".\nOdpowiedz w JSON: {"solution": "treść", "canAutoFix": true/false}`;
+        const model = (aiAssistant as any).getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        const data = JSON.parse(result.response.text());
+        db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(data.solution, logId);
+    } catch (err) {}
+};
+
+const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
+    try {
+        const detailsStr = details ? (typeof details === 'string' ? details : JSON.stringify(details)) : null;
+        const result = db.prepare('INSERT INTO system_logs (level, source, message, details, created_at) VALUES (?, ?, ?, ?, ?)')
+            .run(level, source, message, detailsStr, Date.now());
+        
+        const logId = result.lastInsertRowid as number;
+
+        if (level === 'error' && aiAssistant) {
+            analyzeAndStoreSolution(logId, message, detailsStr || '');
+            const msg = message.toLowerCase();
+            if (msg.includes('decipher') || msg.includes('signature') || msg.includes('youtubejs') || msg.includes('streaming data not available')) {
+                performSystemRepair();
+            }
+        }
+        
+        const time = new Date().toLocaleTimeString();
+        if (level === 'error') console.log(`\x1b[31m[${time}] [ERROR] [${source}] ${message}\x1b[0m`);
+        else if (level === 'warn') console.log(`\x1b[33m[${time}] [WARN] [${source}] ${message}\x1b[0m`);
+        else console.log(`\x1b[32m[${time}] [INFO] [${source}] ${message}\x1b[0m`);
+    } catch (err) {
+        console.error('Failed to write to system_logs:', err);
+    }
+};
 
     const performSystemRepair = async () => {
         if (repairCooldown && Date.now() - lastRepairAttempt < 60000) return false;
@@ -169,8 +159,8 @@ async function bootstrap() {
             await player.extractors.register(YoutubeiExtractor, {
                 useServerAbrStream: true,
                 streamOptions: {
-                    highWaterMark: 1024 * 1024 * 4,
-                    useClient: 'ANDROID',
+                    useClient: 'TV_EMBEDDED',
+                    highWaterMark: 1024 * 1024 * 8,
                 }
             });
             await player.extractors.loadMulti(DefaultExtractors);
@@ -203,51 +193,24 @@ async function bootstrap() {
     repairCooldown = false;
     playbackHistory.clear();
 
-    if (process.env.STRIPE_SECRET_KEY) {
-      stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
-    }
-
-// OAuth and Stripe endpoints will go here...
 function getRedirectUri(req: express.Request) {
-  let protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  let host = String(req.headers['x-forwarded-host'] || req.headers.host || '');
-  
-  if (host.includes('ais-pre-ly5ivmhh6jz6aqhbimhb3h')) {
-    return 'https://ais-pre-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
-  }
-  if (host.includes('ais-dev-ly5ivmhh6jz6aqhbimhb3h')) {
-    return 'https://ais-dev-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
-  }
-  
-  // Clean up if it contains multiple comma-separated values
-  if (typeof protocol === 'string' && protocol.includes(',')) {
-    protocol = protocol.split(',')[0].trim();
-  }
-  if (typeof host === 'string' && host.includes(',')) {
-    host = host.split(',')[0].trim();
-  }
-  
-  // Force https for Cloud Run URLs
-  if (typeof host === 'string' && host.includes('run.app')) {
-    protocol = 'https';
-  }
-  
-  const uri = `${protocol}://${host}/api/auth/callback`;
-  console.log('[Auth] Generated Redirect URI:', uri);
-  return uri;
+    let protocol = 'https';
+    let host = req.headers['x-forwarded-host'] || req.headers.host || '';
+    if (typeof host === 'string' && host.includes(',')) host = host.split(',')[0].trim();
+    if (!host.includes('run.app') && !host.includes('google.com')) protocol = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'http';
+    
+    return `${protocol}://${host}/api/auth/callback`;
 }
 
 app.get('/api/auth/url', (req, res) => {
-  const clientRedirect = req.query.redirectUri as string;
-  const redirectUri = clientRedirect || getRedirectUri(req);
-  
+  const redirectUri = getRedirectUri(req);
   const params = new URLSearchParams({
     client_id: process.env.DISCORD_CLIENT_ID || '',
     redirect_uri: redirectUri,
     response_type: 'code',
-    scope: 'identify guilds', // you'd want 'guilds' for adding bot or checking user's guilds
+    scope: 'identify guilds',
   });
-  console.log('[Auth] Returning authorization url with redirect:', redirectUri);
+  console.log('[Auth] Returning authorization url with dynamic redirect:', redirectUri);
   res.json({ url: `https://discord.com/api/oauth2/authorize?${params}` });
 });
 
@@ -809,8 +772,8 @@ client.on('ready', async () => {
       await player.extractors.register(YoutubeiExtractor, {
           useServerAbrStream: true,
           streamOptions: {
-              highWaterMark: 1024 * 1024 * 4, // Increased to 4MB for better buffering
-              useClient: 'ANDROID', // Changed to ANDROID for better stability
+              highWaterMark: 1024 * 1024 * 8, // Increased to 8MB for better buffering
+              useClient: 'TV_EMBEDDED', // TV_EMBEDDED is more stable for extraction
           }
       });
       
@@ -881,7 +844,6 @@ client.on('ready', async () => {
 });
 
 async function bootstrapBot() {
-  // Start the bot if a token is provided
   if (process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE") {
     console.log('[Discord] Connecting...');
     try {
@@ -890,36 +852,9 @@ async function bootstrapBot() {
         console.error(`[Discord] Login failed:`, err.message);
     }
   } else {
-    console.log('[Discord] No valid DISCORD_TOKEN provided. Application requires token in Settings.');
+    console.log('[Discord] No valid DISCORD_TOKEN provided.');
   }
 }
-
-// Admin and Bot status helpers
-
-// API Routes
-app.get("/api/status", (req, res) => {
-  if (client && client.isReady()) {
-    botStatus.guilds = client.guilds.cache.size;
-    botStatus.ping = client.ws.ping;
-    botStatus.uptime = Math.floor((Date.now() - botStartTime) / 1000);
-  }
-  
-  if (botStatus.state === 'online') {
-    res.json({
-      ...botStatus,
-      inviteUrl: client?.user ? `https://discord.com/api/oauth2/authorize?client_id=${client.user.id}&permissions=3148800&scope=bot%20applications.commands` : null
-    });
-  } else {
-    res.json({
-      state: 'offline',
-      guilds: 0,
-      ping: 0,
-      tag: 'Podaj DISCORD_TOKEN',
-      uptime: 0,
-      mockMode: true
-    });
-  }
-});
 
 app.get("/api/players", (req, res) => {
   const playersInfo = [];
@@ -1317,10 +1252,6 @@ app.post("/api/players/:guildId/play", async (req, res) => {
   }
 });
 
-    // Start the bot (non-blocking)
-    bootstrapBot().catch(err => console.error('Bot bootstrap failed:', err));
-}
-
 // 2. Setup Static serving / Vite middleware
 async function setupVite(app: express.Express) {
     const { createServer: createViteServer } = await import("vite");
@@ -1346,9 +1277,19 @@ async function setupVite(app: express.Express) {
 // API Routes (Registered synchronously at the top level)
 
 async function start() {
-    console.log('[Startup] Executing bootstrap...');
-    await bootstrap();
-    console.log('[Startup] Bootstrap complete. Setting up Vite...');
+    console.log('[Startup] Registering remaining API routes and starting bot...');
+    const restOfInit = async () => {
+        try {
+            await bootstrapBot();
+            console.log('[Startup] Bot logic started.');
+        } catch (e) {
+            console.error('[Startup] Bot bootstrap error:', e);
+        }
+    };
+    
+    restOfInit();
+    
+    console.log('[Startup] Setting up Vite...');
     await setupVite(app);
     console.log('[Startup] Server fully initialized and ready.');
 }
