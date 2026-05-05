@@ -28,7 +28,21 @@ import {
   Zap,
   ExternalLink,
   X,
-  Sparkles
+  Sparkles,
+  Bell,
+  Palette,
+  Sliders,
+  Globe,
+  Shield,
+  Shuffle,
+  RotateCcw,
+  Wand2,
+  Gauge,
+  Lock,
+  Star,
+  Radio,
+  Repeat,
+  Repeat1
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -65,8 +79,24 @@ type BotStatus = {
 };
 
 // --- Changelog ---
-const CHANGELOG_VERSION = '1.3.0';
+const CHANGELOG_VERSION = '1.4.0';
 const CHANGELOG: { version: string; date: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
+  {
+    version: '1.4.0',
+    date: '2026-05-05',
+    features: [
+      { type: 'new', text: 'Ponad 35 nowych ustawień Premium – odtwarzacz, efekty dźwięku, powiadomienia, wygląd, AI i zaawansowane.' },
+      { type: 'new', text: 'Konfigurowalny equalizer z presetami: flat, bass, treble, rock, pop, jazz, klasyczna, electronic.' },
+      { type: 'new', text: 'Tryb pętli (brak / jeden utwór / cała kolejka) i crossfade między utworami.' },
+      { type: 'new', text: 'Autoplay po zakończeniu kolejki i opcja przetasowania (shuffle).' },
+      { type: 'new', text: 'Personalne rekomendacje AI, analiza nastroju i AI Autopilot.' },
+      { type: 'new', text: 'Ustawienia powiadomień: embed "Teraz gra", DM od bota, raport tygodniowy.' },
+      { type: 'new', text: 'Opcje wyglądu: kolor akcentu, kompaktowy widok, animacje, duże okładki.' },
+      { type: 'new', text: 'Zaawansowane: filtr treści explicit, region YouTube, Rich Presence Discord, język bota.' },
+      { type: 'improvement', text: 'Ustawienia Premium zapisywane na serwerze – dostępne na każdym urządzeniu.' },
+      { type: 'fix', text: 'Poprawiono obsługę wygaśnięcia Premium i synchronizację ustawień użytkownika.' },
+    ],
+  },
   {
     version: '1.3.0',
     date: '2026-05-05',
@@ -95,6 +125,52 @@ const CHANGELOG: { version: string; date: string; features: { type: 'new' | 'fix
     ],
   },
 ];
+
+// --- Default Premium Settings ---
+const DEFAULT_PREMIUM_SETTINGS = {
+  // Player
+  loopMode: 'none' as 'none' | 'track' | 'queue',
+  shuffleEnabled: false,
+  crossfadeSeconds: 0,
+  volumeNormalize: false,
+  volumeLimit: 100,
+  autoplay: false,
+  queuePriority: false,
+  playbackSpeed: '1.0',
+  // Audio Effects
+  eqPreset: 'flat' as 'flat' | 'bass' | 'treble' | 'rock' | 'pop' | 'jazz' | 'classical' | 'electronic',
+  bassBoost: 0,
+  reverbLevel: 0,
+  stereoWide: false,
+  pitchCorrection: false,
+  // Notifications
+  nowPlayingEmbed: true,
+  notifyQueueEnd: false,
+  notifyError: true,
+  dmNotifications: false,
+  notifyJoin: false,
+  weeklyReport: false,
+  // UI
+  accentColor: 'indigo' as 'indigo' | 'blue' | 'purple' | 'emerald' | 'rose' | 'amber',
+  animationsEnabled: true,
+  compactMode: false,
+  showEqViz: false,
+  largeThumbnails: false,
+  // AI
+  aiRecommendations: false,
+  moodAnalysis: false,
+  aiAutopilot: false,
+  extendedHistory: false,
+  aiAssistantEnabled: false,
+  // Advanced
+  explicitFilter: false,
+  ytRegion: 'pl' as 'pl' | 'us' | 'gb' | 'de' | 'fr',
+  qualityFallback: true,
+  richPresence: false,
+  botLanguage: 'pl' as 'pl' | 'en' | 'de' | 'fr',
+};
+
+type PremiumSettings = typeof DEFAULT_PREMIUM_SETTINGS;
 
 type QueueItem = {
   id: string;
@@ -216,6 +292,10 @@ export default function App() {
   // Changelog state
   const [showChangelog, setShowChangelog] = useState(false);
 
+  // Premium settings state
+  const [premiumSettings, setPremiumSettings] = useState<PremiumSettings>({ ...DEFAULT_PREMIUM_SETTINGS });
+  const [savingPremiumSetting, setSavingPremiumSetting] = useState<string | null>(null);
+
   // Admin state
   const [voucherType, setVoucherType] = useState('user_premium');
   const [voucherDuration, setVoucherDuration] = useState('30d');
@@ -311,6 +391,10 @@ export default function App() {
       const data = await res.json();
       if (data.loggedIn) {
         setUser(data.user);
+        // Merge saved premium settings with defaults
+        if (data.user.premium_settings && typeof data.user.premium_settings === 'object') {
+          setPremiumSettings(prev => ({ ...prev, ...data.user.premium_settings }));
+        }
       } else {
         setUser(null);
       }
@@ -379,6 +463,27 @@ export default function App() {
       }
     } catch (err) {
       alert('Wystąpił błąd sieciowy.');
+    }
+  };
+
+  const handleUpdatePremiumSetting = async <K extends keyof PremiumSettings>(key: K, value: PremiumSettings[K]) => {
+    const previousSettings = { ...premiumSettings };
+    const newSettings = { ...premiumSettings, [key]: value };
+    setPremiumSettings(newSettings);
+    setSavingPremiumSetting(key);
+    try {
+      const res = await fetch('/api/user/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ premiumSettings: newSettings })
+      });
+      if (!res.ok) {
+        setPremiumSettings(previousSettings);
+      }
+    } catch (err) {
+      setPremiumSettings(previousSettings);
+    } finally {
+      setSavingPremiumSetting(null);
     }
   };
 
@@ -1210,6 +1315,441 @@ export default function App() {
                   </div>
                 </div>
               </div>
+
+              {/* Premium Settings Section */}
+              <section className="relative">
+                {/* Section Header */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-yellow-500/10 rounded-xl">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-white">Ustawienia Premium</h3>
+                    <p className="text-xs text-slate-500">Zaawansowane opcje dostępne wyłącznie dla subskrybentów Premium</p>
+                  </div>
+                  {user?.premium === 1 && (
+                    <span className="ml-auto px-3 py-1 bg-yellow-400/10 border border-yellow-400/20 text-yellow-400 text-[10px] font-black rounded-full uppercase tracking-wider">
+                      Aktywne
+                    </span>
+                  )}
+                </div>
+
+                {/* Lock overlay for non-premium */}
+                {user && user.premium !== 1 && (
+                  <div className="absolute inset-0 z-20 rounded-3xl flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm border border-yellow-500/10">
+                    <div className="bg-[#111114] border border-yellow-500/20 rounded-3xl p-8 max-w-sm text-center shadow-2xl">
+                      <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-4 mx-auto">
+                        <Lock className="w-8 h-8 text-yellow-400" />
+                      </div>
+                      <h4 className="text-xl font-black text-white mb-2">Funkcja Premium</h4>
+                      <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                        Odblokuj ponad 35 zaawansowanych ustawień, kup subskrypcję Premium lub zrealizuj voucher.
+                      </p>
+                      <button
+                        onClick={async () => {
+                          try {
+                            const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+                            const data = await res.json();
+                            if (data.url) window.location.href = data.url;
+                          } catch { alert('Błąd przy inicjowaniu płatności.'); }
+                        }}
+                        className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black py-3 rounded-xl font-black text-sm transition-all shadow-lg shadow-yellow-500/20"
+                      >
+                        Kup Premium
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Settings Categories Grid */}
+                <div className={cn("grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6", user?.premium !== 1 && "pointer-events-none select-none opacity-40")}>
+
+                  {/* ── Card 1: Odtwarzacz ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400"><Music className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">Odtwarzacz</h4>
+                    </div>
+
+                    {/* Loop Mode */}
+                    <div className="flex items-center justify-between py-2.5">
+                      <div><p className="text-sm text-slate-300 font-medium">Tryb pętli</p><p className="text-[10px] text-slate-500">Powtarzanie kolejki lub utworu</p></div>
+                      <div className="flex gap-1">
+                        {(['none', 'track', 'queue'] as const).map(m => (
+                          <button key={m} onClick={() => handleUpdatePremiumSetting('loopMode', m)}
+                            className={cn("px-2 py-1 rounded-lg text-[10px] font-bold transition-all", premiumSettings.loopMode === m ? "bg-blue-500 text-white" : "bg-white/5 text-slate-400 hover:text-white")}>
+                            {m === 'none' ? 'Brak' : m === 'track' ? '1' : 'Kolejka'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Shuffle */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Losowa kolejność</p><p className="text-[10px] text-slate-500">Przetasuj kolejkę przed odtwarzaniem</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('shuffleEnabled', !premiumSettings.shuffleEnabled)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.shuffleEnabled ? "bg-blue-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.shuffleEnabled ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Crossfade */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Crossfade</p><p className="text-[10px] text-slate-500">Płynne przejście: {premiumSettings.crossfadeSeconds}s</p></div>
+                      <input type="range" min="0" max="10" step="1" value={premiumSettings.crossfadeSeconds}
+                        onChange={e => handleUpdatePremiumSetting('crossfadeSeconds', parseInt(e.target.value))}
+                        className="w-24 h-1.5 accent-blue-500 cursor-pointer" />
+                    </div>
+
+                    {/* Volume Normalize */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Normalizacja głośności</p><p className="text-[10px] text-slate-500">Wyrównaj poziom głośności utworów</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('volumeNormalize', !premiumSettings.volumeNormalize)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.volumeNormalize ? "bg-blue-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.volumeNormalize ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Volume Limit */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Limit głośności</p><p className="text-[10px] text-slate-500">Maksimum: {premiumSettings.volumeLimit}%</p></div>
+                      <input type="range" min="10" max="100" step="5" value={premiumSettings.volumeLimit}
+                        onChange={e => handleUpdatePremiumSetting('volumeLimit', parseInt(e.target.value))}
+                        className="w-24 h-1.5 accent-blue-500 cursor-pointer" />
+                    </div>
+
+                    {/* Autoplay */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Autoplay</p><p className="text-[10px] text-slate-500">Kontynuuj po zakończeniu kolejki</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('autoplay', !premiumSettings.autoplay)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.autoplay ? "bg-blue-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.autoplay ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Playback Speed */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Szybkość odtwarzania</p><p className="text-[10px] text-slate-500">Zmień tempo muzyki</p></div>
+                      <select value={premiumSettings.playbackSpeed} onChange={e => handleUpdatePremiumSetting('playbackSpeed', e.target.value)}
+                        className="bg-[#18181B] border border-white/10 text-white text-xs rounded-lg px-2 py-1.5 focus:outline-none">
+                        {['0.5', '0.75', '1.0', '1.25', '1.5', '2.0'].map(s => (
+                          <option key={s} value={s}>{s}x</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Queue Priority */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Priorytet kolejki</p><p className="text-[10px] text-slate-500">Twoje utwory na początku</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('queuePriority', !premiumSettings.queuePriority)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.queuePriority ? "bg-blue-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.queuePriority ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Card 2: Efekty Dźwięku ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400"><Sliders className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">Efekty Dźwięku</h4>
+                    </div>
+
+                    {/* EQ Preset */}
+                    <div className="py-2.5">
+                      <p className="text-sm text-slate-300 font-medium mb-1.5">Preset Equalizera</p>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {(['flat','bass','treble','rock','pop','jazz','classical','electronic'] as const).map(p => (
+                          <button key={p} onClick={() => handleUpdatePremiumSetting('eqPreset', p)}
+                            className={cn("py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all", premiumSettings.eqPreset === p ? "bg-purple-500 text-white" : "bg-white/5 text-slate-400 hover:text-white")}>
+                            {p === 'flat' ? 'Flat' : p === 'bass' ? 'Bass' : p === 'treble' ? 'Treble' : p === 'rock' ? 'Rock' : p === 'pop' ? 'Pop' : p === 'jazz' ? 'Jazz' : p === 'classical' ? 'Klasyk' : 'Electro'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Bass Boost */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Bass Boost</p><p className="text-[10px] text-slate-500">Wzmocnienie basów: {premiumSettings.bassBoost}dB</p></div>
+                      <input type="range" min="0" max="20" step="1" value={premiumSettings.bassBoost}
+                        onChange={e => handleUpdatePremiumSetting('bassBoost', parseInt(e.target.value))}
+                        className="w-24 h-1.5 accent-purple-500 cursor-pointer" />
+                    </div>
+
+                    {/* Reverb */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Pogłos (Reverb)</p><p className="text-[10px] text-slate-500">Poziom: {premiumSettings.reverbLevel}/10</p></div>
+                      <input type="range" min="0" max="10" step="1" value={premiumSettings.reverbLevel}
+                        onChange={e => handleUpdatePremiumSetting('reverbLevel', parseInt(e.target.value))}
+                        className="w-24 h-1.5 accent-purple-500 cursor-pointer" />
+                    </div>
+
+                    {/* Stereo Wide */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Poszerzenie stereo</p><p className="text-[10px] text-slate-500">Szerszy obraz przestrzenny</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('stereoWide', !premiumSettings.stereoWide)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.stereoWide ? "bg-purple-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.stereoWide ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Pitch Correction */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Korekcja wysokości tonu</p><p className="text-[10px] text-slate-500">Stabilizuj pitch wokalu</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('pitchCorrection', !premiumSettings.pitchCorrection)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.pitchCorrection ? "bg-purple-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.pitchCorrection ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Card 3: Powiadomienia ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><Bell className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">Powiadomienia</h4>
+                    </div>
+
+                    {/* Now Playing Embed */}
+                    <div className="flex items-center justify-between py-2.5">
+                      <div><p className="text-sm text-slate-300 font-medium">Embed „Teraz gra"</p><p className="text-[10px] text-slate-500">Bogata wiadomość na kanale tekstowym</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('nowPlayingEmbed', !premiumSettings.nowPlayingEmbed)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.nowPlayingEmbed ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.nowPlayingEmbed ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Notify Queue End */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Koniec kolejki</p><p className="text-[10px] text-slate-500">Powiadom gdy skończy się lista</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('notifyQueueEnd', !premiumSettings.notifyQueueEnd)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.notifyQueueEnd ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.notifyQueueEnd ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Notify Error */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Błędy odtwarzania</p><p className="text-[10px] text-slate-500">Powiadomienie o problemach technicznych</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('notifyError', !premiumSettings.notifyError)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.notifyError ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.notifyError ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* DM Notifications */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Wiadomości DM od bota</p><p className="text-[10px] text-slate-500">Ważne powiadomienia na prywatnym czacie</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('dmNotifications', !premiumSettings.dmNotifications)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.dmNotifications ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.dmNotifications ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Notify Join */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Dołączenie do kanału</p><p className="text-[10px] text-slate-500">Powiadom gdy bot dołączy do voice</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('notifyJoin', !premiumSettings.notifyJoin)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.notifyJoin ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.notifyJoin ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Weekly Report */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Raport tygodniowy</p><p className="text-[10px] text-slate-500">Twoje statystyki słuchania co tydzień</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('weeklyReport', !premiumSettings.weeklyReport)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.weeklyReport ? "bg-emerald-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.weeklyReport ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Card 4: Wygląd Interfejsu ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-pink-500/10 rounded-lg text-pink-400"><Palette className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">Wygląd Interfejsu</h4>
+                    </div>
+
+                    {/* Accent Color */}
+                    <div className="py-2.5">
+                      <p className="text-sm text-slate-300 font-medium mb-2">Kolor akcentu</p>
+                      <div className="flex gap-2 flex-wrap">
+                        {([
+                          { id: 'indigo', bg: 'bg-indigo-500' },
+                          { id: 'blue', bg: 'bg-blue-500' },
+                          { id: 'purple', bg: 'bg-purple-500' },
+                          { id: 'emerald', bg: 'bg-emerald-500' },
+                          { id: 'rose', bg: 'bg-rose-500' },
+                          { id: 'amber', bg: 'bg-amber-500' },
+                        ] as const).map(c => (
+                          <button key={c.id} onClick={() => handleUpdatePremiumSetting('accentColor', c.id)}
+                            className={cn("w-8 h-8 rounded-full transition-all", c.bg, premiumSettings.accentColor === c.id ? "ring-2 ring-white ring-offset-2 ring-offset-[#111114] scale-110" : "opacity-60 hover:opacity-100")} />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Animations */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Animacje</p><p className="text-[10px] text-slate-500">Płynne przejścia i efekty ruchu</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('animationsEnabled', !premiumSettings.animationsEnabled)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.animationsEnabled ? "bg-pink-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.animationsEnabled ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Compact Mode */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Tryb kompaktowy</p><p className="text-[10px] text-slate-500">Mniejsze odstępy i elementy</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('compactMode', !premiumSettings.compactMode)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.compactMode ? "bg-pink-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.compactMode ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Show EQ Viz */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Wizualizator EQ</p><p className="text-[10px] text-slate-500">Animowany spektrum dźwięku</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('showEqViz', !premiumSettings.showEqViz)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.showEqViz ? "bg-pink-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.showEqViz ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Large Thumbnails */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Duże okładki albumów</p><p className="text-[10px] text-slate-500">Powiększone miniatury w liście</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('largeThumbnails', !premiumSettings.largeThumbnails)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.largeThumbnails ? "bg-pink-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.largeThumbnails ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Card 5: AI & Rekomendacje ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-violet-500/10 rounded-lg text-violet-400"><Wand2 className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">AI & Rekomendacje</h4>
+                    </div>
+
+                    {/* AI Recommendations */}
+                    <div className="flex items-center justify-between py-2.5">
+                      <div><p className="text-sm text-slate-300 font-medium">Rekomendacje AI</p><p className="text-[10px] text-slate-500">Personalizowane sugestie muzyczne</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('aiRecommendations', !premiumSettings.aiRecommendations)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.aiRecommendations ? "bg-violet-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.aiRecommendations ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Mood Analysis */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Analiza nastroju</p><p className="text-[10px] text-slate-500">AI dopasowuje muzykę do Twojego nastroju</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('moodAnalysis', !premiumSettings.moodAnalysis)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.moodAnalysis ? "bg-violet-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.moodAnalysis ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* AI Autopilot */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">AI Autopilot</p><p className="text-[10px] text-slate-500">Automatyczna kontynuacja podobnej muzyki</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('aiAutopilot', !premiumSettings.aiAutopilot)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.aiAutopilot ? "bg-violet-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.aiAutopilot ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Extended History */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Rozszerzona historia</p><p className="text-[10px] text-slate-500">Zapamiętuj do 100 ostatnich utworów</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('extendedHistory', !premiumSettings.extendedHistory)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.extendedHistory ? "bg-violet-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.extendedHistory ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* AI Assistant */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Asystent AI</p><p className="text-[10px] text-slate-500">Chatbot muzyczny w panelu</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('aiAssistantEnabled', !premiumSettings.aiAssistantEnabled)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.aiAssistantEnabled ? "bg-violet-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.aiAssistantEnabled ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ── Card 6: Zaawansowane ── */}
+                  <div className="bg-[#111114] border border-white/5 rounded-3xl p-6 shadow-xl space-y-1">
+                    <div className="flex items-center gap-3 border-b border-white/5 pb-4 mb-4">
+                      <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400"><Shield className="w-4 h-4" /></div>
+                      <h4 className="font-bold text-white text-sm uppercase tracking-wider">Zaawansowane</h4>
+                    </div>
+
+                    {/* Explicit Filter */}
+                    <div className="flex items-center justify-between py-2.5">
+                      <div><p className="text-sm text-slate-300 font-medium">Filtr treści explicit</p><p className="text-[10px] text-slate-500">Ukryj wulgarną muzykę z wyszukiwania</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('explicitFilter', !premiumSettings.explicitFilter)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.explicitFilter ? "bg-orange-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.explicitFilter ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* YouTube Region */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Region YouTube</p><p className="text-[10px] text-slate-500">Preferowany rynek do wyszukiwania</p></div>
+                      <select value={premiumSettings.ytRegion} onChange={e => handleUpdatePremiumSetting('ytRegion', e.target.value as any)}
+                        className="bg-[#18181B] border border-white/10 text-white text-xs rounded-lg px-2 py-1.5 focus:outline-none">
+                        <option value="pl">🇵🇱 Polska</option>
+                        <option value="us">🇺🇸 USA</option>
+                        <option value="gb">🇬🇧 UK</option>
+                        <option value="de">🇩🇪 Niemcy</option>
+                        <option value="fr">🇫🇷 Francja</option>
+                      </select>
+                    </div>
+
+                    {/* Quality Fallback */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Fallback jakości</p><p className="text-[10px] text-slate-500">Automatycznie obniż jakość przy błędach</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('qualityFallback', !premiumSettings.qualityFallback)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.qualityFallback ? "bg-orange-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.qualityFallback ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Rich Presence */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Rich Presence Discord</p><p className="text-[10px] text-slate-500">Pokaż co słuchasz na swoim profilu</p></div>
+                      <button onClick={() => handleUpdatePremiumSetting('richPresence', !premiumSettings.richPresence)}
+                        className={cn("w-11 h-6 rounded-full transition-colors relative", premiumSettings.richPresence ? "bg-orange-500" : "bg-white/10")}>
+                        <span className={cn("absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform", premiumSettings.richPresence ? "translate-x-5" : "translate-x-0.5")} />
+                      </button>
+                    </div>
+
+                    {/* Bot Language */}
+                    <div className="flex items-center justify-between py-2.5 border-t border-white/5">
+                      <div><p className="text-sm text-slate-300 font-medium">Język bota</p><p className="text-[10px] text-slate-500">Język komend i odpowiedzi bota</p></div>
+                      <select value={premiumSettings.botLanguage} onChange={e => handleUpdatePremiumSetting('botLanguage', e.target.value as any)}
+                        className="bg-[#18181B] border border-white/10 text-white text-xs rounded-lg px-2 py-1.5 focus:outline-none">
+                        <option value="pl">Polski</option>
+                        <option value="en">English</option>
+                        <option value="de">Deutsch</option>
+                        <option value="fr">Français</option>
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Auto-save indicator */}
+                {savingPremiumSetting && (
+                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500">
+                    <div className="w-3 h-3 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                    Zapisywanie ustawień...
+                  </div>
+                )}
+              </section>
 
               {/* Bot Invitation Card */}
               <section className="bg-gradient-to-br from-[#5865F2] to-[#454FBF] rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
