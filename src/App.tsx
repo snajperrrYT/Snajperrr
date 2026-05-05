@@ -467,6 +467,7 @@ export default function App() {
   };
 
   const handleUpdatePremiumSetting = async <K extends keyof PremiumSettings>(key: K, value: PremiumSettings[K]) => {
+    const previousSettings = { ...premiumSettings };
     const newSettings = { ...premiumSettings, [key]: value };
     setPremiumSettings(newSettings);
     setSavingPremiumSetting(key);
@@ -477,10 +478,10 @@ export default function App() {
         body: JSON.stringify({ premiumSettings: newSettings })
       });
       if (!res.ok) {
-        setPremiumSettings(premiumSettings);
+        setPremiumSettings(previousSettings);
       }
     } catch (err) {
-      setPremiumSettings(premiumSettings);
+      setPremiumSettings(previousSettings);
     } finally {
       setSavingPremiumSetting(null);
     }
@@ -1335,7 +1336,7 @@ export default function App() {
 
                 {/* Lock overlay for non-premium */}
                 {user && user.premium !== 1 && (
-                  <div className="absolute inset-0 z-20 rounded-3xl flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm border border-yellow-500/10 rounded-3xl">
+                  <div className="absolute inset-0 z-20 rounded-3xl flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm border border-yellow-500/10">
                     <div className="bg-[#111114] border border-yellow-500/20 rounded-3xl p-8 max-w-sm text-center shadow-2xl">
                       <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center mb-4 mx-auto">
                         <Lock className="w-8 h-8 text-yellow-400" />

@@ -321,6 +321,15 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ success: true });
 });
 
+function parsePremiumSettings(raw: string | null): object | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
 app.get('/api/me', (req, res) => {
   const token = req.cookies.auth_token;
   if (!token) return res.json({ loggedIn: false });
@@ -338,13 +347,7 @@ app.get('/api/me', (req, res) => {
     }
 
     // Parse premium_settings JSON
-    if (user.premium_settings) {
-      try {
-        user.premium_settings = JSON.parse(user.premium_settings);
-      } catch (e) {
-        user.premium_settings = null;
-      }
-    }
+    user.premium_settings = parsePremiumSettings(user.premium_settings);
 
     res.json({ loggedIn: true, user });
   } catch(err) {
@@ -374,7 +377,7 @@ app.post('/api/user/settings', async (req, res) => {
       if (user.premium !== 1) {
         return res.status(403).json({ success: false, error: 'Ustawienia premium wymagają subskrypcji Premium.' });
       }
-      const existing = user.premium_settings ? JSON.parse(user.premium_settings) : {};
+      const existing = parsePremiumSettings(user.premium_settings) ?? {};
       const merged = { ...existing, ...premiumSettings };
       db.prepare('UPDATE users SET premium_settings = ? WHERE id = ?').run(JSON.stringify(merged), decoded.id);
     }
