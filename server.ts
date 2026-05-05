@@ -1231,13 +1231,13 @@ app.post("/api/players/:guildId/play", async (req, res) => {
             console.error('Failed to init Vite middleware:', err);
         }
     } else {
-        const distPath = path.join(process.cwd(), 'dist');
+        const distPath = path.join(process.cwd(), 'build');
         app.use(express.static(distPath));
     }
 
     // Final SPA fallback for production (MUST be after all routes)
     if (process.env.NODE_ENV === "production") {
-        const distPath = path.join(process.cwd(), 'dist');
+        const distPath = path.join(process.cwd(), 'build');
         app.get('*', (req, res) => {
             res.sendFile(path.join(distPath, 'index.html'));
         });
@@ -1248,4 +1248,3 @@ app.post("/api/players/:guildId/play", async (req, res) => {
 }
 
 bootstrap();
-
