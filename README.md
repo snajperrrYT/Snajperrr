@@ -10,13 +10,14 @@ View your app in AI Studio: https://ai.studio/apps/2a72fa6c-ff03-48c4-a569-3648c
 
 GitHub Repository: https://github.com/bbbbbbbbbc/Snajperrr
 
-## Run Locally
+## Cloud Run & Deployment
 
-**Prerequisites:**  Node.js
+When hosting on **Google Cloud Run** or other external servers, you **MUST** configure the following environment variables in your hosting provider's dashboard:
 
+- **GEMINI_API_KEY**: Your Google Gemini API key (required for AI analysis and auto-repair).
+- **APP_URL**: The full URL of your application (e.g., `https://your-app-xxxx.a.run.app`). This is critical for Discord OAuth login to work.
+- **DISCORD_TOKEN**: Your Discord Bot token.
+- **DISCORD_CLIENT_ID** & **DISCORD_CLIENT_SECRET**: Required for the dashboard login.
+- **JWT_SECRET**: A random string for securing user sessions.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Make sure your Discord Application's **Redirect URI** matches your `APP_URL` + `/api/auth/callback`.

@@ -42,7 +42,10 @@ import {
   Star,
   Radio,
   Repeat,
-  Repeat1
+  Repeat1,
+  RefreshCw,
+  ShieldCheck,
+  ArrowUpRight
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -79,8 +82,18 @@ type BotStatus = {
 };
 
 // --- Changelog ---
-const CHANGELOG_VERSION = '1.4.0';
+const CHANGELOG_VERSION = '2.4.0';
 const CHANGELOG: { version: string; date: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
+  {
+    version: '2.4.0',
+    date: '2026-05-06',
+    features: [
+      { type: 'new', text: 'Centrum Aktualizacji i Naprawy – nowy panel administratora do wymuszania aktualizacji ekstraktorów i naprawy bota.' },
+      { type: 'improvement', text: 'AI Solution v2 – ulepszona analiza błędów za pomocą najnowszego modelu Gemini 3 Flash Preview.' },
+      { type: 'fix', text: 'Cloud Run Fix – poprawiono mechanizm OAuth dla bezproblemowego logowania w środowisku Cloud Run.' },
+      { type: 'new', text: 'Zarządzanie logami – dodano możliwość ręcznej edycji rozwiązań zaproponowanych przez AI.' },
+    ],
+  },
   {
     version: '1.4.0',
     date: '2026-05-05',
@@ -302,12 +315,20 @@ export default function App() {
   const [voucherMaxUses, setVoucherMaxUses] = useState(1);
   const [vouchers, setVouchers] = useState<any[]>([]);
   const [createdVoucher, setCreatedVoucher] = useState<any>(null);
-  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs'>('vouchers');
+  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs' | 'updates'>('vouchers');
   const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [bugReports, setBugReports] = useState<any[]>([]);
   const [analyzingLogId, setAnalyzingLogId] = useState<number | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<{[key: number]: string}>({});
+
+  const [versionInfo, setVersionInfo] = useState<{current: string, latest: string, needsUpdate: boolean} | null>(null);
+  const [checkingVersion, setCheckingVersion] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const ai = new (GoogleGenAI as any)({ 
+    apiKey: (process.env as any).GEMINI_API_KEY || ''
+  });
 
   // Bug report state (user)
   const [showBugModal, setShowBugModal] = useState(false);
@@ -371,6 +392,41 @@ export default function App() {
     } catch {}
   };
 
+  const fetchVersionInfo = async () => {
+    setCheckingVersion(true);
+    try {
+      const res = await fetch('/api/admin/system/version');
+      const data = await res.json();
+      if (data.success) {
+        setVersionInfo({
+          current: data.current,
+          latest: data.latest,
+          needsUpdate: data.needsUpdate
+        });
+      }
+    } catch (err) {
+      console.error('Fetch version error:', err);
+    } finally {
+      setCheckingVersion(false);
+    }
+  };
+
+  const handleTriggerUpdate = async () => {
+    if (!confirm("Czy na pewno chcesz zainicjować aktualizację/naprawę systemu? System może być chwilowo niedostępny.")) return;
+    setIsUpdating(true);
+    try {
+      const res = await fetch('/api/admin/system/update', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert("Błąd podczas inicjowania aktualizacji.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'admin' && user?.is_admin === 1) {
       if (adminTab === 'users') {
@@ -379,8 +435,11 @@ export default function App() {
         fetchAdminVouchers();
       } else if (adminTab === 'logs') {
         fetchAdminLogs();
+        fetchSystemStats();
       } else if (adminTab === 'bugs') {
         fetchAdminBugs();
+      } else if (adminTab === 'updates') {
+        fetchVersionInfo();
       }
     }
   }, [activeTab, adminTab, user]);
@@ -776,18 +835,41 @@ export default function App() {
   const handleAnalyzeWithAI = async (logId: number) => {
     setAnalyzingLogId(logId);
     try {
-      const res = await fetch(`/api/admin/logs/${logId}/analyze`, { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        setAiAnalysis(prev => ({ ...prev, [logId]: data.analysis }));
-        // Also refresh logs to get the solution if it was saved
-        fetchAdminLogs();
-      } else {
-        alert(data.error || 'Błąd podczas analizy AI.');
-      }
+      const log = systemLogs.find(l => l.id === logId);
+      if (!log) throw new Error("Log not found");
+
+      const prompt = `
+        Jesteś ekspertem systemów Discord i Node.js. Przeanalizuj błąd:
+        WIADOMOŚĆ: ${log.message}
+        SZCZEGÓŁY: ${log.details || 'Brak'}
+        
+        Zadanie:
+        1. Wyjaśnij krótko co się stało.
+        2. Podaj konkretne kroki naprawcze.
+        Odpowiedz w języku polskim (Markdown).
+      `;
+
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: prompt
+      });
+
+      const analysis = response.text || "Błąd analizy AI.";
+      
+      setAiAnalysis(prev => ({ ...prev, [logId]: analysis }));
+
+      // Save the solution back to the server
+      await fetch(`/api/admin/logs/${logId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ solution: analysis })
+      });
+
+      // Refresh logs locally
+      fetchAdminLogs();
     } catch (err: any) {
-      console.error(err);
-      alert('Wystąpił błąd sieciowy podczas analizy.');
+      console.error('AI Analysis Error:', err);
+      alert('Błąd podczas analizy AI. Upewnij się, że klucz API jest poprawny.');
     } finally {
       setAnalyzingLogId(null);
     }
@@ -2257,6 +2339,7 @@ export default function App() {
                     <button onClick={() => setAdminTab('users')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'users' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Użytkownicy</button>
                     <button onClick={() => setAdminTab('logs')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'logs' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Logi</button>
                     <button onClick={() => setAdminTab('bugs')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'bugs' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Błędy</button>
+                    <button onClick={() => setAdminTab('updates')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'updates' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Aktualizacje</button>
                   </div>
                 </div>
                 
@@ -2643,7 +2726,139 @@ export default function App() {
                             ))}
                           </tbody>
                         </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {adminTab === 'updates' && (
+                  <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-[#18181B] border border-white/5 rounded-2xl p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                           <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                              <Info className="w-5 h-5" />
+                           </div>
+                           <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Bieżąca wersja</div>
+                        </div>
+                        <div className="text-2xl font-black text-white">{versionInfo?.current || '2.4.0-stable'}</div>
+                        <div className="text-[10px] text-slate-500 mt-1">Status: Produkcyjny</div>
                       </div>
+
+                      <div className="bg-[#18181B] border border-white/5 rounded-2xl p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                           <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400">
+                              <Sparkles className="w-5 h-5" />
+                           </div>
+                           <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Najnowsza dostępna</div>
+                        </div>
+                        <div className="text-2xl font-black text-white">{versionInfo?.latest || 'Ładowanie...'}</div>
+                        <div className="text-[10px] text-slate-500 mt-1">Źródło: GitHub Release</div>
+                      </div>
+
+                      <div className="bg-[#18181B] border border-white/5 rounded-2xl p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                           <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                              <Zap className="w-5 h-5" />
+                           </div>
+                           <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Wymaga aktualizacji?</div>
+                        </div>
+                        <div className="text-2xl font-black text-white">
+                          {versionInfo ? (versionInfo.needsUpdate ? 'TAK' : 'NIE') : '...'}
+                        </div>
+                        <div className="text-[10px] text-amber-400 mt-1">
+                          {versionInfo?.needsUpdate ? 'Zalecane pobranie nowej wersji' : 'Twój system jest aktualny'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent border border-white/10 rounded-3xl p-8 shadow-xl">
+                      <div className="flex flex-col md:flex-row items-center gap-8">
+                        <div className="flex-1 space-y-4">
+                          <h3 className="text-xl font-black text-white uppercase tracking-tight">Centrum Aktualizacji i Naprawy</h3>
+                          <p className="text-slate-400 text-sm leading-relaxed">
+                            To narzędzie wymusza pobranie najnowszych ekstraktorów multimediów (yt-dlp/extractors), czyści pamięć podręczną DNS oraz odświeża sygnatury YouTube. Użyj tego, jeśli bot ma problemy z odtwarzaniem konkretnych utworów.
+                          </p>
+                          <div className="flex flex-wrap gap-4 pt-2">
+                             <div className="flex items-center gap-2 px-3 py-1.5 bg-black/30 rounded-lg border border-white/5">
+                               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                               <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Silnik: yt-dlp</span>
+                             </div>
+                             <div className="flex items-center gap-2 px-3 py-1.5 bg-black/30 rounded-lg border border-white/5">
+                               <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                               <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Metoda: SignDecipher</span>
+                             </div>
+                          </div>
+                        </div>
+                        <div className="shrink-0">
+                          <button 
+                            onClick={handleTriggerUpdate}
+                            disabled={isUpdating}
+                            className={cn(
+                              "relative group overflow-hidden px-8 py-4 rounded-2xl font-black uppercase tracking-tighter text-sm transition-all shadow-2xl",
+                              isUpdating 
+                                ? "bg-slate-800 text-slate-500 cursor-not-allowed" 
+                                : "bg-white text-black hover:scale-105 active:scale-95"
+                            )}
+                          >
+                            <span className="relative z-10 flex items-center gap-2">
+                              {isUpdating ? (
+                                <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                              ) : (
+                                <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                              )}
+                              {isUpdating ? 'Aktualizowanie...' : 'Uruchom pełną aktualizację'}
+                            </span>
+                            {!isUpdating && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div className="bg-white/5 border border-white/5 rounded-2xl p-6">
+                          <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-widest text-slate-400">Historia Wersji</h4>
+                          <div className="space-y-4 mt-6">
+                             <div className="flex gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0">
+                                   <span className="text-[10px] font-bold text-indigo-400">2.4.0</span>
+                                </div>
+                                <div>
+                                   <div className="text-xs font-bold text-white">Wydanie Główne (STABLE)</div>
+                                   <p className="text-[10px] text-slate-500 mt-0.5">Naprawiono błędy z AI Solution oraz poprawiono OAuth dla Cloud Run.</p>
+                                </div>
+                             </div>
+                             <div className="flex gap-4 opacity-50">
+                                <div className="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center shrink-0">
+                                   <span className="text-[10px] font-bold text-slate-500">2.3.9</span>
+                                </div>
+                                <div>
+                                   <div className="text-xs font-bold text-slate-400">Patch Systemowy</div>
+                                   <p className="text-[10px] text-slate-500 mt-0.5">Aktualizacja biblioteki YouTubeJS do wersji 1.10.x.</p>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                       
+                       <div className="bg-white/5 border border-white/5 rounded-2xl p-6 relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                             <ShieldCheck className="w-24 h-24 rotate-12" />
+                          </div>
+                          <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-widest text-slate-400">Wsparcie Techniczne</h4>
+                          <p className="text-xs text-slate-500 leading-relaxed mb-6">
+                            Większość problemów ze strumieniowaniem można rozwiązać automatycznie przez przycisk obok. Jeśli jednak problem nadal występuje, zgłoś błąd w odpowiedniej zakładce lub odwiedź nasz Discord.
+                          </p>
+                          <a 
+                            href={status?.supportServerUrl} 
+                            target="_blank" 
+                            className="inline-flex items-center gap-2 text-[10px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors uppercase tracking-widest"
+                          >
+                            Otrzymaj wsparcie na Discordzie
+                            <ArrowUpRight className="w-3 h-3" />
+                          </a>
+                       </div>
                     </div>
                   </div>
                 )}

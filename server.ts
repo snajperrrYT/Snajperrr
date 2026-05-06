@@ -24,8 +24,8 @@ import Stripe from 'stripe';
 import crypto from 'crypto';
 import ms from 'ms';
 import { GoogleGenAI } from "@google/genai";
-import db from './src/db.js';
-import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.js';
+import db from './src/db.ts';
+import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.ts';
 
 const app = express();
 const portEnv = process.env.PORT;
@@ -52,7 +52,7 @@ let lastRepairAttempt = 0;
 
 // Initialize clients
 if (process.env.GEMINI_API_KEY) {
-    aiAssistant = new (GoogleGenAI as any)(process.env.GEMINI_API_KEY);
+    aiAssistant = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 if (process.env.STRIPE_SECRET_KEY) {
     stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -86,6 +86,55 @@ app.get('/api/status', (req, res) => {
         inviteUrl,
         supportServerUrl: process.env.DISCORD_SERVER_INVITE || 'https://discord.gg/MRN4WDUMKv',
     });
+});
+
+app.get('/api/admin/system/version', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    // Current version from package.json or hardcoded
+    const currentVersion = "2.4.0-stable";
+    
+    // Attempt to fetch latest from GitHub (non-blocking)
+    let latestVersion = currentVersion;
+    try {
+        const ghRes = await fetch('https://api.github.com/repos/bbbbbbbbbc/Snajperrr/releases/latest', {
+            headers: { 'User-Agent': 'Snajperrr-Dashboard' }
+        });
+        if (ghRes.ok) {
+            const data: any = await ghRes.json();
+            latestVersion = data.tag_name || currentVersion;
+        }
+    } catch (e) {
+        console.warn('Could not fetch latest version from GitHub');
+    }
+
+    res.json({ 
+        success: true, 
+        current: currentVersion, 
+        latest: latestVersion,
+        needsUpdate: currentVersion !== latestVersion 
+    });
+  } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/admin/system/update', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    logEvent('info', 'System', 'Użytkownik zainicjował ręczną aktualizację/naprawę systemu.');
+    performSystemRepair();
+    
+    res.json({ success: true, message: "Inicjowanie aktualizacji extractors i czyszczenie pamięci podręcznej..." });
+  } catch(err) { res.status(500).json({ success: false }); }
 });
 
 const server = app.listen(PORT, "0.0.0.0", () => {
@@ -138,11 +187,20 @@ const analyzeAndStoreSolution = async (logId: number, message: string, details: 
     if (!aiAssistant) return;
     try {
         const prompt = `Jesteś systemem autodiagnostyki bota muzycznego. Wystąpił błąd:\nWIADOMOŚĆ: ${message}\nSZCZEGÓŁY: ${details}\n\nPodaj krótkie, konkretne rozwiązanie (max 2 zdania). Jeśli to błąd YouTube (decipher), zasugeruj "Restart Silnika Extractors".\nOdpowiedz w JSON: {"solution": "treść", "canAutoFix": true/false}`;
-        const model = (aiAssistant as any).getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        const data = JSON.parse(result.response.text());
-        db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(data.solution, logId);
-    } catch (err) {}
+        const response = await aiAssistant.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json"
+            }
+        });
+        const data = JSON.parse(response.text || '{}');
+        if (data.solution) {
+            db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(data.solution, logId);
+        }
+    } catch (err) {
+        console.error('AI Analysis Error (Background):', err);
+    }
 };
 
 const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
@@ -153,11 +211,14 @@ const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: str
         
         const logId = result.lastInsertRowid as number;
 
-        if (level === 'error' && aiAssistant) {
-            analyzeAndStoreSolution(logId, message, detailsStr || '');
+        if (level === 'error') {
             const msg = message.toLowerCase();
             if (msg.includes('decipher') || msg.includes('signature') || msg.includes('youtubejs') || msg.includes('streaming data not available')) {
                 performSystemRepair();
+            }
+            
+            if (aiAssistant) {
+                analyzeAndStoreSolution(logId, message, detailsStr || '');
             }
         }
         
@@ -215,10 +276,21 @@ const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: str
     playbackHistory.clear();
 
 function getRedirectUri(req: express.Request) {
+    // Prefer APP_URL environment variable if set (standard in many cloud environments)
+    if (process.env.APP_URL) {
+        const baseUrl = process.env.APP_URL.endsWith('/') ? process.env.APP_URL.slice(0, -1) : process.env.APP_URL;
+        return `${baseUrl}/api/auth/callback`;
+    }
+
     let protocol = 'https';
     let host = req.headers['x-forwarded-host'] || req.headers.host || '';
+    if (typeof host === 'string' && host.includes('run.app')) {
+        protocol = 'https';
+    } else {
+        protocol = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'http';
+    }
+    
     if (typeof host === 'string' && host.includes(',')) host = host.split(',')[0].trim();
-    if (!host.includes('run.app') && !host.includes('google.com')) protocol = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'http';
     
     return `${protocol}://${host}/api/auth/callback`;
 }
@@ -229,7 +301,7 @@ app.get('/api/auth/url', (req, res) => {
     client_id: process.env.DISCORD_CLIENT_ID || '',
     redirect_uri: redirectUri,
     response_type: 'code',
-    scope: 'identify guilds',
+    scope: 'identify email guilds',
   });
   console.log('[Auth] Returning authorization url with dynamic redirect:', redirectUri);
   res.json({ url: `https://discord.com/api/oauth2/authorize?${params}` });
@@ -276,7 +348,12 @@ app.get('/api/auth/callback', async (req, res) => {
 
     const userData = await userRes.json();
 
-    db.prepare(`INSERT INTO users (id, username, avatar) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET username=excluded.username, avatar=excluded.avatar`).run(userData.id, userData.username, userData.avatar);
+    // Admin Failsafe for konradszczerbinski8@gmail.com
+    if (userData.email === 'konradszczerbinski8@gmail.com') {
+      db.prepare(`INSERT INTO users (id, username, avatar, is_admin) VALUES (?, ?, ?, 1) ON CONFLICT(id) DO UPDATE SET username=excluded.username, avatar=excluded.avatar, is_admin=1`).run(userData.id, userData.username, userData.avatar);
+    } else {
+      db.prepare(`INSERT INTO users (id, username, avatar) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET username=excluded.username, avatar=excluded.avatar`).run(userData.id, userData.username, userData.avatar);
+    }
 
     if (userData.id === '1230509684138709056') {
       db.prepare('UPDATE users SET is_admin = 1 WHERE id = ?').run(userData.id);
@@ -513,7 +590,7 @@ app.get('/api/admin/logs', async (req, res) => {
   } catch(err) { res.status(500).json({ success: false }); }
 });
 
-app.post('/api/admin/logs/:id/analyze', async (req, res) => {
+app.patch('/api/admin/logs/:id', async (req, res) => {
   const token = req.cookies.auth_token;
   if (!token) return res.status(401).json({ success: false });
   try {
@@ -521,38 +598,15 @@ app.post('/api/admin/logs/:id/analyze', async (req, res) => {
     const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
     if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
 
-    const log = db.prepare('SELECT * FROM system_logs WHERE id = ?').get(req.params.id) as any;
-    if (!log) return res.status(404).json({ error: "Log not found" });
+    const { solution } = req.body;
+    db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(solution, req.params.id);
+    res.json({ success: true });
+  } catch(err) { res.status(500).json({ success: false }); }
+});
 
-    if (!aiAssistant) return res.status(503).json({ error: "System AI nieaktywny" });
-
-    const prompt = `
-        Jesteś ekspertem systemów Discord i Node.js. Przeanalizuj błąd:
-        WIADOMOŚĆ: ${log.message}
-        SZCZEGÓŁY: ${log.details || 'Brak'}
-        
-        Zadanie:
-        1. Wyjaśnij krótko co się stało.
-        2. Podaj konkretne kroki naprawcze.
-        Odpowiedz w języku polskim (Markdown).
-    `;
-
-    const response = await aiAssistant.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt
-    });
-
-    const analysis = response.text;
-    
-    if (!log.solution) {
-      db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(analysis, log.id);
-    }
-
-    res.json({ success: true, analysis });
-  } catch (err: any) {
-    console.error('AI Analysis Error:', err);
-    res.status(500).json({ success: false, error: "Błąd podczas analizy AI" });
-  }
+app.post('/api/admin/logs/:id/analyze', async (req, res) => {
+  // Logic moved to frontend, this endpoint now just returns success to avoid breaking frontend calls temporarily
+  res.json({ success: true, analysis: "AI Analysis moved to frontend. Please check dashboard." });
 });
 
 app.get('/api/admin/system/stats', async (req, res) => {
@@ -760,7 +814,7 @@ player.events.on('playerStart', async (queue, track) => {
       }
       
       // Explicitly set volume to a clear level
-      queue.node.setVolume(75);
+      queue.node.setVolume(80);
     } catch(e) {}
 
   logEvent('info', 'bot', `Rozpoczęto odtwarzanie: ${track.title}`, { guild: queue.guild.name, author: track.author });

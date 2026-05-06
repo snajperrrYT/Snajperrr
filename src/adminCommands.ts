@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, GuildMember, TextChannel } from "discord.js";
 import ms from "ms";
 import crypto from "crypto";
-import db from "./db.js";
+import db from "./db.ts";
 
 export const adminCommandsDefinitions = [
     new SlashCommandBuilder().setName('ban').setDescription('Banuje użytkownika').setDefaultMemberPermissions(PermissionFlagsBits.BanMembers).addUserOption(o => o.setName('user').setDescription('Użytkownik').setRequired(true)).addStringOption(o => o.setName('reason').setDescription('Powód')),
