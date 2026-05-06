@@ -78,6 +78,9 @@ type BotStatus = {
   supportServerUrl?: string;
 };
 
+// --- Constants ---
+const CREATOR_YOUTUBE_URL = 'https://www.youtube.com/@snajperrr-yt';
+
 // --- Changelog ---
 const CHANGELOG_VERSION = '1.4.0';
 const CHANGELOG: { version: string; date: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
@@ -1305,7 +1308,7 @@ export default function App() {
 
                     <div className="pt-4 border-t border-white/5 mt-auto space-y-3">
                       <a
-                        href="https://www.youtube.com/@snajperrr-yt"
+                        href={CREATOR_YOUTUBE_URL}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 py-3 rounded-2xl text-xs font-bold transition-all border border-red-600/10"
@@ -1792,7 +1795,7 @@ export default function App() {
                  </div>
                  <p className="text-[10px] uppercase font-bold tracking-[0.2em]">Build with AI Technology • 4882ms Probe</p>
                  <a
-                   href="https://www.youtube.com/@snajperrr-yt"
+                   href={CREATOR_YOUTUBE_URL}
                    target="_blank"
                    rel="noopener noreferrer"
                    className="mt-2 text-[10px] uppercase font-bold tracking-[0.2em] hover:opacity-70 transition-opacity"
