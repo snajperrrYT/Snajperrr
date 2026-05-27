@@ -986,11 +986,18 @@ export default function App() {
       <aside className="w-64 bg-[#111114] border-r border-white/5 flex flex-col hidden md:flex">
         <div className="p-6 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#5865F2] rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
-              <Bot className="text-white w-6 h-6" />
+            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-red-500/30">
+              <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="7" />
+                <circle cx="12" cy="12" r="3" />
+                <line x1="12" y1="1" x2="12" y2="5" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="1" y1="12" x2="5" y2="12" />
+                <line x1="19" y1="12" x2="23" y2="12" />
+              </svg>
             </div>
             <div>
-              <h1 className="font-bold text-lg leading-tight tracking-tight text-white">TuneBot</h1>
+              <h1 className="font-bold text-lg leading-tight tracking-tight text-white">SnajperBot</h1>
               <p className="text-xs text-slate-500 font-medium tracking-wide">Control Panel</p>
             </div>
           </div>
@@ -1890,7 +1897,7 @@ export default function App() {
                    <Bot className="w-40 h-40" />
                  </div>
                  <div className="relative z-10 max-w-lg">
-                    <h3 className="text-3xl font-black text-white mb-3">Dodaj TuneBot do serwera!</h3>
+                    <h3 className="text-3xl font-black text-white mb-3">Dodaj SnajperBot do serwera!</h3>
                     <p className="text-white/80 font-medium mb-8 leading-relaxed">
                       Zaproś bota na swój własny serwer Discord i ciesz się najlepszą jakością muzyki razem ze znajomymi. Wsparcie dla YouTube, Spotify i nie tylko.
                     </p>
@@ -1909,8 +1916,12 @@ export default function App() {
               {/* Legal/Footer */}
               <div className="flex flex-col items-center justify-center pt-8 pb-12 opacity-30 select-none">
                  <div className="flex items-center gap-2 mb-2">
-                    <Bot className="w-4 h-4" />
-                    <span className="font-bold tracking-tighter text-sm uppercase">TuneBot Music Engine</span>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="7" /><circle cx="12" cy="12" r="3" />
+                      <line x1="12" y1="1" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="1" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="23" y2="12" />
+                    </svg>
+                    <span className="font-bold tracking-tighter text-sm uppercase">SnajperBot Music Engine</span>
                  </div>
                  <p className="text-[10px] uppercase font-bold tracking-[0.2em]">Build with AI Technology • 4882ms Probe</p>
                  <a
@@ -3055,7 +3066,7 @@ export default function App() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white">Co nowego?</h3>
-                <p className="text-xs text-slate-500">Historia aktualizacji TuneBot Dashboard</p>
+                <p className="text-xs text-slate-500">Historia aktualizacji SnajperBot Dashboard</p>
               </div>
               <button
                 onClick={() => {
