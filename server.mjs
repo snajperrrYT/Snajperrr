@@ -857,6 +857,10 @@ function getRedirectUri(req) {
   return finalUri;
 }
 app.get("/api/auth/url", (req, res) => {
+  if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
+    console.error("[Auth] Cannot generate OAuth URL: DISCORD_CLIENT_ID or DISCORD_CLIENT_SECRET is not configured.");
+    return res.status(503).json({ error: "Discord OAuth is not configured. Please set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET environment variables." });
+  }
   const redirectUri = getRedirectUri(req);
   const params = new URLSearchParams({
     client_id: DISCORD_CLIENT_ID,
@@ -868,6 +872,9 @@ app.get("/api/auth/url", (req, res) => {
   res.json({ url: `https://discord.com/api/oauth2/authorize?${params}` });
 });
 app.get("/api/auth/callback", async (req, res) => {
+  if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
+    return res.status(503).send("Discord OAuth is not configured.");
+  }
   const { code, state, error, error_description } = req.query;
   if (error) {
     console.error(`[Auth Callback] Discord returned error: ${error} - ${error_description}`);
