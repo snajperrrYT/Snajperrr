@@ -2,9 +2,12 @@ FROM node:20-slim
 
 WORKDIR /app
 
+# Install build tools needed for native addons (better-sqlite3)
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts
+RUN npm ci
 
 # Copy source code
 COPY . .
