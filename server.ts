@@ -24,6 +24,7 @@ import Stripe from 'stripe';
 import crypto from 'crypto';
 import ms from 'ms';
 import { GoogleGenAI } from "@google/genai";
+import nodemailer from 'nodemailer';
 import db from './src/db.ts';
 import { adminCommandsDefinitions, handleAdminCommands } from './src/adminCommands.ts';
 
@@ -31,6 +32,8 @@ const app = express();
 const portEnv = process.env.PORT;
 const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
 const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1470848278718316636';
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'r1nFnl5Upci2rmiDi1WA5UlSk6XiQrLX';
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 
 // Shared globally
@@ -44,6 +47,25 @@ let botStatus: any = {
     tag: '',
     uptime: 0
 };
+
+// API middleware to prevent caching and handle basic rate limit headers
+app.use('/api', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
+
+// JSON and Cookie middlewares registered IMMEDIATELY
+app.use((req, res, next) => {
+    if (req.originalUrl === '/api/stripe/webhook') {
+        next();
+    } else {
+        express.json()(req, res, next);
+    }
+});
+app.use(cookieParser());
+
 let playbackHistory = new Map<string, any[]>();
 let stripeClient: Stripe | null = null;
 let aiAssistant: GoogleGenAI | null = null;
@@ -51,8 +73,9 @@ let repairCooldown = false;
 let lastRepairAttempt = 0;
 
 // Initialize clients
-if (process.env.GEMINI_API_KEY) {
-    aiAssistant = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const geminiKey = process.env.GEMINI_API_KEY;
+if (geminiKey && geminiKey !== 'MY_GEMINI_API_KEY' && !geminiKey.startsWith('YOUR_')) {
+    aiAssistant = new GoogleGenAI({ apiKey: geminiKey });
 }
 if (process.env.STRIPE_SECRET_KEY) {
     stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -65,16 +88,22 @@ client = new Client({
         GatewayIntentBits.GuildMessages,
     ],
 });
-player = new Player(client);
+player = new Player(client, {
+    skipFFmpeg: false,
+    connectionTimeout: 60000,
+});
 
-// 1. Listen immediately
-app.get('/api/health', (req, res) => res.status(200).send('OK'));
+// API Routes
+app.get('/api/health', (req, res) => {
+    logEvent('info', 'system', 'Health check performed.');
+    res.status(200).send('OK');
+});
 
 app.get('/api/status', (req, res) => {
     const hasToken = !!(process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE");
     const isReady = client && client.isReady();
-    const inviteUrl = process.env.DISCORD_CLIENT_ID
-        ? `https://discord.com/oauth2/authorize?client_id=${process.env.DISCORD_CLIENT_ID}&scope=bot+applications.commands&permissions=8`
+    const inviteUrl = DISCORD_CLIENT_ID
+        ? `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&scope=bot+applications.commands&permissions=8`
         : undefined;
     res.json({
         state: isReady ? 'online' : 'offline',
@@ -96,10 +125,7 @@ app.get('/api/admin/system/version', async (req, res) => {
     const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
     if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
 
-    // Current version from package.json or hardcoded
     const currentVersion = "2.4.0-stable";
-    
-    // Attempt to fetch latest from GitHub (non-blocking)
     let latestVersion = currentVersion;
     try {
         const ghRes = await fetch('https://api.github.com/repos/bbbbbbbbbc/Snajperrr/releases/latest', {
@@ -137,20 +163,6 @@ app.post('/api/admin/system/update', async (req, res) => {
   } catch(err) { res.status(500).json({ success: false }); }
 });
 
-const server = app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Startup] Port ${PORT} opened.`);
-});
-
-// JSON and Cookie middlewares registered IMMEDIATELY
-app.use((req, res, next) => {
-    if (req.originalUrl === '/api/stripe/webhook') {
-        next();
-    } else {
-        express.json()(req, res, next);
-    }
-});
-app.use(cookieParser());
-
 // Catch all unhandled process errors early
 process.on('unhandledRejection', (reason) => {
   console.error(`Unhandled Rejection:`, reason);
@@ -171,12 +183,12 @@ process.on('uncaughtException', (error) => {
     if (user.premium !== 1 && quality === 'ultra') quality = 'high';
 
     if (track.extractor?.identifier === 'youtubei' || track.source === 'youtube') {
-        console.log(`[YouTube] Extracting stream for: ${track.title} (Client: TV_EMBEDDED)`);
+        console.log(`[YouTube] Extracting stream for: ${track.title} (Client: IOS)`);
         return {
             useServerAbrStream: true,
             disableStreamPreExtraction: true,
             streamOptions: {
-                useClient: 'TV_EMBEDDED',
+                useClient: 'IOS',
                 highWaterMark: quality === 'ultra' ? 1024 * 1024 * 64 : (quality === 'high' ? 1024 * 1024 * 32 : 1024 * 1024 * 8)
             }
         };
@@ -187,38 +199,59 @@ const analyzeAndStoreSolution = async (logId: number, message: string, details: 
     if (!aiAssistant) return;
     try {
         const prompt = `Jesteś systemem autodiagnostyki bota muzycznego. Wystąpił błąd:\nWIADOMOŚĆ: ${message}\nSZCZEGÓŁY: ${details}\n\nPodaj krótkie, konkretne rozwiązanie (max 2 zdania). Jeśli to błąd YouTube (decipher), zasugeruj "Restart Silnika Extractors".\nOdpowiedz w JSON: {"solution": "treść", "canAutoFix": true/false}`;
+        
         const response = await aiAssistant.models.generateContent({
-            model: "gemini-3-flash-preview",
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json"
-            }
+            model: "gemini-1.5-flash",
+            contents: [{ role: 'user', parts: [{ text: prompt }] }]
         });
-        const data = JSON.parse(response.text || '{}');
+        const text = response.text;
+        
+        const data = JSON.parse(text || '{}');
         if (data.solution) {
             db.prepare('UPDATE system_logs SET solution = ? WHERE id = ?').run(data.solution, logId);
         }
-    } catch (err) {
-        console.error('AI Analysis Error (Background):', err);
+    } catch (err: any) {
+        // Disable AI assistant if hit with auth errors to prevent log flooding
+        if (err.message?.includes('API key not valid') || err.message?.includes('INVALID_ARGUMENT')) {
+            console.warn('[AI] Gemini API Key is invalid. Disabling AI Assistant features.');
+            aiAssistant = null;
+        } else {
+            console.error('AI Analysis Error (Background):', err);
+        }
     }
 };
 
 const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: string, details?: any) => {
     try {
-        const detailsStr = details ? (typeof details === 'string' ? details : JSON.stringify(details)) : null;
+        let detailsStr = null;
+        if (details) {
+            if (details instanceof Error) {
+                detailsStr = `${details.message}\n${details.stack}`;
+            } else if (typeof details === 'object') {
+                detailsStr = JSON.stringify(details, null, 2);
+            } else {
+                detailsStr = String(details);
+            }
+        }
+        
         const result = db.prepare('INSERT INTO system_logs (level, source, message, details, created_at) VALUES (?, ?, ?, ?, ?)')
             .run(level, source, message, detailsStr, Date.now());
         
         const logId = result.lastInsertRowid as number;
 
-        if (level === 'error') {
+        if (level === 'error' || level === 'warn') {
             const msg = message.toLowerCase();
-            if (msg.includes('decipher') || msg.includes('signature') || msg.includes('youtubejs') || msg.includes('streaming data not available')) {
+            if (level === 'error' && (msg.includes('decipher') || msg.includes('signature') || msg.includes('youtubejs') || msg.includes('streaming data not available'))) {
                 performSystemRepair();
             }
             
-            if (aiAssistant) {
+            if (aiAssistant && level === 'error') {
                 analyzeAndStoreSolution(logId, message, detailsStr || '');
+            }
+
+            // Notify admins via DM if it's an error and bot is ready
+            if (client && client.isReady()) {
+                notifyAdmins(level, source, message, detailsStr || '');
             }
         }
         
@@ -231,23 +264,67 @@ const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: str
     }
 };
 
+async function notifyAdmins(level: string, source: string, message: string, details?: string) {
+    try {
+        // Check if notifications are enabled
+        const setting = db.prepare("SELECT value FROM global_settings WHERE key = 'admin_dm_notifications'").get() as any;
+        if (!setting || setting.value !== '1') return;
+
+        // Only notify about certain sources or high level errors to avoid spam
+        if (level === 'warn' && !message.toLowerCase().includes('critical') && !message.toLowerCase().includes('fail')) return;
+
+        const admins = db.prepare("SELECT id FROM users WHERE is_admin = 1").all() as any[];
+        if (admins.length === 0) return;
+
+        const embed = {
+            title: `🚨 System Alert: ${level.toUpperCase()}`,
+            color: level === 'error' ? 0xff0000 : 0xffaa00,
+            fields: [
+                { name: 'Source', value: source, inline: true },
+                { name: 'Time', value: new Date().toLocaleString(), inline: true },
+                { name: 'Message', value: message.substring(0, 1024) }
+            ],
+            footer: { text: 'Snajperrr Monitoring System' },
+            timestamp: new Date().toISOString()
+        };
+
+        if (details) {
+            const cleanDetails = details.length > 900 ? details.substring(0, 900) + '...' : details;
+            (embed.fields as any).push({ name: 'Details', value: `\`\`\`\n${cleanDetails}\n\`\`\`` });
+        }
+
+        for (const admin of admins) {
+            try {
+                const user = await client.users.fetch(admin.id);
+                if (user) {
+                    await user.send({ embeds: [embed] });
+                }
+            } catch (e) {
+                // Silently fail if DM is blocked or user not found
+            }
+        }
+    } catch (e) {
+        console.error('Failed to notify admins:', e);
+    }
+}
+
     const performSystemRepair = async () => {
         if (repairCooldown && Date.now() - lastRepairAttempt < 60000) return false;
         repairCooldown = true;
         lastRepairAttempt = Date.now();
-        logEvent('warn', 'system', 'Inicjowanie procedury autonaprawy...');
+        logEvent('warn', 'system', 'Inicjowanie procedury autonaprawy (Stabilizacja Audio IOS)...');
         try {
             try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
             await player.extractors.register(YoutubeiExtractor, {
                 useServerAbrStream: true,
                 streamOptions: {
-                    useClient: 'TV_EMBEDDED',
-                    highWaterMark: 1024 * 1024 * 8,
+                    useClient: 'IOS',
+                    highWaterMark: 1024 * 1024 * 32,
                 }
             });
             await player.extractors.loadMulti(DefaultExtractors);
             db.prepare("UPDATE system_stats SET value = ? WHERE key = 'last_repair'").run(Date.now().toString());
-            logEvent('info', 'system', 'System naprawiony pomyślnie.');
+            logEvent('info', 'system', 'System naprawiony pomyślnie. Zastosowano profil IOS dla audio z ABR.');
             setTimeout(() => { repairCooldown = false; }, 60000);
             return { success: true };
         } catch (err: any) {
@@ -276,53 +353,97 @@ const logEvent = (level: 'info' | 'warn' | 'error', source: string, message: str
     playbackHistory.clear();
 
 function getRedirectUri(req: express.Request) {
-    // Prefer APP_URL environment variable if set (standard in many cloud environments)
-    if (process.env.APP_URL) {
-        const baseUrl = process.env.APP_URL.endsWith('/') ? process.env.APP_URL.slice(0, -1) : process.env.APP_URL;
-        return `${baseUrl}/api/auth/callback`;
+    const xHost = req.headers['x-forwarded-host'];
+    const xProto = req.headers['x-forwarded-proto'];
+    const hostHeader = req.headers.host || '';
+    
+    // In Cloud Run/AI Studio environment, we usually get x-forwarded-host
+    // It can be a comma-separated list: "domain1, domain2"
+    const rawHost = Array.isArray(xHost) ? xHost[0] : (xHost || hostHeader);
+    const host = rawHost.split(',')[0].trim();
+    const protocol = (Array.isArray(xProto) ? xProto[0] : xProto) || 'https';
+    
+    // Clean host: remove port and convert to lowercase for comparison
+    const cleanHost = host.split(':')[0].toLowerCase();
+    const isLocal = cleanHost.includes('localhost') || cleanHost.includes('127.0.0.1');
+
+    console.log(`[Auth] Debug Redirect: host="${host}", clean="${cleanHost}", proto="${protocol}", xHost="${xHost}", xProto="${xProto}"`);
+
+    let finalUri: string;
+    // EXACT MATCHES FOR CLOUD RUN DOMAINS (User's Discord Portal whitelist)
+    if (cleanHost === 'discord-music-bot-dashboard-687529685449.us-west2.run.app') {
+        finalUri = 'https://discord-music-bot-dashboard-687529685449.us-west2.run.app/api/auth/callback';
+    } else if (cleanHost === 'ais-pre-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app') {
+        finalUri = 'https://ais-pre-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
+    } else if (cleanHost === 'ais-dev-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app') {
+        finalUri = 'https://ais-dev-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
+    } else if (cleanHost.endsWith('.run.app')) {
+        finalUri = `https://${cleanHost}/api/auth/callback`;
+    } else if (isLocal) {
+        finalUri = `http://localhost:3000/api/auth/callback`;
+    } else if (process.env.APP_URL && process.env.APP_URL !== 'MY_APP_URL' && process.env.APP_URL.startsWith('http')) {
+        const base = process.env.APP_URL.endsWith('/') ? process.env.APP_URL.slice(0, -1) : process.env.APP_URL;
+        finalUri = `${base}/api/auth/callback`;
+    } else {
+        finalUri = `${protocol}://${cleanHost}/api/auth/callback`;
     }
 
-    let protocol = 'https';
-    let host = req.headers['x-forwarded-host'] || req.headers.host || '';
-    if (typeof host === 'string' && host.includes('run.app')) {
-        protocol = 'https';
-    } else {
-        protocol = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'http';
-    }
-    
-    if (typeof host === 'string' && host.includes(',')) host = host.split(',')[0].trim();
-    
-    return `${protocol}://${host}/api/auth/callback`;
+    console.log(`[Auth] Redirect URI generated: "${finalUri}"`);
+    return finalUri;
 }
 
 app.get('/api/auth/url', (req, res) => {
   const redirectUri = getRedirectUri(req);
   const params = new URLSearchParams({
-    client_id: process.env.DISCORD_CLIENT_ID || '',
+    client_id: DISCORD_CLIENT_ID,
     redirect_uri: redirectUri,
     response_type: 'code',
     scope: 'identify email guilds',
   });
-  console.log('[Auth] Returning authorization url with dynamic redirect:', redirectUri);
+  console.log(`[Auth] Login attempt. ID: ${DISCORD_CLIENT_ID}. Redirect: ${redirectUri}`);
   res.json({ url: `https://discord.com/api/oauth2/authorize?${params}` });
 });
 
 app.get('/api/auth/callback', async (req, res) => {
-  const { code, state } = req.query;
+  const { code, state, error, error_description } = req.query;
   
+  if (error) {
+    console.error(`[Auth Callback] Discord returned error: ${error} - ${error_description}`);
+    return res.status(400).send(`Auth error from Discord: ${error_description || error}`);
+  }
+
   // Try to use the host from headers
   const redirectUri = getRedirectUri(req);
-  console.log('[Auth Callback] Using Redirect URI for token code exchange:', redirectUri);
+  console.log('[Auth Callback] Debug Info:', {
+    headers: req.headers,
+    redirectUri: redirectUri,
+    query: req.query
+  });
+  console.log('[Auth Callback] Code exchange starting...', { 
+    hasCode: !!code, 
+    redirectUri: redirectUri,
+    host: req.headers.host,
+    xHost: req.headers['x-forwarded-host']
+  });
 
-  
-  if (!code) return res.send("No code provided");
+  if (!code) return res.status(400).send("No code provided");
 
   try {
+    console.log('[Auth Callback] Fetching token from Discord...');
+    const tokenParams = {
+        client_id: DISCORD_CLIENT_ID,
+        client_secret: DISCORD_CLIENT_SECRET.substring(0, 4) + '...',
+        grant_type: 'authorization_code',
+        code: (code as string).substring(0, 5) + '...',
+        redirect_uri: redirectUri,
+    };
+    console.log('[Auth Callback] Token request params (sanitized):', tokenParams);
+
     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
       method: 'POST',
       body: new URLSearchParams({
-        client_id: process.env.DISCORD_CLIENT_ID || '',
-        client_secret: process.env.DISCORD_CLIENT_SECRET || '',
+        client_id: DISCORD_CLIENT_ID,
+        client_secret: DISCORD_CLIENT_SECRET,
         grant_type: 'authorization_code',
         code: code as string,
         redirect_uri: redirectUri,
@@ -334,9 +455,11 @@ app.get('/api/auth/callback', async (req, res) => {
 
     const tokenData = await tokenResponse.json();
     if (!tokenResponse.ok) {
+        console.error('[Auth Callback] Token exchange failed:', tokenData);
         return res.send(`Failed to fetch OAuth token: ${tokenData.error_description || tokenData.error}`);
     }
 
+    console.log('[Auth Callback] Token exchange successful, fetching user data...');
     const [userRes, guildsRes] = await Promise.all([
       fetch('https://discord.com/api/users/@me', {
         headers: { Authorization: `Bearer ${tokenData.access_token}` }
@@ -346,7 +469,14 @@ app.get('/api/auth/callback', async (req, res) => {
       })
     ]);
 
+    if (!userRes.ok) {
+        const errData = await userRes.json();
+        console.error('[Auth Callback] Failed to fetch @me:', errData);
+        return res.status(userRes.status).send('Failed to fetch user data from Discord');
+    }
+
     const userData = await userRes.json();
+    console.log(`[Auth Callback] Logged in as: ${userData.username} (${userData.id})`);
 
     // Admin Failsafe for konradszczerbinski8@gmail.com
     if (userData.email === 'konradszczerbinski8@gmail.com') {
@@ -363,23 +493,29 @@ app.get('/api/auth/callback', async (req, res) => {
     
     res.cookie('auth_token', token, {
       secure: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    res.setHeader('Content-Type', 'text/html');
     res.send(`
       <html>
+        <head><title>Logging in...</title></head>
         <body>
           <script>
+            console.log('[Auth] Login successful, sending message to opener');
             if (window.opener) {
               window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS' }, '*');
-              window.close();
+              setTimeout(() => window.close(), 100);
             } else {
               window.location.href = '/';
             }
           </script>
-          <p>Logowanie udane. To okno zostanie zamknięte.</p>
+          <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+            <p>Logowanie udane. To okno zostanie zamknięte.</p>
+            <p><a href="/">Kliknij tutaj, jeśli okno się nie zamknie automatycznie.</a></p>
+          </div>
         </body>
       </html>
     `);
@@ -409,7 +545,12 @@ function parsePremiumSettings(raw: string | null): object | null {
 
 app.get('/api/me', (req, res) => {
   const token = req.cookies.auth_token;
-  if (!token) return res.json({ loggedIn: false });
+  if (!token) {
+    if (Object.keys(req.cookies).length > 0) {
+      console.log('[API Me] Auth token missing. Other cookies present:', Object.keys(req.cookies));
+    }
+    return res.json({ loggedIn: false });
+  }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
@@ -576,6 +717,19 @@ app.get('/api/admin/vouchers', async (req, res) => {
   }
 });
 
+// --- Public Logs Endpoint ---
+app.get('/api/public-logs', async (req, res) => {
+  try {
+    // Ensure table exists and provide clean feed
+    const logs = db.prepare('SELECT level, source, message, details, created_at FROM system_logs ORDER BY created_at DESC LIMIT 150').all() as any[];
+    res.setHeader('Cache-Control', 'no-cache');
+    res.json({ success: true, logs });
+  } catch(err) { 
+    console.error('Public Logs Error:', err);
+    res.status(500).json({ success: false }); 
+  }
+});
+
 // --- Logs & Bug Endpoints ---
 app.get('/api/admin/logs', async (req, res) => {
   const token = req.cookies.auth_token;
@@ -585,9 +739,93 @@ app.get('/api/admin/logs', async (req, res) => {
     const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
     if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
 
-    const logs = db.prepare('SELECT * FROM system_logs ORDER BY created_at DESC LIMIT 200').all() as any[];
+    const logs = db.prepare('SELECT * FROM system_logs ORDER BY created_at DESC LIMIT 500').all() as any[];
     res.json({ success: true, logs });
   } catch(err) { res.status(500).json({ success: false }); }
+});
+
+const sendLogsEmail = async (isAuto = false) => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'konradszczerbinski8@gmail.com';
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (!smtpHost || !smtpUser || !smtpPass) {
+        const error = "Konfiguracja SMTP nie jest kompletna. Sprawdź zmienne środowiskowe (SMTP_HOST, SMTP_USER, SMTP_PASS).";
+        
+        // Only log to DB if manually triggered to avoid noise from daily auto-export failing
+        if (!isAuto) {
+            logEvent('warn', 'EmailExport', error);
+        } else {
+            console.warn(`[AutoExport] ${error}`);
+        }
+        return { success: false, error };
+    }
+
+    try {
+        const logs = db.prepare('SELECT * FROM system_logs ORDER BY created_at DESC LIMIT 1000').all() as any[];
+        if (logs.length === 0) return { success: true, message: "Brak logów do przesłania." };
+
+        const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: smtpPort,
+            secure: smtpPort === 465,
+            auth: {
+                user: smtpUser,
+                pass: smtpPass
+            }
+        });
+
+        const logsCsv = "ID,Level,Source,Message,Details,Date\n" + logs.map(l => {
+            const date = new Date(l.created_at).toISOString();
+            return `${l.id},${l.level},${l.source},"${l.message.replace(/"/g, '""')}","${(l.details || '').replace(/"/g, '""')}",${date}`;
+        }).join('\n');
+
+        const htmlContent = `
+            <h2>Zrzut logów systemowych - Snajperrr</h2>
+            <p>Data wygenerowania: ${new Date().toLocaleString()}</p>
+            <p>Typ: ${isAuto ? 'Automatyczny' : 'Ręczny'}</p>
+            <p>Łączna liczba logów: ${logs.length}</p>
+            <hr>
+            <p>Logi zostały dołączone w pliku CSV.</p>
+        `;
+
+        await transporter.sendMail({
+            from: `"Snajperrr System" <${smtpUser}>`,
+            to: adminEmail,
+            subject: `[LOGS] Zrzut logów systemowych - ${new Date().toLocaleDateString()}`,
+            html: htmlContent,
+            attachments: [
+                {
+                    filename: `logs_${Date.now()}.csv`,
+                    content: logsCsv
+                }
+            ]
+        });
+
+        logEvent('info', 'EmailExport', `Pomyślnie wysłano logi na adres: ${adminEmail}`);
+        return { success: true };
+    } catch (err: any) {
+        logEvent('error', 'EmailExport', `Błąd wysyłki e-mail: ${err.message}`);
+        return { success: false, error: err.message };
+    }
+};
+
+app.post('/api/admin/logs/export', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    const result = await sendLogsEmail();
+    res.json(result);
+  } catch(err) { 
+    console.error('Export error:', err);
+    res.status(500).json({ success: false, error: 'Błąd podczas wysyłania e-maila.' }); 
+  }
 });
 
 app.patch('/api/admin/logs/:id', async (req, res) => {
@@ -648,6 +886,63 @@ app.post('/api/bugs', async (req, res) => {
       .run(decoded.id, title, description, priority || 'low', Date.now());
     
     logEvent('info', 'frontend', `Nowe zgłoszenie błędu: ${title}`, { userId: decoded.id });
+    res.json({ success: true });
+  } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.get('/api/admin/system/debug', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    res.json({
+        success: true,
+        env: {
+            NODE_ENV: process.env.NODE_ENV,
+            DISCORD_CLIENT_ID: DISCORD_CLIENT_ID,
+            HAS_DISCORD_SECRET: !!process.env.DISCORD_CLIENT_SECRET,
+            HAS_BOT_TOKEN: !!process.env.DISCORD_TOKEN,
+            APP_URL: process.env.APP_URL,
+            PORT: process.env.PORT,
+            JWT_SECRET_SET: process.env.JWT_SECRET !== undefined
+        },
+        headers: req.headers
+    });
+  } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.get('/api/admin/settings', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    const settings = db.prepare('SELECT * FROM global_settings').all() as any[];
+    const settingsObj = settings.reduce((acc, curr) => ({ ...acc, [curr.key]: curr.value }), {});
+    res.json({ success: true, settings: settingsObj });
+  } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/admin/settings', async (req, res) => {
+  const token = req.cookies.auth_token;
+  if (!token) return res.status(401).json({ success: false });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
+    if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
+
+    const { settings } = req.body;
+    if (settings && typeof settings === 'object') {
+        const stmt = db.prepare('INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)');
+        for (const [key, value] of Object.entries(settings)) {
+            stmt.run(key, String(value));
+        }
+    }
     res.json({ success: true });
   } catch(err) { res.status(500).json({ success: false }); }
 });
@@ -840,7 +1135,9 @@ player.events.on('playerStart', async (queue, track) => {
 player.events.on('error', async (queue, error) => {
   logEvent('error', 'bot', `Player Engine Error: ${error.message}`, { guild: queue.guild.name, error: error.stack });
   
-  if (error.message.toLowerCase().includes('decipher') || error.message.toLowerCase().includes('signature')) {
+  if (error.message.toLowerCase().includes('decipher') || 
+      error.message.toLowerCase().includes('signature') || 
+      error.message.toLowerCase().includes('unavailable')) {
     logEvent('info', 'bot', 'Wykryto błąd YouTube Signature. Uruchamiam automatyczną naprawę silnika...');
     await performSystemRepair();
     queue.metadata?.channel?.send('⚠️ Wykryto problem z odtwarzaniem. System autonaprawy został uruchomiony. Spróbuj dodać utwór ponownie.');
@@ -870,12 +1167,12 @@ client.on('ready', async () => {
   setTimeout(async () => {
     try {
       console.log('[Discord] Loading primary YouTube extractor...');
-      // Use higher quality settings for YouTubei
+      // Set optimized settings for audio-only stability
       await player.extractors.register(YoutubeiExtractor, {
           useServerAbrStream: true,
           streamOptions: {
-              highWaterMark: 1024 * 1024 * 8, // Increased to 8MB for better buffering
-              useClient: 'TV_EMBEDDED', // TV_EMBEDDED is more stable for extraction
+              highWaterMark: 1024 * 1024 * 32, // Increased buffer for stability
+              useClient: 'IOS', // IOS client is robust for audio-only extraction
           }
       });
       
@@ -1039,6 +1336,19 @@ app.post("/api/players/:guildId/queue/move", express.json(), (req, res) => {
 
 // Handle Discord Bot Interactions
 client.on('interactionCreate', async interaction => {
+  // Global Maintenance Mode Check
+  const maintenance = db.prepare("SELECT value FROM global_settings WHERE key = 'maintenance_mode'").get() as any;
+  if (maintenance && maintenance.value === '1') {
+    const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(interaction.user.id) as any;
+    if (!user || user.is_admin !== 1) {
+      const response = { content: '⚠️ **Tryb Konserwacji:** Bot jest obecnie niedostępny ze względu na prace techniczne. Spróbuj ponownie później.', ephemeral: true };
+      if (interaction.isRepliable()) {
+        return interaction.reply(response);
+      }
+      return;
+    }
+  }
+
   if (interaction.isStringSelectMenu()) {
     if (interaction.customId === 'search_results') {
       const songUrl = interaction.values[0];
@@ -1046,7 +1356,7 @@ client.on('interactionCreate', async interaction => {
       const voiceChannel = member.voice?.channel;
       
       if (!voiceChannel) {
-        return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', flags: MessageFlags.Ephemeral });
+        return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', ephemeral: true });
       }
       
       await interaction.deferReply();
@@ -1068,7 +1378,9 @@ client.on('interactionCreate', async interaction => {
             leaveOnEmptyCooldown: 300000,
             leaveOnEnd: true,
             leaveOnEndCooldown: 300000,
-            bufferingTimeout: 20000,
+            selfDeaf: true,
+            bufferingTimeout: 30000,
+            connectionTimeout: 90000,
           }
         });
         await interaction.message.delete().catch(() => {});
@@ -1097,7 +1409,7 @@ client.on('interactionCreate', async interaction => {
 
   if (commandName === 'join') {
     if (!voiceChannel) {
-      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', ephemeral: true });
     }
     
     await interaction.deferReply();
@@ -1123,7 +1435,7 @@ client.on('interactionCreate', async interaction => {
     }
   } else if (commandName === 'play') {
     if (!voiceChannel) {
-      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', ephemeral: true });
     }
     
     await interaction.deferReply();
@@ -1138,10 +1450,9 @@ client.on('interactionCreate', async interaction => {
     }
     
     try {
-      const isUrl = song.startsWith('http');
       const results = await player.search(song, {
         requestedBy: interaction.user,
-        searchEngine: isUrl ? "auto" : "youtube"
+        searchEngine: song.startsWith('http') ? "auto" : "youtube"
       });
 
       if (!results.hasTracks()) {
@@ -1157,7 +1468,8 @@ client.on('interactionCreate', async interaction => {
           leaveOnEnd: true,
           leaveOnEndCooldown: 300000,
           selfDeaf: true,
-          bufferingTimeout: 20000,
+          bufferingTimeout: 30000,
+          connectionTimeout: 90000,
         }
       });
 
@@ -1179,20 +1491,19 @@ client.on('interactionCreate', async interaction => {
     }
   } else if (commandName === 'search') {
     if (!voiceChannel) {
-      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', flags: MessageFlags.Ephemeral });
+      return interaction.reply({ content: 'Musisz być na kanale głosowym aby tego użyć!', ephemeral: true });
     }
 
-    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+    await interaction.deferReply({ ephemeral: true });
     let query = interaction.options.getString('query', true);
     if (query.includes('?si=')) {
       query = query.split('?si=')[0];
     }
 
     try {
-      const isUrl = query.startsWith('http');
       const results = await player.search(query, {
         requestedBy: interaction.user,
-        searchEngine: isUrl ? "auto" : "youtube"
+        searchEngine: query.startsWith('http') ? "auto" : "youtube"
       });
 
       if (!results.hasTracks()) {
@@ -1391,9 +1702,23 @@ async function start() {
     
     restOfInit();
     
+    // Auto-export logs every 24h
+    setInterval(async () => {
+        console.log('[AutoExport] Triggering scheduled logs export...');
+        try {
+            await sendLogsEmail(true);
+        } catch (e) {
+            console.error('[AutoExport] Failed to auto-export logs:', e);
+        }
+    }, 1000 * 60 * 60 * 24);
+
     console.log('[Startup] Setting up Vite...');
     await setupVite(app);
-    console.log('[Startup] Server fully initialized and ready.');
+    
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`[Startup] Server fully initialized and listening on port ${PORT}`);
+        logEvent('info', 'system', `Serwer bota uruchomiony na porcie ${PORT}. Gotowy do odtwarzania AUDIO.`);
+    });
 }
 
 start();

@@ -25,6 +25,7 @@ export const adminCommandsDefinitions = [
     new SlashCommandBuilder().setName('userinfo').setDescription('Informacje o użytkowniku').addUserOption(o => o.setName('user').setDescription('Użytkownik')),
     new SlashCommandBuilder().setName('serverinfo').setDescription('Informacje o serwerze'),
     new SlashCommandBuilder().setName('nuke').setDescription('Odświeża (klonuje i usuwa) obecny kanał').setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+    new SlashCommandBuilder().setName('ping').setDescription('Sprawdza opóźnienie bota'),
     new SlashCommandBuilder().setName('createvoucher').setDescription('Tworzy nowy voucher').setDefaultMemberPermissions(PermissionFlagsBits.Administrator).addStringOption(o => o.setName('type').setDescription('Typ vouchera').setRequired(true).addChoices({name: 'User Premium', value: 'user_premium'}, {name: 'Guild Premium', value: 'guild_premium'})).addStringOption(o => o.setName('duration').setDescription('Czas trwania (np. 30d, 1y)').setRequired(true)).addIntegerOption(o => o.setName('max_uses').setDescription('Maksymalna liczba użyć (domyślnie 1)')),
     new SlashCommandBuilder().setName('redeem').setDescription('Realizuje voucher').addStringOption(o => o.setName('code').setDescription('Kod vouchera').setRequired(true))
 ];
@@ -34,15 +35,19 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
   if (!guild || !guildId) return false;
 
   switch (commandName) {
+    case 'ping': {
+        await interaction.reply({ content: `🏓 Pong! Opóźnienie: **${interaction.client.ws.ping}ms**`, ephemeral: true });
+        return true;
+    }
     case 'ban': {
       const user = interaction.options.getUser('user', true);
       const reason = interaction.options.getString('reason') || 'Brak powodu';
       try {
         await guild.members.ban(user, { reason });
-        await interaction.reply({ content: `Zbanowano ${user.tag}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Zbanowano ${user.tag}. Powód: ${reason}`, ephemeral: true });
       } catch (e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się zbanować. Sprawdź moje uprawnienia.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się zbanować. Sprawdź moje uprawnienia.', ephemeral: true });
       }
       return true;
     }
@@ -53,18 +58,18 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       // @ts-ignore
       const duration = ms(durationStr);
       if (!duration) {
-         await interaction.reply({ content: 'Nieprawidłowy czas formatowany (np. 1d, 12h).', flags: 64 });
+         await interaction.reply({ content: 'Nieprawidłowy czas formatowany (np. 1d, 12h).', ephemeral: true });
          return true;
       }
       try {
         await guild.members.ban(user, { reason: `[Tempban ${durationStr}] ${reason}` });
-        await interaction.reply({ content: `Tymczasowo zbanowano ${user.tag} na ${durationStr}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Tymczasowo zbanowano ${user.tag} na ${durationStr}. Powód: ${reason}`, ephemeral: true });
         setTimeout(() => {
           guild.members.unban(user, 'Koniec tempbana').catch(console.error);
         }, duration);
       } catch (e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się zbanować. Sprawdź moje uprawnienia.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się zbanować. Sprawdź moje uprawnienia.', ephemeral: true });
       }
       return true;
     }
@@ -73,23 +78,23 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       const reason = interaction.options.getString('reason') || 'Brak powodu';
       try {
         await guild.members.unban(userId, reason);
-        await interaction.reply({ content: `Odbanowano użytkownika o ID ${userId}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Odbanowano użytkownika o ID ${userId}. Powód: ${reason}`, ephemeral: true });
       } catch (e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się odbanować. Możliwe, że to nieprawidłowe ID lub użytkownik nie ma bana.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się odbanować. Możliwe, że to nieprawidłowe ID lub użytkownik nie ma bana.', ephemeral: true });
       }
       return true;
     }
     case 'kick': {
       const user = interaction.options.getMember('user') as GuildMember;
       const reason = interaction.options.getString('reason') || 'Brak powodu';
-      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', flags: 64 }); return true; }
+      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', ephemeral: true }); return true; }
       try {
         await user.kick(reason);
-        await interaction.reply({ content: `Wyrzucono ${user.user.tag}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Wyrzucono ${user.user.tag}. Powód: ${reason}`, ephemeral: true });
       } catch (e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się wyrzucić. Sprawdź moje uprawnienia.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się wyrzucić. Sprawdź moje uprawnienia.', ephemeral: true });
       }
       return true;
     }
@@ -97,112 +102,112 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       const user = interaction.options.getMember('user') as GuildMember;
       const durationStr = interaction.options.getString('duration', true);
       const reason = interaction.options.getString('reason') || 'Brak powodu';
-      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', flags: 64 }); return true; }
+      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', ephemeral: true }); return true; }
       // @ts-ignore
       const duration = ms(durationStr);
-      if (!duration) { await interaction.reply({ content: 'Nieprawidłowy czas (np. 10m, 1h).', flags: 64 }); return true; }
+      if (!duration) { await interaction.reply({ content: 'Nieprawidłowy czas (np. 10m, 1h).', ephemeral: true }); return true; }
       try {
         await user.timeout(duration, reason);
-        await interaction.reply({ content: `Wyciszono ${user.user.tag} na ${durationStr}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Wyciszono ${user.user.tag} na ${durationStr}. Powód: ${reason}`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się wyciszyć. Sprawdź moje uprawnienia (musi byc ponizej 28 dni).', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się wyciszyć. Sprawdź moje uprawnienia (musi byc ponizej 28 dni).', ephemeral: true });
       }
       return true;
     }
     case 'unmute': {
       const user = interaction.options.getMember('user') as GuildMember;
       const reason = interaction.options.getString('reason') || 'Brak powodu';
-      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', flags: 64 }); return true; }
+      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', ephemeral: true }); return true; }
       try {
         await user.timeout(null, reason);
-        await interaction.reply({ content: `Odciszono ${user.user.tag}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Odciszono ${user.user.tag}. Powód: ${reason}`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się odciszyć. Sprawdź moje uprawnienia.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się odciszyć. Sprawdź moje uprawnienia.', ephemeral: true });
       }
       return true;
     }
     case 'clear': {
       const amount = interaction.options.getInteger('amount', true);
-      if (amount < 1 || amount > 100) { await interaction.reply({ content: 'Podaj liczbę od 1 do 100.', flags: 64 }); return true; }
+      if (amount < 1 || amount > 100) { await interaction.reply({ content: 'Podaj liczbę od 1 do 100.', ephemeral: true }); return true; }
       const channel = interaction.channel as TextChannel;
       try {
         const deleted = await channel.bulkDelete(amount, true);
-        await interaction.reply({ content: `Usunięto ${deleted.size} wiadomości.`, flags: 64 });
+        await interaction.reply({ content: `Usunięto ${deleted.size} wiadomości.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się usunąć wiadomości. Sprawdź uprawnienia lub czy wiadomości nie są starsze niż 14 dni.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się usunąć wiadomości. Sprawdź uprawnienia lub czy wiadomości nie są starsze niż 14 dni.', ephemeral: true });
       }
       return true;
     }
     case 'clearuser': {
       const targetUser = interaction.options.getUser('user', true);
       const amount = interaction.options.getInteger('amount', true);
-      if (amount < 1 || amount > 100) { await interaction.reply({ content: 'Podaj liczbę od 1 do 100.', flags: 64 }); return true; }
+      if (amount < 1 || amount > 100) { await interaction.reply({ content: 'Podaj liczbę od 1 do 100.', ephemeral: true }); return true; }
       const channel = interaction.channel as TextChannel;
       try {
         const fetchMessages = await channel.messages.fetch({ limit: amount });
         const targetMessages = fetchMessages.filter(m => m.author.id === targetUser.id);
         if (targetMessages.size === 0) {
-           await interaction.reply({ content: `Nie znaleziono wiadomości gracza ${targetUser.tag} w ostatnich ${amount} wiadomościach.`, flags: 64 });
+           await interaction.reply({ content: `Nie znaleziono wiadomości gracza ${targetUser.tag} w ostatnich ${amount} wiadomościach.`, ephemeral: true });
            return true; 
         }
         const deleted = await channel.bulkDelete(targetMessages, true);
-        await interaction.reply({ content: `Usunięto ${deleted.size} wiadomości gracza ${targetUser.tag}.`, flags: 64 });
+        await interaction.reply({ content: `Usunięto ${deleted.size} wiadomości gracza ${targetUser.tag}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się usunąć wiadomości. Sprawdź uprawnienia lub czy wiadomości nie są starsze niż 14 dni.', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się usunąć wiadomości. Sprawdź uprawnienia lub czy wiadomości nie są starsze niż 14 dni.', ephemeral: true });
       }
       return true;
     }
     case 'lock': {
       const channel = (interaction.options.getChannel('channel') || interaction.channel) as TextChannel;
-      if (!channel?.permissionOverwrites) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', flags: 64 }); return true; }
+      if (!channel?.permissionOverwrites) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', ephemeral: true }); return true; }
       try {
         await channel.permissionOverwrites.edit(guild.roles.everyone, { SendMessages: false });
-        await interaction.reply({ content: `Zawieszono pisanie na kanale ${channel}.`, flags: 64 });
+        await interaction.reply({ content: `Zawieszono pisanie na kanale ${channel}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Wystąpił błąd podczas zamykania kanału.', flags: 64 });
+        await interaction.reply({ content: 'Wystąpił błąd podczas zamykania kanału.', ephemeral: true });
       }
       return true;
     }
     case 'unlock': {
       const channel = (interaction.options.getChannel('channel') || interaction.channel) as TextChannel;
-      if (!channel?.permissionOverwrites) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', flags: 64 }); return true; }
+      if (!channel?.permissionOverwrites) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', ephemeral: true }); return true; }
       try {
         await channel.permissionOverwrites.edit(guild.roles.everyone, { SendMessages: null });
-        await interaction.reply({ content: `Otwarto kanał ${channel}.`, flags: 64 });
+        await interaction.reply({ content: `Otwarto kanał ${channel}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Wystąpił błąd podczas otwierania kanału.', flags: 64 });
+        await interaction.reply({ content: 'Wystąpił błąd podczas otwierania kanału.', ephemeral: true });
       }
       return true;
     }
     case 'slowmode': {
       const seconds = interaction.options.getInteger('seconds', true);
       const channel = (interaction.options.getChannel('channel') || interaction.channel) as TextChannel;
-      if (!channel?.setRateLimitPerUser) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', flags: 64 }); return true; }
+      if (!channel?.setRateLimitPerUser) { await interaction.reply({ content: 'To nie jest obsługiwany kanał.', ephemeral: true }); return true; }
       try {
         await channel.setRateLimitPerUser(seconds);
-        await interaction.reply({ content: `Ustawiono slowmode na ${seconds} sekund na kanale ${channel}.`, flags: 64 });
+        await interaction.reply({ content: `Ustawiono slowmode na ${seconds} sekund na kanale ${channel}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd podczas ustawiania slowmode.', flags: 64 });
+        await interaction.reply({ content: 'Błąd podczas ustawiania slowmode.', ephemeral: true });
       }
       return true;
     }
     case 'setnick': {
       const user = interaction.options.getMember('user') as GuildMember;
       const nick = interaction.options.getString('nick');
-      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', flags: 64 }); return true; }
+      if (!user) { await interaction.reply({ content: 'Nie znaleziono użytkownika na serwerze.', ephemeral: true }); return true; }
       try {
         await user.setNickname(nick);
-        await interaction.reply({ content: `Zmieniono pseudonim gracza ${user.user.tag}.`, flags: 64 });
+        await interaction.reply({ content: `Zmieniono pseudonim gracza ${user.user.tag}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Nie udało się zmienić nicku (może mam niższą rolę?).', flags: 64 });
+        await interaction.reply({ content: 'Nie udało się zmienić nicku (może mam niższą rolę?).', ephemeral: true });
       }
       return true;
     }
@@ -212,10 +217,10 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       try {
         const stmt = db.prepare('INSERT INTO warnings (guild_id, user_id, moderator_id, reason, timestamp) VALUES (?, ?, ?, ?, ?)');
         stmt.run(guildId, target.id, interaction.user.id, reason, Date.now());
-        await interaction.reply({ content: `Ostrzeżono gracza ${target.tag}. Powód: ${reason}`, flags: 64 });
+        await interaction.reply({ content: `Ostrzeżono gracza ${target.tag}. Powód: ${reason}`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd bazy danych.', flags: 64 });
+        await interaction.reply({ content: 'Błąd bazy danych.', ephemeral: true });
       }
       return true;
     }
@@ -224,14 +229,14 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       try {
         const warns = db.prepare('SELECT * FROM warnings WHERE guild_id = ? AND user_id = ?').all(guildId, target.id) as any[];
         if (warns.length === 0) {
-          await interaction.reply({ content: `${target.tag} nie ma żadnych ostrzeżeń.`, flags: 64 });
+          await interaction.reply({ content: `${target.tag} nie ma żadnych ostrzeżeń.`, ephemeral: true });
         } else {
           const text = warns.map((w, i) => `**${i+1}.** Powód: ${w.reason} (przez <@${w.moderator_id}>, ${new Date(w.timestamp).toLocaleDateString()})`).join('\\n');
-          await interaction.reply({ content: `Ostrzeżenia gracza ${target.tag}:\\n${text}`, flags: 64 });
+          await interaction.reply({ content: `Ostrzeżenia gracza ${target.tag}:\\n${text}`, ephemeral: true });
         }
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd bazy danych.', flags: 64 });
+        await interaction.reply({ content: 'Błąd bazy danych.', ephemeral: true });
       }
       return true;
     }
@@ -240,49 +245,49 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       try {
         const stmt = db.prepare('DELETE FROM warnings WHERE guild_id = ? AND user_id = ?');
         stmt.run(guildId, target.id);
-        await interaction.reply({ content: `Wyczyszczono ostrzeżenia gracza ${target.tag}.`, flags: 64 });
+        await interaction.reply({ content: `Wyczyszczono ostrzeżenia gracza ${target.tag}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd bazy danych.', flags: 64 });
+        await interaction.reply({ content: 'Błąd bazy danych.', ephemeral: true });
       }
       return true;
     }
     case 'addrole': {
       const member = interaction.options.getMember('user') as GuildMember;
       const role = interaction.options.getRole('role', true);
-      if(!member) { await interaction.reply({ content: 'Nie znaleziono użytkownika.', flags: 64 }); return true; }
+      if(!member) { await interaction.reply({ content: 'Nie znaleziono użytkownika.', ephemeral: true }); return true; }
       try {
         await member.roles.add(role.id);
-        await interaction.reply({ content: `Dodano rolę ${role.name} użytkownikowi ${member.user.tag}.`, flags: 64 });
+        await interaction.reply({ content: `Dodano rolę ${role.name} użytkownikowi ${member.user.tag}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd: brak uprawnień do przypisania tej roli.', flags: 64 });
+        await interaction.reply({ content: 'Błąd: brak uprawnień do przypisania tej roli.', ephemeral: true });
       }
       return true;
     }
     case 'removerole': {
       const member = interaction.options.getMember('user') as GuildMember;
       const role = interaction.options.getRole('role', true);
-      if(!member) { await interaction.reply({ content: 'Nie znaleziono użytkownika.', flags: 64 }); return true; }
+      if(!member) { await interaction.reply({ content: 'Nie znaleziono użytkownika.', ephemeral: true }); return true; }
       try {
         await member.roles.remove(role.id);
-        await interaction.reply({ content: `Zabrano rolę ${role.name} użytkownikowi ${member.user.tag}.`, flags: 64 });
+        await interaction.reply({ content: `Zabrano rolę ${role.name} użytkownikowi ${member.user.tag}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd: brak uprawnień do odebrania tej roli.', flags: 64 });
+        await interaction.reply({ content: 'Błąd: brak uprawnień do odebrania tej roli.', ephemeral: true });
       }
       return true;
     }
     case 'announce': {
       const message = interaction.options.getString('message', true);
       const channel = (interaction.options.getChannel('channel') || interaction.channel) as TextChannel;
-      if (!channel?.send) { await interaction.reply({ content: 'To nie jest prawidłowy kanał tekstowy.', flags: 64 }); return true; }
+      if (!channel?.send) { await interaction.reply({ content: 'To nie jest prawidłowy kanał tekstowy.', ephemeral: true }); return true; }
       try {
         await channel.send(message);
-        await interaction.reply({ content: `Wysłano ogłoszenie na ${channel}.`, flags: 64 });
+        await interaction.reply({ content: `Wysłano ogłoszenie na ${channel}.`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd podczas wysyłania ogłoszenia.', flags: 64 });
+        await interaction.reply({ content: 'Błąd podczas wysyłania ogłoszenia.', ephemeral: true });
       }
       return true;
     }
@@ -290,17 +295,17 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       const user = interaction.options.getUser('user') || interaction.user;
       const member = interaction.options.getMember('user') as GuildMember | null || interaction.member as GuildMember;
       const roleCount = member?.roles?.cache.size || 0;
-      await interaction.reply({ content: `**Info o ${user.tag}**\\nID: ${user.id}\\nDołączył do Discorda: ${user.createdAt.toLocaleDateString()}\\nKonto Bota: ${user.bot ? 'Tak' : 'Nie'}\\nIlość ról na serwerze: ${roleCount}`, flags: 64 });
+      await interaction.reply({ content: `**Info o ${user.tag}**\\nID: ${user.id}\\nDołączył do Discorda: ${user.createdAt.toLocaleDateString()}\\nKonto Bota: ${user.bot ? 'Tak' : 'Nie'}\\nIlość ról na serwerze: ${roleCount}`, ephemeral: true });
       return true;
     }
     case 'serverinfo': {
       const g = interaction.guild!;
-      await interaction.reply({ content: `**Info o ${g.name}**\\nID: ${g.id}\\nUtworzony: ${g.createdAt.toLocaleDateString()}\\nCzłonkowie: ${g.memberCount}\\nIlość ról: ${g.roles.cache.size}\\nIlość kanałów: ${g.channels.cache.size}`, flags: 64 });
+      await interaction.reply({ content: `**Info o ${g.name}**\\nID: ${g.id}\\nUtworzony: ${g.createdAt.toLocaleDateString()}\\nCzłonkowie: ${g.memberCount}\\nIlość ról: ${g.roles.cache.size}\\nIlość kanałów: ${g.channels.cache.size}`, ephemeral: true });
       return true;
     }
     case 'nuke': {
       const channel = interaction.channel as TextChannel;
-      if (!channel?.clone) { await interaction.reply({ content: 'Ten kanał nie może zostać zresetowany.', flags: 64 }); return true; }
+      if (!channel?.clone) { await interaction.reply({ content: 'Ten kanał nie może zostać zresetowany.', ephemeral: true }); return true; }
       try {
         const cloned = await channel.clone();
         await cloned.setPosition(channel.position);
@@ -308,7 +313,7 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
         await channel.delete('Nuke command executed');
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Brak uprawnień by to zrobić.', flags: 64 });
+        await interaction.reply({ content: 'Brak uprawnień by to zrobić.', ephemeral: true });
       }
       return true;
     }
@@ -318,16 +323,16 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       const maxUses = interaction.options.getInteger('max_uses') || 1;
       // @ts-ignore
       const duration = ms(durationStr);
-      if (!duration) { await interaction.reply({ content: 'Nieprawidłowy czas (np. 30d, 1y).', flags: 64 }); return true; }
+      if (!duration) { await interaction.reply({ content: 'Nieprawidłowy czas (np. 30d, 1y).', ephemeral: true }); return true; }
       
       const code = crypto.randomBytes(6).toString('hex').toUpperCase();
       try {
         const stmt = db.prepare('INSERT INTO vouchers (code, type, duration, max_uses, uses, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
         stmt.run(code, type, duration, maxUses, 0, interaction.user.id, Date.now());
-        await interaction.reply({ content: `Utworzono voucher: **${code}**\\nTyp: ${type}\\nCzas: ${durationStr}\\nUżycia: ${maxUses}`, flags: 64 });
+        await interaction.reply({ content: `Utworzono voucher: **${code}**\\nTyp: ${type}\\nCzas: ${durationStr}\\nUżycia: ${maxUses}`, ephemeral: true });
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Błąd bazy danych przy tworzeniu vouchera.', flags: 64 });
+        await interaction.reply({ content: 'Błąd bazy danych przy tworzeniu vouchera.', ephemeral: true });
       }
       return true;
     }
@@ -336,18 +341,18 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       try {
         const checkRedeemed = db.prepare('SELECT * FROM redeemed_vouchers WHERE code = ? AND user_id = ?').get(code, interaction.user.id);
         if (checkRedeemed) {
-          await interaction.reply({ content: 'Już użyłeś/aś tego vouchera.', flags: 64 });
+          await interaction.reply({ content: 'Już użyłeś/aś tego vouchera.', ephemeral: true });
           return true;
         }
 
         const voucher = db.prepare('SELECT * FROM vouchers WHERE code = ?').get(code) as any;
         if (!voucher) {
-          await interaction.reply({ content: 'Podałeś/aś nieprawidłowy kod vouchera.', flags: 64 });
+          await interaction.reply({ content: 'Podałeś/aś nieprawidłowy kod vouchera.', ephemeral: true });
           return true;
         }
 
         if (voucher.uses >= voucher.max_uses) {
-          await interaction.reply({ content: 'Ten voucher został już w pełni wykorzystany.', flags: 64 });
+          await interaction.reply({ content: 'Ten voucher został już w pełni wykorzystany.', ephemeral: true });
           return true;
         }
 
@@ -366,14 +371,14 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
           }
           db.prepare('COMMIT').run();
           
-          await interaction.reply({ content: `Pomyślnie zrealizowano voucher! Typ nagrody: **${voucher.type}**`, flags: 64 });
+          await interaction.reply({ content: `Pomyślnie zrealizowano voucher! Typ nagrody: **${voucher.type}**`, ephemeral: true });
         } catch(e) {
           db.prepare('ROLLBACK').run();
           throw e;
         }
       } catch(e) {
         console.error(e);
-        await interaction.reply({ content: 'Wystąpił błąd podczas odbierania vouchera.', flags: 64 });
+        await interaction.reply({ content: 'Wystąpił błąd podczas odbierania vouchera.', ephemeral: true });
       }
       return true;
     }

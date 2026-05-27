@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ms from 'ms';
 import { 
   Bot, 
@@ -14,6 +14,7 @@ import {
   Clock,
   Terminal,
   Circle,
+  Copy,
   List,
   Trash2,
   Search,
@@ -24,6 +25,7 @@ import {
   AlertTriangle,
   AlertCircle,
   FileText,
+  Download,
   MessageSquare,
   Zap,
   ExternalLink,
@@ -45,7 +47,8 @@ import {
   Repeat1,
   RefreshCw,
   ShieldCheck,
-  ArrowUpRight
+  ArrowUpRight,
+  Mail
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
@@ -82,16 +85,65 @@ type BotStatus = {
 };
 
 // --- Changelog ---
-const CHANGELOG_VERSION = '2.4.0';
-const CHANGELOG: { version: string; date: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
+const CHANGELOG_VERSION = '2.6.0';
+const CHANGELOG: { version: string; date: string; title?: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
+  {
+    version: '2.6.0',
+    date: '2026-06-01',
+    title: 'Tryb Konserwacji i Stabilizacja',
+    features: [
+      { type: 'new', text: 'Maintenance Mode – dodano możliwość całkowitego zablokowania dostępu do bota przez administratorów w sytuacjach awaryjnych.' },
+      { type: 'fix', text: 'Stabilizacja Audio – naprawiono "Streaming data not available" poprzez wdrożenie profilu IOS z Server ABR.' },
+      { type: 'improvement', text: 'Optymalizacja Bezpieczeństwa – ulepszone sprawdzanie uprawnień administratora przy kluczowych operacjach systemowych.' },
+      { type: 'improvement', text: 'Stabilność Połączeń – zoptymalizowany timeout połączenia dla lepszej odporności na mikroprzerwy w sieci.' },
+    ],
+  },
+  {
+    version: '2.5.1',
+    date: '2026-05-27',
+    title: 'Optymalizacja Silnika i Diagnostyka',
+    features: [
+      { type: 'new', text: 'Komenda Ping – dodano nową komendę /ping pozwalającą sprawdzić opóźnienie WebSocket bota w czasie rzeczywistym.' },
+      { type: 'fix', text: 'Stabilizacja Audio – rozwiązano błędy "Streaming data not available" poprzez optymalizację filtrów klienta ANDROID.' },
+      { type: 'improvement', text: 'Zarządzanie Logami – zwiększono limit historii logów bota do 150 wpisów dla lepszej widoczności problemów.' },
+    ],
+  },
+  {
+    version: '2.5.0',
+    date: '2026-05-08',
+    title: 'System Powiadomień i Ustawienia',
+    features: [
+      { type: 'new', text: 'Powiadomienia DM – administratorzy otrzymują teraz natychmiastowe alerty na Discordzie o krytycznych błędach silnika.' },
+      { type: 'new', text: 'Zakładka Ustawienia – nowy panel w sekcji admina do zarządzania globalnymi parametrami systemu.' },
+      { type: 'fix', text: 'Logowanie OAuth2 – naprawiono problemy z przekierowaniami na różnych domenach Cloud Run.' },
+      { type: 'improvement', text: 'Optymalizacja powiadomień – inteligentne filtrowanie alertów, aby uniknąć spamu przy drobnych ostrzeżeniach.' },
+    ],
+  },
+  {
+    version: '2.4.1',
+    date: '2026-05-07',
+    title: 'Publiczne Logi Systemowe',
+    features: [
+      { type: 'new', text: 'Publiczne Logi Systemowe – każdy użytkownik może teraz przeglądać logi bota w czasie rzeczywistym, ułatwiając zgłaszanie błędów.' },
+    ],
+  },
   {
     version: '2.4.0',
     date: '2026-05-06',
+    title: 'Wydanie Główne (STABLE)',
     features: [
       { type: 'new', text: 'Centrum Aktualizacji i Naprawy – nowy panel administratora do wymuszania aktualizacji ekstraktorów i naprawy bota.' },
       { type: 'improvement', text: 'AI Solution v2 – ulepszona analiza błędów za pomocą najnowszego modelu Gemini 3 Flash Preview.' },
-      { type: 'fix', text: 'Cloud Run Fix – poprawiono mechanizm OAuth dla bezproblemowego logowania w środowisku Cloud Run.' },
+      { type: 'fix', text: 'Striktniejszy mechanizm Redirect URI dla OAuth2 – rozwiązano błąd nieprawidłowego parametru w środowisku Cloud Run.' },
       { type: 'new', text: 'Zarządzanie logami – dodano możliwość ręcznej edycji rozwiązań zaproponowanych przez AI.' },
+    ],
+  },
+  {
+    version: '2.3.9',
+    date: '2026-05-05',
+    title: 'Patch Systemowy',
+    features: [
+      { type: 'improvement', text: 'Aktualizacja biblioteki YouTubeJS do wersji 1.10.x.' },
     ],
   },
   {
@@ -315,9 +367,12 @@ export default function App() {
   const [voucherMaxUses, setVoucherMaxUses] = useState(1);
   const [vouchers, setVouchers] = useState<any[]>([]);
   const [createdVoucher, setCreatedVoucher] = useState<any>(null);
-  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs' | 'updates'>('vouchers');
+  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'settings'>('vouchers');
   const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
+  const [publicLogs, setPublicLogs] = useState<any[]>([]);
+  const [globalSettings, setGlobalSettings] = useState<Record<string, string>>({});
+  const [loadingSettings, setLoadingSettings] = useState(false);
   const [bugReports, setBugReports] = useState<any[]>([]);
   const [analyzingLogId, setAnalyzingLogId] = useState<number | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<{[key: number]: string}>({});
@@ -325,9 +380,11 @@ export default function App() {
   const [versionInfo, setVersionInfo] = useState<{current: string, latest: string, needsUpdate: boolean} | null>(null);
   const [checkingVersion, setCheckingVersion] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isExportingLogs, setIsExportingLogs] = useState(false);
 
+  const geminiKey = (process.env as any).GEMINI_API_KEY || '';
   const ai = new (GoogleGenAI as any)({ 
-    apiKey: (process.env as any).GEMINI_API_KEY || ''
+    apiKey: geminiKey && geminiKey !== 'MY_GEMINI_API_KEY' && !geminiKey.startsWith('YOUR_') ? geminiKey : ''
   });
 
   // Bug report state (user)
@@ -342,6 +399,37 @@ export default function App() {
   const [voucherInput, setVoucherInput] = useState('');
   const [redeemMessage, setRedeemMessage] = useState<{text: string, type: 'error' | 'success'} | null>(null);
 
+  const fetchGlobalSettings = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/settings');
+      const data = await res.json();
+      if (data.success) {
+        setGlobalSettings(data.settings);
+      }
+    } catch (e) {
+      console.error('Failed to fetch settings:', e);
+    }
+  }, []);
+
+  const updateGlobalSetting = async (key: string, value: string) => {
+    setLoadingSettings(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings: { [key]: value } })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setGlobalSettings(prev => ({ ...prev, [key]: value }));
+      }
+    } catch (e) {
+      console.error('Failed to update setting:', e);
+    } finally {
+      setLoadingSettings(false);
+    }
+  };
+
   const fetchAdminUsers = async () => {
     try {
       const res = await fetch('/api/admin/users');
@@ -353,6 +441,14 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (activeTab === 'logs') {
+      fetchPublicLogs();
+      const interval = setInterval(fetchPublicLogs, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
     if (adminTab === 'logs') {
       fetchAdminLogs();
       fetchSystemStats();
@@ -360,7 +456,8 @@ export default function App() {
     if (adminTab === 'bugs') fetchAdminBugs();
     if (adminTab === 'vouchers') fetchAdminVouchers();
     if (adminTab === 'users') fetchAdminUsers();
-  }, [adminTab]);
+    if (adminTab === 'settings') fetchGlobalSettings();
+  }, [adminTab, fetchGlobalSettings]);
 
   const fetchAdminVouchers = async () => {
     try {
@@ -380,6 +477,56 @@ export default function App() {
         setSystemLogs(data.logs);
       }
     } catch {}
+  };
+
+  const fetchPublicLogs = async () => {
+    try {
+      const res = await fetch('/api/public-logs');
+      const data = await res.json();
+      if (data.success) {
+        setPublicLogs(data.logs);
+      }
+    } catch {}
+  };
+
+  const handleDownloadLogs = () => {
+    if (publicLogs.length === 0) return;
+    
+    const logText = publicLogs.map(log => {
+      const time = new Date(log.created_at).toLocaleString();
+      let text = `[${time}] [${log.level.toUpperCase()}] [${log.source}] ${log.message}`;
+      if (log.details) {
+        text += `\nDetails:\n${log.details}\n`;
+      }
+      return text;
+    }).join('\n' + '-'.repeat(50) + '\n');
+
+    const blob = new Blob([logText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `discord-bot-logs-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportLogs = async () => {
+    setIsExportingLogs(true);
+    try {
+      const res = await fetch('/api/admin/logs/export', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        alert('Logi zostały pomyślnie wysłane na e-mail: konradszczerbinski8@gmail.com');
+      } else {
+        alert('Błąd podczas eksportu: ' + (data.error || 'Nieznany błąd'));
+      }
+    } catch (err) {
+      alert('Błąd połączenia z serwerem.');
+    } finally {
+      setIsExportingLogs(false);
+    }
   };
 
   const fetchAdminBugs = async () => {
@@ -471,6 +618,9 @@ export default function App() {
     const lastSeen = localStorage.getItem('changelog_version');
     if (lastSeen !== CHANGELOG_VERSION) {
       setShowChangelog(true);
+      // We set it immediately so any refresh doesn't trigger it again 
+      // if they don't close it, but usually better to set on close. 
+      // To be safe, let's set it here or provide a way to close it that sets it.
     }
     
     // Check for mock checkout success
@@ -850,10 +1000,9 @@ export default function App() {
       `;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt
+        model: "gemini-1.5-flash",
+        contents: [{ role: "user", parts: [{ text: prompt }] }]
       });
-
       const analysis = response.text || "Błąd analizy AI.";
       
       setAiAnalysis(prev => ({ ...prev, [logId]: analysis }));
@@ -874,6 +1023,13 @@ export default function App() {
       setAnalyzingLogId(null);
     }
   };
+
+  useEffect(() => {
+    const lastSeenVersion = localStorage.getItem('changelog_version');
+    if (lastSeenVersion !== CHANGELOG_VERSION) {
+      setShowChangelog(true);
+    }
+  }, []);
 
   const handleDragEnd = async (event: DragEndEvent, guildId: string) => {
     const { active, over } = event;
@@ -922,34 +1078,50 @@ export default function App() {
     const fetchData = () => {
       fetch('/api/status')
         .then(async res => {
+          if (res.status === 429) {
+            console.warn('Rate limit hit on /api/status');
+            return null;
+          }
           const text = await res.text();
           try {
             return JSON.parse(text);
           } catch (e) {
-            console.error('Failed to parse /api/status. Response:', text.substring(0, 100));
-            throw e;
+            // Only log if it's not a common rate limit or infrastructure response
+            if (!text.toLowerCase().includes('rate') && !text.includes('<!doctype')) {
+                console.error('Failed to parse /api/status. Response:', text.substring(0, 50));
+            }
+            return null;
           }
         })
-        .then(data => setStatus(data))
-        .catch(console.error);
+        .then(data => { if (data) setStatus(data); })
+        .catch(() => {});
 
       fetch('/api/players')
         .then(async res => {
+          if (res.status === 429) {
+            console.warn('Rate limit hit on /api/players');
+            return null;
+          }
           const text = await res.text();
           try {
             return JSON.parse(text);
           } catch (e) {
-            console.error('Failed to parse /api/players. Response:', text.substring(0, 100));
-            throw e;
+            if (!text.toLowerCase().includes('rate') && !text.includes('<!doctype')) {
+                console.error('Failed to parse /api/players. Response:', text.substring(0, 50));
+            }
+            return null;
           }
         })
-        .then(data => setPlayers(data))
-        .catch(console.error);
+        .then(data => { if (data) setPlayers(data); })
+        .catch(() => {});
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 3000);
-    return () => clearInterval(interval);
+    const initDelay = setTimeout(fetchData, 1000);
+    const interval = setInterval(fetchData, 10000);
+    return () => {
+      clearTimeout(initDelay);
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -1238,9 +1410,14 @@ export default function App() {
                     
                     <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                       {!user ? (
-                        <button onClick={handleLogin} className="bg-[#5865F2] hover:bg-[#4752c4] text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
-                          Połącz z Discord
-                        </button>
+                        <div className="flex flex-col gap-2">
+                          <button onClick={handleLogin} className="bg-[#5865F2] hover:bg-[#4752c4] text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
+                            Połącz z Discord
+                          </button>
+                          <p className="text-[10px] text-slate-500 text-center max-w-[150px]">
+                            Upewnij się, że zezwalasz na wyskakujące okienka (Pop-ups).
+                          </p>
+                        </div>
                       ) : (
                         <button onClick={handleLogout} className="bg-white/5 hover:bg-white/10 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-all border border-white/10">
                           Wyloguj się
@@ -1386,6 +1563,13 @@ export default function App() {
                     </div>
 
                     <div className="pt-4 border-t border-white/5 mt-auto space-y-3">
+                      <button 
+                        onClick={() => setShowChangelog(true)}
+                        className="w-full flex items-center justify-center gap-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 py-3 rounded-2xl text-xs font-bold transition-all border border-indigo-500/10"
+                      >
+                        <History className="w-4 h-4" />
+                        Historia aktualizacji
+                      </button>
                       <a
                         href="https://www.youtube.com/@snajperrr-yt"
                         target="_blank"
@@ -1844,6 +2028,51 @@ export default function App() {
                 )}
               </section>
 
+              {/* Version History Section (Image 2 style) */}
+              <section className="bg-[#111114] border border-white/5 rounded-3xl p-8 shadow-2xl space-y-8">
+                <div className="flex items-center gap-3">
+                   <div className="bg-[#5865F2] px-3 py-1 rounded-sm">
+                      <h3 className="text-sm font-black text-white uppercase tracking-wider">Historia Wersji</h3>
+                   </div>
+                </div>
+
+                <div className="space-y-8 mt-4">
+                  {CHANGELOG.slice(0, 5).map((entry) => (
+                    <div key={entry.version} className="flex gap-5 items-start group">
+                      <div className={cn(
+                        "w-12 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-xs transition-all",
+                        entry.version === CHANGELOG_VERSION 
+                          ? "bg-[#1c1c21] text-indigo-400 border border-white/5 shadow-lg" 
+                          : "bg-white/5 text-slate-500 border border-white/5"
+                      )}>
+                        {entry.version}
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <h4 className={cn(
+                          "text-base font-black transition-colors",
+                          entry.version === CHANGELOG_VERSION ? "text-white" : "text-slate-400/80"
+                        )}>
+                          {entry.title || "Aktualizacja"}
+                        </h4>
+                        <div className="space-y-1">
+                           {entry.version === '2.4.0' ? (
+                             <p className="text-sm text-slate-500/90 leading-relaxed font-medium">
+                               Naprawiono błędy z AI Solution oraz poprawiono OAuth dla Cloud Run.
+                             </p>
+                           ) : (
+                             entry.features.map((f, i) => (
+                               <p key={i} className="text-sm text-slate-500 leading-relaxed group-hover:text-slate-400 transition-colors">
+                                 {f.text}
+                               </p>
+                             ))
+                           )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
               {/* Bot Invitation Card */}
               <section className="bg-gradient-to-br from-[#5865F2] to-[#454FBF] rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
                  <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:scale-110 transition-transform">
@@ -2252,26 +2481,87 @@ export default function App() {
             <div className="max-w-6xl mx-auto h-full flex flex-col">
               <div className="bg-[#111114] rounded-3xl flex-1 border border-white/5 shadow-2xl p-6 font-mono text-sm overflow-hidden flex flex-col">
                 <div className="text-slate-500 mb-4 pb-4 border-b border-white/5 flex items-center justify-between shrink-0 font-bold uppercase tracking-widest text-[10px]">
-                  <span>System Output</span>
+                  <div className="flex items-center gap-3">
+                    <span>System Output & Real-time Logs</span>
+                    <button 
+                      onClick={handleDownloadLogs}
+                      className="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded text-[9px] border border-indigo-500/20 transition-all flex items-center gap-1 normal-case"
+                    >
+                      <Download size={10} />
+                      Pobierz Logi
+                    </button>
+                  </div>
                   <div className="flex gap-2">
                     <span className="w-3 h-3 rounded-full bg-rose-500/80"></span>
                     <span className="w-3 h-3 rounded-full bg-amber-500/80"></span>
                     <span className="w-3 h-3 rounded-full bg-emerald-500/80"></span>
                   </div>
                 </div>
-                <div className="flex-1 overflow-y-auto space-y-2">
-                  <div className="text-emerald-400">[System] Dashboard initialized.</div>
-                  <div className="text-slate-300">[Discord] Attempting connection...</div>
-                  {status?.mockMode ? (
-                    <>
-                      <div className="text-amber-400">[Warning] No DISCORD_TOKEN found in environment.</div>
-                      <div className="text-slate-300">[System] Running in fallback Mock Mode for UI demo.</div>
-                    </>
-                  ) : (
-                    <div className="text-emerald-400">[Discord] Successfully authenticated as {status?.tag}</div>
+                <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar pr-2">
+                  <div className="text-emerald-400 mb-2">[System] Dashboard initialized.</div>
+                  
+                  {publicLogs.map((log, i) => (
+                    <div key={i} className="group animate-in fade-in slide-in-from-left-2 duration-300 mb-1 last:mb-0">
+                      <div className="flex gap-3 items-start">
+                        <span className="text-slate-600 shrink-0 text-[10px] mt-0.5">
+                          {new Date(log.created_at).toLocaleTimeString()}
+                        </span>
+                        <span className={cn(
+                          "font-bold shrink-0 uppercase text-[10px] mt-0.5 min-w-[50px]",
+                          log.level === 'error' ? "text-rose-500" :
+                          log.level === 'warn' ? "text-amber-500" :
+                          "text-indigo-400"
+                        )}>
+                          [{log.source}]
+                        </span>
+                        <span className={cn(
+                          "flex-1 break-words",
+                          log.level === 'error' ? "text-rose-300 font-medium" :
+                          log.level === 'warn' ? "text-amber-200" :
+                          "text-slate-300"
+                        )}>
+                          {log.message}
+                        </span>
+                        <button 
+                          onClick={() => {
+                            const text = `[${log.level.toUpperCase()}] [${log.source}] ${log.message}${log.details ? '\n' + log.details : ''}`;
+                            navigator.clipboard.writeText(text);
+                          }}
+                          className="p-1 opacity-0 group-hover:opacity-100 text-slate-600 hover:text-indigo-400 transition-all rounded"
+                          title="Kopiuj ten log"
+                        >
+                          <Copy size={12} />
+                        </button>
+                      </div>
+                      
+                      {log.details && (
+                        <div className="ml-[100px] mt-1 p-3 bg-black/60 rounded-xl border border-white/10 text-[11px] text-slate-400 break-all whitespace-pre-wrap font-mono leading-relaxed shadow-inner">
+                          <div className="text-[9px] uppercase font-bold text-slate-500 mb-2 pb-1 border-b border-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-1">
+                              <Terminal size={10} /> advanced stack trace / debug info
+                            </div>
+                            <span className="text-[8px] opacity-40">TRACER V2.4</span>
+                          </div>
+                          <div className="custom-scrollbar max-h-[300px] overflow-y-auto">
+                            {log.details}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {publicLogs.length === 0 && (
+                    <div className="text-slate-500 italic">Oczekiwanie na nowe logi...</div>
                   )}
-                  <div className="text-slate-300">[HTTP] Starting background API polling...</div>
                 </div>
+              </div>
+              <div className="mt-4 flex justify-between items-center px-2">
+                <p className="text-[10px] text-slate-500">
+                  Tryb Zaawansowany: Każdy błąd zawiera teraz pełny zrzut stosu (Stack Trace).
+                </p>
+                <p className="text-[10px] text-slate-500/60">
+                   Logi są odświeżane automatycznie co 5 sekund.
+                </p>
               </div>
             </div>
           )}
@@ -2339,6 +2629,7 @@ export default function App() {
                     <button onClick={() => setAdminTab('users')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'users' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Użytkownicy</button>
                     <button onClick={() => setAdminTab('logs')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'logs' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Logi</button>
                     <button onClick={() => setAdminTab('bugs')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'bugs' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Błędy</button>
+                    <button onClick={() => setAdminTab('settings')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'settings' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Ustawienia</button>
                     <button onClick={() => setAdminTab('updates')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${adminTab === 'updates' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}>Aktualizacje</button>
                   </div>
                 </div>
@@ -2614,8 +2905,98 @@ export default function App() {
                   </div>
                 )}
 
+                {adminTab === 'settings' && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-bold text-white mb-4">Ustawienia Globalne Systemu</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-[#18181B] border border-white/5 rounded-2xl p-6 shadow-sm group">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400 group-hover:bg-indigo-500/20 transition-colors">
+                              <Bell className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-slate-300 font-bold">Powiadomienia DM Administratora</p>
+                              <p className="text-[10px] text-slate-500">Wyślij raporty o błędach bezpośrednio na Discord</p>
+                            </div>
+                          </div>
+                          <button 
+                            disabled={loadingSettings}
+                            onClick={() => updateGlobalSetting('admin_dm_notifications', globalSettings.admin_dm_notifications === '1' ? '0' : '1')}
+                            className={cn(
+                              "w-11 h-6 rounded-full transition-all relative outline-none",
+                              globalSettings.admin_dm_notifications === '1' ? "bg-indigo-500" : "bg-white/10"
+                            )}>
+                            <span className={cn(
+                              "absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-lg transition-transform",
+                              globalSettings.admin_dm_notifications === '1' ? "translate-x-5" : "translate-x-0.5"
+                            )} />
+                          </button>
+                        </div>
+                        <div className={cn(
+                          "mt-4 p-3 rounded-xl text-[10px] border transition-all",
+                          globalSettings.admin_dm_notifications === '1' 
+                            ? "bg-emerald-500/5 border-emerald-500/10 text-emerald-400/80" 
+                            : "bg-slate-500/5 border-white/5 text-slate-500"
+                        )}>
+                          {globalSettings.admin_dm_notifications === '1' 
+                            ? "✓ System wyśle wiadomość DM do wszystkich administratorów w przypadku błędu silnika." 
+                            : "○ Powiadomienia DM są wyłączone. Błędy są widoczne tylko w logach dashboardu."}
+                        </div>
+                      </div>
+
+                      <div className="bg-[#18181B] border border-white/5 rounded-2xl p-6 shadow-sm group">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn(
+                              "p-2 rounded-lg transition-all",
+                              globalSettings.maintenance_mode === '1' ? "bg-amber-500/10 text-amber-500" : "bg-white/5 text-slate-500"
+                            )}>
+                              <Shield className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-slate-300 font-bold">Maintenance Mode</p>
+                              <p className="text-[10px] text-slate-500">Zablokuj dostęp do bota dla wszystkich</p>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => updateGlobalSetting('maintenance_mode', globalSettings.maintenance_mode === '1' ? '0' : '1')}
+                            className={cn(
+                              "w-11 h-6 rounded-full transition-all relative",
+                              globalSettings.maintenance_mode === '1' ? "bg-amber-600" : "bg-white/10"
+                            )}
+                          >
+                            <span className={cn(
+                              "absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-lg transition-transform",
+                              globalSettings.maintenance_mode === '1' ? "translate-x-5" : "translate-x-0.5"
+                            )} />
+                          </button>
+                        </div>
+                        <div className={cn(
+                          "mt-4 p-3 rounded-xl text-[10px] border transition-all",
+                          globalSettings.maintenance_mode === '1' 
+                            ? "bg-amber-500/5 border-amber-500/10 text-amber-400/80" 
+                            : "bg-slate-500/5 border-white/5 text-slate-500"
+                        )}>
+                          {globalSettings.maintenance_mode === '1' 
+                            ? "⚠️ TRYB KONSERWACJI AKTYWNY: Tylko administratorzy mogą używać komend bota. Inni użytkownicy zobaczą informację o niedostępności." 
+                            : "✓ Bot jest dostępny publicznie dla wszystkich użytkowników i serwerów."}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {adminTab === 'logs' && (
                   <div className="space-y-4">
+                    <button 
+                      onClick={handleExportLogs} 
+                      disabled={isExportingLogs}
+                      className="w-full py-4 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-2xl text-xs font-bold transition-all border border-indigo-500/10 flex items-center justify-center gap-3 group disabled:opacity-50"
+                    >
+                      <Mail className={cn("w-4 h-4", isExportingLogs && "animate-spin")} />
+                      {isExportingLogs ? 'Wysyłanie zrzutu logów...' : 'Wyślij pełny zrzut logów na e-mail: konradszczerbinski8@gmail.com'}
+                    </button>
                     <div className="flex items-center justify-between mb-4">
                        <div>
                          <h3 className="text-lg font-bold text-white uppercase tracking-wider">Logi Systemowe</h3>
@@ -3018,10 +3399,10 @@ export default function App() {
                     {entry.features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2.5 text-sm text-slate-300">
                         <span className={cn(
-                          "mt-0.5 w-4 h-4 rounded-md flex items-center justify-center shrink-0 text-[9px] font-black",
-                          f.type === 'new' ? "bg-emerald-500/15 text-emerald-400" :
-                          f.type === 'fix' ? "bg-red-500/15 text-red-400" :
-                          "bg-blue-500/15 text-blue-400"
+                          "mt-0.5 w-5 h-5 rounded-md flex items-center justify-center shrink-0 text-[10px] font-black",
+                          f.type === 'new' ? "bg-emerald-500/15 text-emerald-400 shadow-sm shadow-emerald-500/10" :
+                          f.type === 'fix' ? "bg-red-500/15 text-red-400 shadow-sm shadow-red-500/10" :
+                          "bg-blue-500/15 text-blue-400 shadow-sm shadow-blue-500/10"
                         )}>
                           {f.type === 'new' ? 'N' : f.type === 'fix' ? 'F' : 'U'}
                         </span>
