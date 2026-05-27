@@ -369,24 +369,25 @@ function getRedirectUri(req: express.Request) {
     const cleanHost = host.split(':')[0].toLowerCase();
     const isLocal = cleanHost.includes('localhost') || cleanHost.includes('127.0.0.1');
 
-    console.log(`[Auth] Debug Redirect: host="${host}", clean="${cleanHost}", proto="${protocol}", xHost="${xHost}", xProto="${xProto}"`);
+    console.log(`[Auth] Debug Redirect: host="${host}", clean="${cleanHost}", proto="${protocol}", xHost="${xHost}", xProto="${xProto}", APP_URL="${process.env.APP_URL}"`);
 
     let finalUri: string;
-    // EXACT MATCHES FOR CLOUD RUN DOMAINS (User's Discord Portal whitelist)
-    if (cleanHost === 'discord-music-bot-dashboard-687529685449.us-west2.run.app') {
-        finalUri = 'https://discord-music-bot-dashboard-687529685449.us-west2.run.app/api/auth/callback';
-    } else if (cleanHost === 'ais-pre-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app') {
-        finalUri = 'https://ais-pre-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
-    } else if (cleanHost === 'ais-dev-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app') {
-        finalUri = 'https://ais-dev-ly5ivmhh6jz6aqhbimhb3h-563309155975.europe-west2.run.app/api/auth/callback';
-    } else if (cleanHost.endsWith('.run.app')) {
-        finalUri = `https://${cleanHost}/api/auth/callback`;
-    } else if (isLocal) {
-        finalUri = `http://localhost:3000/api/auth/callback`;
-    } else if (process.env.APP_URL && process.env.APP_URL !== 'MY_APP_URL' && process.env.APP_URL.startsWith('http')) {
+
+    // PRIORITY 1: Use APP_URL if explicitly set (most reliable for Cloud Run)
+    if (process.env.APP_URL && process.env.APP_URL !== 'MY_APP_URL' && process.env.APP_URL.startsWith('http')) {
         const base = process.env.APP_URL.endsWith('/') ? process.env.APP_URL.slice(0, -1) : process.env.APP_URL;
         finalUri = `${base}/api/auth/callback`;
-    } else {
+    }
+    // PRIORITY 2: Local development
+    else if (isLocal) {
+        finalUri = `http://localhost:3000/api/auth/callback`;
+    }
+    // PRIORITY 3: Cloud Run domains (detected from headers)
+    else if (cleanHost.endsWith('.run.app')) {
+        finalUri = `https://${cleanHost}/api/auth/callback`;
+    }
+    // PRIORITY 4: Fallback to protocol + host
+    else {
         finalUri = `${protocol}://${cleanHost}/api/auth/callback`;
     }
 
