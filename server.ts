@@ -1694,7 +1694,27 @@ async function setupVite(app: express.Express) {
 // API Routes (Registered synchronously at the top level)
 
 async function start() {
-    console.log('[Startup] Registering remaining API routes and starting bot...');
+    console.log('[Startup] Starting server...');
+
+    // Start listening FIRST so Cloud Run health checks pass immediately
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`[Startup] Server listening on port ${PORT}`);
+    });
+
+    console.log('[Startup] Setting up Vite...');
+    await setupVite(app);
+
+    // Auto-export logs every 24h
+    setInterval(async () => {
+        console.log('[AutoExport] Triggering scheduled logs export...');
+        try {
+            await sendLogsEmail(true);
+        } catch (e) {
+            console.error('[AutoExport] Failed to auto-export logs:', e);
+        }
+    }, 1000 * 60 * 60 * 24);
+
+    // Bootstrap Discord bot in the background (non-blocking)
     const restOfInit = async () => {
         try {
             await bootstrapBot();
@@ -1706,23 +1726,8 @@ async function start() {
     
     restOfInit();
     
-    // Auto-export logs every 24h
-    setInterval(async () => {
-        console.log('[AutoExport] Triggering scheduled logs export...');
-        try {
-            await sendLogsEmail(true);
-        } catch (e) {
-            console.error('[AutoExport] Failed to auto-export logs:', e);
-        }
-    }, 1000 * 60 * 60 * 24);
-
-    console.log('[Startup] Setting up Vite...');
-    await setupVite(app);
-    
-    app.listen(PORT, "0.0.0.0", () => {
-        console.log(`[Startup] Server fully initialized and listening on port ${PORT}`);
-        logEvent('info', 'system', `Serwer bota uruchomiony na porcie ${PORT}. Gotowy do odtwarzania AUDIO.`);
-    });
+    logEvent('info', 'system', `Serwer bota uruchomiony na porcie ${PORT}. Gotowy do odtwarzania AUDIO.`);
+    console.log('[Startup] Server fully initialized.');
 }
 
 start();
