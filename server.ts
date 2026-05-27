@@ -126,7 +126,7 @@ app.get('/api/admin/system/version', async (req, res) => {
     const user = db.prepare('SELECT is_admin FROM users WHERE id = ?').get(decoded.id) as any;
     if (!user || user.is_admin !== 1) return res.status(403).json({ success: false });
 
-    const currentVersion = "2.4.0-stable";
+    const currentVersion = "2.7.0-stable";
     let latestVersion = currentVersion;
     try {
         const ghRes = await fetch('https://api.github.com/repos/bbbbbbbbbc/Snajperrr/releases/latest', {
@@ -164,12 +164,13 @@ app.post('/api/admin/system/update', async (req, res) => {
   } catch(err) { res.status(500).json({ success: false }); }
 });
 
-// Catch all unhandled process errors early
+// Catch all unhandled process errors early and notify admins via DM
 process.on('unhandledRejection', (reason) => {
-  console.error(`Unhandled Rejection:`, reason);
+  const err = reason instanceof Error ? reason : new Error(String(reason));
+  logEvent('error', 'unhandledRejection', err.message, err);
 });
 process.on('uncaughtException', (error) => {
-  console.error(`Uncaught Exception:`, error);
+  logEvent('error', 'uncaughtException', error.message, error);
 });
 
 // Dynamic stream options
@@ -271,9 +272,6 @@ async function notifyAdmins(level: string, source: string, message: string, deta
         const setting = db.prepare("SELECT value FROM global_settings WHERE key = 'admin_dm_notifications'").get() as any;
         if (!setting || setting.value !== '1') return;
 
-        // Only notify about certain sources or high level errors to avoid spam
-        if (level === 'warn' && !message.toLowerCase().includes('critical') && !message.toLowerCase().includes('fail')) return;
-
         const admins = db.prepare("SELECT id FROM users WHERE is_admin = 1").all() as any[];
         if (admins.length === 0) return;
 
@@ -285,7 +283,7 @@ async function notifyAdmins(level: string, source: string, message: string, deta
                 { name: 'Time', value: new Date().toLocaleString(), inline: true },
                 { name: 'Message', value: message.substring(0, 1024) }
             ],
-            footer: { text: 'Snajperrr Monitoring System' },
+            footer: { text: 'Snajperrr Monitoring System v2.7.0' },
             timestamp: new Date().toISOString()
         };
 
