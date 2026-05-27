@@ -35,6 +35,7 @@ const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1470848278718316636';
 const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'r1nFnl5Upci2rmiDi1WA5UlSk6XiQrLX';
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
+const YOUTUBE_COOKIES = process.env.YOUTUBE_COOKIES || '';
 
 // Shared globally
 let client: Client;
@@ -317,6 +318,7 @@ async function notifyAdmins(level: string, source: string, message: string, deta
             try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
             await player.extractors.register(YoutubeiExtractor, {
                 useServerAbrStream: false,
+                ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}),
                 streamOptions: {
                     useClient: 'WEB_EMBEDDED',
                     highWaterMark: 1024 * 1024 * 32,
@@ -1170,6 +1172,7 @@ client.on('ready', async () => {
       // Set optimized settings for audio-only stability
       await player.extractors.register(YoutubeiExtractor, {
           useServerAbrStream: false,
+          ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}),
           streamOptions: {
               highWaterMark: 1024 * 1024 * 32, // Increased buffer for stability
               useClient: 'WEB_EMBEDDED', // WEB_EMBEDDED is robust for audio-only extraction
