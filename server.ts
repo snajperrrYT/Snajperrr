@@ -32,8 +32,13 @@ const app = express();
 const portEnv = process.env.PORT;
 const parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
 const PORT = Number.isNaN(parsedPort) ? 3000 : parsedPort;
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '1470848278718316636';
-const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || 'r1nFnl5Upci2rmiDi1WA5UlSk6XiQrLX';
+const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '';
+const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || '';
+
+if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
+  console.error('[FATAL] DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET environment variables must be set!');
+}
+console.log(`[Config] Discord Client ID: ${DISCORD_CLIENT_ID.substring(0, 6)}... | Secret set: ${!!DISCORD_CLIENT_SECRET}`);
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 const YOUTUBE_COOKIES = process.env.YOUTUBE_COOKIES || '';
 
@@ -448,9 +453,10 @@ app.get('/api/auth/callback', async (req, res) => {
         grant_type: 'authorization_code',
         code: code as string,
         redirect_uri: redirectUri,
-      }),
+      }).toString(),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
       },
     });
 

@@ -544,8 +544,12 @@ var app = express();
 var portEnv = process.env.PORT;
 var parsedPort = portEnv ? Number.parseInt(portEnv, 10) : Number.NaN;
 var PORT = Number.isNaN(parsedPort) ? 3e3 : parsedPort;
-var DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || "1470848278718316636";
-var DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || "r1nFnl5Upci2rmiDi1WA5UlSk6XiQrLX";
+var DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || "";
+var DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET || "";
+if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
+  console.error("[FATAL] DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET environment variables must be set!");
+}
+console.log(`[Config] Discord Client ID: ${DISCORD_CLIENT_ID.substring(0, 6)}... | Secret set: ${!!DISCORD_CLIENT_SECRET}`);
 var JWT_SECRET = process.env.JWT_SECRET || "dev_secret_jwt";
 var YOUTUBE_COOKIES = process.env.YOUTUBE_COOKIES || "";
 var client;
@@ -900,9 +904,10 @@ app.get("/api/auth/callback", async (req, res) => {
         grant_type: "authorization_code",
         code,
         redirect_uri: redirectUri
-      }),
+      }).toString(),
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json"
       }
     });
     const tokenData = await tokenResponse.json();
