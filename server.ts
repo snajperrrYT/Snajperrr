@@ -183,12 +183,12 @@ process.on('uncaughtException', (error) => {
     if (user.premium !== 1 && quality === 'ultra') quality = 'high';
 
     if (track.extractor?.identifier === 'youtubei' || track.source === 'youtube') {
-        console.log(`[YouTube] Extracting stream for: ${track.title} (Client: IOS)`);
+        console.log(`[YouTube] Extracting stream for: ${track.title} (Client: WEB_EMBEDDED)`);
         return {
-            useServerAbrStream: true,
+            useServerAbrStream: false,
             disableStreamPreExtraction: true,
             streamOptions: {
-                useClient: 'IOS',
+                useClient: 'WEB_EMBEDDED',
                 highWaterMark: quality === 'ultra' ? 1024 * 1024 * 64 : (quality === 'high' ? 1024 * 1024 * 32 : 1024 * 1024 * 8)
             }
         };
@@ -312,19 +312,19 @@ async function notifyAdmins(level: string, source: string, message: string, deta
         if (repairCooldown && Date.now() - lastRepairAttempt < 60000) return false;
         repairCooldown = true;
         lastRepairAttempt = Date.now();
-        logEvent('warn', 'system', 'Inicjowanie procedury autonaprawy (Stabilizacja Audio IOS)...');
+        logEvent('warn', 'system', 'Inicjowanie procedury autonaprawy (Stabilizacja Audio WEB_EMBEDDED)...');
         try {
             try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
             await player.extractors.register(YoutubeiExtractor, {
-                useServerAbrStream: true,
+                useServerAbrStream: false,
                 streamOptions: {
-                    useClient: 'IOS',
+                    useClient: 'WEB_EMBEDDED',
                     highWaterMark: 1024 * 1024 * 32,
                 }
             });
             await player.extractors.loadMulti(DefaultExtractors);
             db.prepare("UPDATE system_stats SET value = ? WHERE key = 'last_repair'").run(Date.now().toString());
-            logEvent('info', 'system', 'System naprawiony pomyślnie. Zastosowano profil IOS dla audio z ABR.');
+            logEvent('info', 'system', 'System naprawiony pomyślnie. Zastosowano profil WEB_EMBEDDED dla audio.');
             setTimeout(() => { repairCooldown = false; }, 60000);
             return { success: true };
         } catch (err: any) {
@@ -1169,10 +1169,10 @@ client.on('ready', async () => {
       console.log('[Discord] Loading primary YouTube extractor...');
       // Set optimized settings for audio-only stability
       await player.extractors.register(YoutubeiExtractor, {
-          useServerAbrStream: true,
+          useServerAbrStream: false,
           streamOptions: {
               highWaterMark: 1024 * 1024 * 32, // Increased buffer for stability
-              useClient: 'IOS', // IOS client is robust for audio-only extraction
+              useClient: 'WEB_EMBEDDED', // WEB_EMBEDDED is robust for audio-only extraction
           }
       });
       
