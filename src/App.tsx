@@ -89,8 +89,19 @@ type BotStatus = {
 };
 
 // --- Changelog ---
-const CHANGELOG_VERSION = '2.6.0';
+const CHANGELOG_VERSION = '2.7.0';
 const CHANGELOG: { version: string; date: string; title?: string; features: { type: 'new' | 'fix' | 'improvement'; text: string }[] }[] = [
+  {
+    version: '2.7.0',
+    date: '2026-05-27',
+    title: 'Pełna Widoczność Błędów i Powiadomienia DM',
+    features: [
+      { type: 'new', text: 'Wszystkie błędy systemowe (w tym unhandled rejections i uncaught exceptions) są teraz automatycznie wysyłane do administratora na DM Discord.' },
+      { type: 'improvement', text: 'Usunięto filtrowanie powiadomień – każdy błąd i ostrzeżenie jest teraz widoczne dla administratora w czasie rzeczywistym.' },
+      { type: 'new', text: 'Dodano sekcję "Co nowego" z historią wersji i datami aktualizacji.' },
+      { type: 'improvement', text: 'Zaktualizowano system wersjonowania – wersja i data są wyświetlane w panelu.' },
+    ],
+  },
   {
     version: '2.6.0',
     date: '2026-06-01',
