@@ -1,7 +1,20 @@
 import { ChangelogEntry } from "./types";
 
-export const CHANGELOG_VERSION = '2.8.5';
+export const CHANGELOG_VERSION = '2.9.0';
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '2.9.0',
+    date: '2026-05-28',
+    title: 'Spotify, Nowy Deployment & Infrastruktura',
+    features: [
+      { type: 'new', text: 'Spotify Support – Pełna integracja z serwisem Spotify: wyszukiwanie i odtwarzanie utworów bezpośrednio z konta Spotify.' },
+      { type: 'new', text: 'Cloud Run Deployment v2 – Nowy plik cloudbuild.yaml z flagą --clear-sources eliminujący błędy wdrożeniowe.' },
+      { type: 'fix', text: 'Fix kompilacji TypeScript – Przywrócono pliki konfiguracyjne naprawiając błędy budowania projektu.' },
+      { type: 'fix', text: 'Naprawa OAuth – Dodano zabezpieczenia endpointów Discord OAuth przed błędami pustego client_id.' },
+      { type: 'improvement', text: 'Nowy Dockerfile – Zoptymalizowany obraz Docker dla szybszego i stabilniejszego wdrażania na Cloud Run.' },
+      { type: 'improvement', text: 'Architektura projektu – Przebudowa struktury repozytorium dla lepszej organizacji kodu.' },
+    ],
+  },
   {
     version: '2.8.5',
     date: '2026-05-28',
