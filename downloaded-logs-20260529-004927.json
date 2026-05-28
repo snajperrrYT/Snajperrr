@@ -1,0 +1,4102 @@
+[
+  {
+    "textPayload": "starting build \"c7ea87ac-cc66-4d33-9065-9d86d733b519\"\n",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-0",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:08.040469759Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:09.089220262Z"
+  },
+  {
+    "textPayload": "FETCHSOURCE",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-1",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:08.040488749Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "MAIN"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:09.089220262Z"
+  },
+  {
+    "textPayload": "From https://github.com/bbbbbbbbbc/Snajperrr",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-2",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:13.258670373Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "gsutil:STDERR",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:14.028547110Z"
+  },
+  {
+    "textPayload": " * branch              a8746f6add5f33125f0e7b07c6dba01b822570f3 -> FETCH_HEAD",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-3",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:13.258691673Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "gsutil:STDERR",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:14.028547110Z"
+  },
+  {
+    "textPayload": "Updating files:  23% (8148/34431)\rUpdating files:  24% (8264/34431)\rUpdating files:  25% (8608/34431)\rUpdating files:  26% (8953/34431)\rUpdating files:  27% (9297/34431)\rUpdating files:  28% (9641/34431)\rUpdating files:  29% (9985/34431)\rUpdating files:  30% (10330/34431)\rUpdating files:  31% (10674/34431)\rUpdating files:  32% (11018/34431)\rUpdating files:  33% (11363/34431)\rUpdating files:  34% (11707/34431)\rUpdating files:  35% (12051/34431)\rUpdating files:  36% (12396/34431)\rUpdating files:  37% (12740/34431)\rUpdating files:  38% (13084/34431)\rUpdating files:  39% (13429/34431)\rUpdating files:  40% (13773/34431)\rUpdating files:  41% (14117/34431)\rUpdating files:  42% (14462/34431)\rUpdating files:  43% (14806/34431)\rUpdating files:  44% (15150/34431)\rUpdating files:  45% (15494/34431)\rUpdating files:  46% (15839/34431)\rUpdating files:  47% (16183/34431)\rUpdating files:  48% (16527/34431)\rUpdating files:  49% (16872/34431)\rUpdating files:  50% (17216/34431)\rUpdating files:  51% (17560/34431)\rUpdating files:  52% (17905/34431)\rUpdating files:  53% (18249/34431)\rUpdating files:  54% (18593/34431)\rUpdating files:  55% (18938/34431)\rUpdating files:  56% (19282/34431)\rUpdating files:  57% (19626/34431)\rUpdating files:  58% (19970/34431)\rUpdating files:  58% (20035/34431)\rUpdating files:  59% (20315/34431)\rUpdating files:  60% (20659/34431)\rUpdating files:  61% (21003/34431)\rUpdating files:  62% (21348/34431)\rUpdating files:  63% (21692/34431)\rUpdating files:  64% (22036/34431)\rUpdating files:  65% (22381/34431)\rUpdating files:  66% (22725/34431)\rUpdating files:  67% (23069/34431)\rUpdating files:  68% (23414/34431)\rUpdating files:  69% (23758/34431)\rUpdating files:  70% (24102/34431)\rUpdating files:  71% (24447/34431)\rUpdating files:  72% (24791/34431)\rUpdating files:  73% (25135/34431)\rUpdating files:  74% (25479/34431)\rUpdating files:  75% (25824/34431)\rUpdating files:  76% (26168/34431)\rUpdating files:  77% (26512/34431)\rUpdating files:  78% (26857/34431)\rUpdating files:  79% (27201/34431)\rUpdating files:  80% (27545/34431)\rUpdating files:  81% (27890/34431)\rUpdating files:  82% (28234/34431)\rUpdating files:  83% (28578/34431)\rUpdating files:  84% (28923/34431)\rUpdating files:  85% (29267/34431)\rUpdating files:  86% (29611/34431)\rUpdating files:  87% (29955/34431)\rUpdating files:  88% (30300/34431)\rUpdating files:  89% (30644/34431)\rUpdating files:  90% (30988/34431)\rUpdating files:  91% (31333/34431)\rUpdating files:  92% (31677/34431)\rUpdating files:  93% (32021/34431)\rUpdating files:  94% (32366/34431)\rUpdating files:  95% (32710/34431)\rUpdating files:  96% (33054/34431)\rUpdating files:  96% (33247/34431)\rUpdating files:  97% (33399/34431)\rUpdating files:  98% (33743/34431)\rUpdating files:  99% (34087/34431)\rUpdating files: 100% (34431/34431)\rUpdating files: 100% (34431/34431), done.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-4",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:16.345122892Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "gsutil:STDERR"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:17.030575898Z"
+  },
+  {
+    "textPayload": "HEAD is now at a8746f6a fix: remove stale sources annotation via gcloud run services replace (#37)",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-5",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:16.374679722Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "gsutil:STDOUT",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:17.030575898Z"
+  },
+  {
+    "textPayload": "GitCommit:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-6",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:16.382730560Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "gsutil:STDOUT"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:17.030575898Z"
+  },
+  {
+    "textPayload": "a8746f6add5f33125f0e7b07c6dba01b822570f3",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-7",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:16.383700089Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "gsutil:STDOUT",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:17.030575898Z"
+  },
+  {
+    "textPayload": "BUILD",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-8",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:18.948181298Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:19.024626987Z"
+  },
+  {
+    "textPayload": "Starting Step #0 - \"Build\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-9",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:19.441767388Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "MAIN"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:20.026177806Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Already have image (with digest): gcr.io/cloud-builders/docker",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-10",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:19.447518520Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:20.026177806Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Sending build context to Docker daemon  1.601MB\r\r",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-11",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:20.131846748Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:21.032780747Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 1/14 : FROM node:22-slim AS build",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-12",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:20.141978084Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:21.032780747Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 22-slim: Pulling from library/node",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-13",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.270455730Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 068fedd6b0f1: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-14",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.745676576Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 5d2860e0a811: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-15",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.745706546Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 3d75e56d73fd: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-16",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.745707526Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": fd31133e23d8: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-17",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.745707906Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 79b3835561d3: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-18",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:21.745708286Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:22.033926468Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 79b3835561d3: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-19",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.045120524Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 5d2860e0a811: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-20",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.131099015Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 5d2860e0a811: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-21",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.131110085Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": fd31133e23d8: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-22",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.131110705Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": fd31133e23d8: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-23",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.131111085Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 068fedd6b0f1: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-24",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.339220289Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 068fedd6b0f1: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-25",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.339229989Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 3d75e56d73fd: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-26",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.570829879Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 3d75e56d73fd: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-27",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:22.570838659Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:23.012790701Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 068fedd6b0f1: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-28",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:23.580619329Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:24.027297976Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 5d2860e0a811: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-29",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:23.639373708Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:24.027297976Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 3d75e56d73fd: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-30",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.274071977Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": fd31133e23d8: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-31",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.392075834Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 79b3835561d3: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-32",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.446504929Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Digest: sha256:7af03b14a13c8cdd38e45058fd957bf00a72bbe17feac43b1c15a689c029c732",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-33",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.458381553Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Status: Downloaded newer image for node:22-slim",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-34",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.463663045Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> acc96c360f47",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-35",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.466069202Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 2/14 : WORKDIR /app",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-36",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:25.466077353Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:26.011950535Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 36aedb7e008e",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-37",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.420090158Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Removing intermediate container 36aedb7e008e",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-38",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.489872162Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 9244c5601366",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-39",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.489889382Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 3/14 : COPY package.json package-lock.json ./",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-40",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.489890942Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 5a44a90ce485",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-41",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.634372643Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 4/14 : RUN npm ci --ignore-scripts",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-42",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.634384493Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 948a12c3050b",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-43",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:26.660053388Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:27.030516351Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[91mnpm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-44",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:29.180819646Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:30.010409206Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-45",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:32.615942786Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:33.011024223Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-46",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:33.580033228Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:34.010638867Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-47",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:34.036806589Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:34.010638867Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-48",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:34.052047088Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:35.026759990Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-49",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:34.057368830Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:35.026759990Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-50",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.791671624Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": added 683 packages, and audited 684 packages in 14s",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-51",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.791682995Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-52",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.791686307Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 199 packages are looking for funding",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-53",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.791895003Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   run `npm fund` for details",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-54",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.791902314Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-55",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812900608Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 11 moderate severity vulnerabilities",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-56",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812914622Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-57",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812915560Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": To address issues that do not require attention, run:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-58",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812916458Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   npm audit fix",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-59",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812917385Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-60",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812917655Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": To address all issues (including breaking changes), run:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-61",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812918093Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   npm audit fix --force",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-62",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812918861Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-63",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812919230Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Run `npm audit` for details.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-64",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.812919969Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[91mnpm notice",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-65",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.814865482Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice New major version of npm available! 10.9.8 -> 11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-66",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.814871338Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-67",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.814872415Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice To update run: npm install -g npm@11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-68",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.814872784Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-69",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:40.814873123Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:41.040111433Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0mRemoving intermediate container 948a12c3050b",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-70",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:56.987371683Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:57.061230074Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> ac4d1fc8ab71",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-71",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:56.987386994Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:57.061230074Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 5/14 : COPY . .",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-72",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:56.987388370Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:57.061230074Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 4615a870ee6f",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-73",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.160260033Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 6/14 : RUN npm run build",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-74",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.160270008Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 7387f5b06230",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-75",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.201404898Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-76",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.573843037Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": > react-example@2.8.5 build",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-77",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.573853580Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": > vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-78",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.573855455Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-79",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:57.573855904Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": vite v8.0.14 building client environment for production...",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-80",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.019816587Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:58.063546399Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[2K\rtransforming...✓ 2335 modules transformed.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-81",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.715284484Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": rendering chunks...",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-82",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.797600956Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": computing gzip size...",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-83",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.948443761Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": dist/index.html                   0.40 kB │ gzip:   0.27 kB",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-84",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.961328377Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": dist/assets/index-DvaonrZw.css   64.58 kB │ gzip:  10.17 kB",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-85",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.961342031Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": dist/assets/index-Cl85izwx.js   819.68 kB │ gzip: 242.73 kB",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-86",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.961343208Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-87",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.961343558Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ✓ built in 936ms",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-88",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.962110466Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[91m[plugin builtin:vite-reporter] ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-89",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.963239438Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": (!) Some chunks are larger than 500 kB after minification. Consider:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-90",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.963249363Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": - Using dynamic import() to code-split the application",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-91",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.963250350Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-92",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.963251248Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-93",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:58.963251677Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91m",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-94",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.032287596Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   dist/server.cjs       86.8kb",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-95",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.032300324Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   dist/server.cjs.map  145.2kb",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-96",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.032301411Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-97",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.032301641Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ⚡ Done in 10ms",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-98",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.032302309Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:30:59.067679019Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0mRemoving intermediate container 7387f5b06230",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-99",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.308007418Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 802db298874c",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-100",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.308020724Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 7/14 : FROM node:22-slim",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-101",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.308021951Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> acc96c360f47",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-102",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.308708166Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 8/14 : WORKDIR /app",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-103",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.308716275Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 7420cec63702",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-104",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.332568619Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Removing intermediate container 7420cec63702",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-105",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.416253361Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> a0006e86dcc1",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-106",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.416274637Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 9/14 : COPY package.json package-lock.json ./",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-107",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.416467284Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 1269589bb36a",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-108",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.547497842Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 10/14 : RUN npm ci --ignore-scripts --omit=dev",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-109",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.547508255Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 54f78926a789",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-110",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:30:59.576777594Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:00.084473127Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[91mnpm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-111",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:02.027335173Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:02.072713676Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-112",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:05.379803098Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:06.083438199Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-113",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:06.353637378Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:07.085109209Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-114",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:06.825600395Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:07.085109209Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-115",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:06.840952600Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:07.085109209Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m\u001b[91mnpm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-116",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:06.841664948Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:07.085109209Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0m",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-117",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.160900501Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": added 622 packages, and audited 623 packages in 13s",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-118",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.160911553Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-119",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.161403056Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 183 packages are looking for funding",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-120",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.161576891Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   run `npm fund` for details",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-121",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.162018641Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-122",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182183396Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": 11 moderate severity vulnerabilities",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-123",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182194458Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-124",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182195276Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": To address issues that do not require attention, run:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-125",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182196234Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   npm audit fix",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-126",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182197002Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-127",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182207255Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": To address all issues (including breaking changes), run:",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-128",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182207774Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":   npm audit fix --force",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-129",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182208333Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": ",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-130",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182208811Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Run `npm audit` for details.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-131",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.182209390Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[91mnpm notice",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-132",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.183991402Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice New major version of npm available! 10.9.8 -> 11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-133",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.183998315Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-134",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.183999382Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice To update run: npm install -g npm@11.16.0",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-135",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.183999801Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": npm notice",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-136",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:13.184000110Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:14.107029481Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": \u001b[0mRemoving intermediate container 54f78926a789",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-137",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.514132641Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> e5959d335175",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-138",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.514141967Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 11/14 : COPY --from=build /app/dist ./dist",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-139",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.514142965Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 853e7b0c3dd3",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-140",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.684269298Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 12/14 : EXPOSE 8080",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-141",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.684279103Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 081fc255e565",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-142",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.715942579Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Removing intermediate container 081fc255e565",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-143",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.779103524Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> a4c4945f2d94",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-144",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.779113170Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 13/14 : ENV PORT=8080",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-145",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.779114765Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 45b058f820aa",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-146",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.805642357Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Removing intermediate container 45b058f820aa",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-147",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.871488026Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> fcf15762c123",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-148",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.871497522Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Step 14/14 : CMD [\"node\", \"dist/server.cjs\"]",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-149",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.871498419Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> Running in 5a4564ae230a",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-150",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.904111855Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Removing intermediate container 5a4564ae230a",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-151",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.967528158Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\":  ---> 71e0c2214c4d",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-152",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.967538800Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Successfully built 71e0c2214c4d",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-153",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.971072353Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #0 - \"Build\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Step #0 - \"Build\": Successfully tagged us-west2-docker.pkg.dev/gen-lang-client-0542481418/cloud-run-source-deploy/snajperrr/discord-music-bot-dashboard:a8746f6add5f33125f0e7b07c6dba01b822570f3",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-154",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:28.979435882Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #0 - \"Build\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:29.159578046Z"
+  },
+  {
+    "textPayload": "Finished Step #0 - \"Build\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-155",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.154808298Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Starting Step #1 - \"Push\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-156",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.154894986Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": Already have image (with digest): gcr.io/cloud-builders/docker",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-157",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.155927465Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": The push refers to repository [us-west2-docker.pkg.dev/gen-lang-client-0542481418/cloud-run-source-deploy/snajperrr/discord-music-bot-dashboard]",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-158",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.537190912Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 76879be3860a: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-159",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.924931492Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 4cc07240baac: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-160",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.924941596Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": e075db8f8d03: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-161",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925512895Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 402c55f243ec: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-162",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925519130Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": af21bd06fa57: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-163",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925519897Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": ee296e343ee4: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-164",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925520256Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": eb864f7a9396: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-165",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925520576Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": f991d7c79d12: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-166",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925520835Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": b2008ac19409: Preparing",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-167",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:29.925521085Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:30.174806524Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": ee296e343ee4: Layer already exists",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-168",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:30.831635119Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:31.164286267Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": f991d7c79d12: Layer already exists",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-169",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:30.831648345Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:31.164286267Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": eb864f7a9396: Layer already exists",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-170",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:30.831649442Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:31.164286267Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": af21bd06fa57: Layer already exists",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-171",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:30.831649881Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:31.164286267Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 402c55f243ec: Pushed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-172",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:32.300754935Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:33.152198244Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": e075db8f8d03: Pushed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-173",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:32.300766704Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:33.152198244Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 76879be3860a: Pushed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-174",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:32.467801954Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:33.152198244Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": b2008ac19409: Pushed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-175",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:36.997041654Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #1 - \"Push\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:37.184334781Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": 4cc07240baac: Pushed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-176",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:54.055588648Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:55.186203226Z"
+  },
+  {
+    "textPayload": "Step #1 - \"Push\": a8746f6add5f33125f0e7b07c6dba01b822570f3: digest: sha256:35523a9cfa747829b659391590a5c8b5602076ca1cdc6b0fee3f0987c8fdd23a size: 2206",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-177",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:56.630199189Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #1 - \"Push\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:57.209445649Z"
+  },
+  {
+    "textPayload": "Finished Step #1 - \"Push\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-178",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:56.838188600Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:57.209445649Z"
+  },
+  {
+    "textPayload": "Starting Step #2 - \"Deploy\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-179",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:56.838268523Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:57.209445649Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": Pulling image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-180",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:56.838904252Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:57.209445649Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": slim: Pulling from google.com/cloudsdktool/cloud-sdk",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-181",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:57.873204944Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:58.187742629Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": 5b4d6ff92fc4: Already exists",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-182",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:57.873674190Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:58.187742629Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": e8065271c8d9: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-183",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:57.878800040Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:58.187742629Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": a4be0db88dce: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-184",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:57.878807075Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:58.187742629Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": 79ab30adf882: Pulling fs layer",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-185",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:57.878807944Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:58.187742629Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": 79ab30adf882: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-186",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:58.070153216Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:59.188180053Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": 79ab30adf882: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-187",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:58.070164338Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:59.188180053Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": e8065271c8d9: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-188",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:58.070164928Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:59.188180053Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": e8065271c8d9: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-189",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:58.070165417Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:59.188180053Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": e8065271c8d9: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-190",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:31:58.122319142Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:31:59.188180053Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": a4be0db88dce: Verifying Checksum",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-191",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:00.516937288Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:01.206660485Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": a4be0db88dce: Download complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-192",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:00.517178687Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:01.206660485Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": a4be0db88dce: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-193",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:19.592945002Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:20.226475592Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": 79ab30adf882: Pull complete",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-194",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:19.641750525Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:20.226475592Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": Digest: sha256:2194972d357fd90fb9e02c51812f66c9f51e3c11f5e15b7d3e335242defd0ee2",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-195",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:19.650565403Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:20.226475592Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": Status: Downloaded newer image for gcr.io/google.com/cloudsdktool/cloud-sdk:slim",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-196",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:19.654856675Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:20.226475592Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": gcr.io/google.com/cloudsdktool/cloud-sdk:slim",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-197",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:19.656589404Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:20.226475592Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": Deploying...",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-198",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:24.523354200Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.225170653Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": failed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-199",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.088594277Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": Deployment failed",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-200",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.088604309Z",
+    "severity": "INFO",
+    "labels": {
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c",
+      "build_step": "Step #2 - \"Deploy\""
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  },
+  {
+    "textPayload": "Step #2 - \"Deploy\": ERROR: (gcloud.run.services.update) spec.template.metadata.annotations[run.googleapis.com/sources]: Source annotation has sources that are not referenced by a container.",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-201",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.131160131Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "Step #2 - \"Deploy\"",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  },
+  {
+    "textPayload": "Finished Step #2 - \"Deploy\"",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-202",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.587595374Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  },
+  {
+    "textPayload": "ERROR",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-203",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519",
+        "project_id": "gen-lang-client-0542481418",
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.587739892Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  },
+  {
+    "textPayload": "ERROR: build step 2 \"gcr.io/google.com/cloudsdktool/cloud-sdk:slim\" failed: step exited with non-zero status: 1",
+    "insertId": "c7ea87ac-cc66-4d33-9065-9d86d733b519-204",
+    "resource": {
+      "type": "build",
+      "labels": {
+        "build_trigger_id": "19409ad3-550f-437c-9f9f-ea00a009c89c",
+        "project_id": "gen-lang-client-0542481418",
+        "build_id": "c7ea87ac-cc66-4d33-9065-9d86d733b519"
+      }
+    },
+    "timestamp": "2026-05-28T22:32:25.587757009Z",
+    "severity": "INFO",
+    "labels": {
+      "build_step": "MAIN",
+      "build_tags": "gcp-cloud-build-deploy-cloud-run,gcp-cloud-build-deploy-cloud-run-managed,discord-music-bot-dashboard,trigger-19409ad3-550f-437c-9f9f-ea00a009c89c"
+    },
+    "logName": "projects/gen-lang-client-0542481418/logs/cloudbuild",
+    "receiveTimestamp": "2026-05-28T22:32:25.849453486Z"
+  }
+]
