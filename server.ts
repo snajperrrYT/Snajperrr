@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import { 
@@ -21,6 +22,7 @@ import {
 import { Player } from "discord-player";
 import { DefaultExtractors, SpotifyExtractor } from "@discord-player/extractor";
 import { YoutubeiExtractor } from "discord-player-youtubei";
+import { globalDownloader } from "./src/lib/AdvancedDownloader";
 import jwt from 'jsonwebtoken';
 import Stripe from 'stripe';
 import crypto from 'crypto';
@@ -106,10 +108,80 @@ client = new Client({
 });
 player = new Player(client, {
     skipFFmpeg: false,
-    connectionTimeout: 60000,
+    connectionTimeout: 120000, // Increased timeout for high ping
 });
 
+// Advanced audio ping & node health monitoring
+setInterval(() => {
+    if (!client.isReady() || !player) return;
+    for (const queue of player.nodes.cache.values()) {
+        try {
+            if (queue.connection?.ping?.ws && queue.connection.ping.ws > 500) {
+                console.log(`[Overseer] High ping detected on queue ${queue.guild.id} (${queue.connection.ping.ws}ms). Optimizing buffer limits temporarily...`);
+            }
+            if (queue.node.isPaused() && queue.tracks.size > 0 && queue.connection?.ping?.udp && queue.connection.ping.udp === -1) {
+                console.log(`[Overseer] UDP connection lost on ${queue.guild.id}. Attempting stabilization...`);
+            }
+        } catch (e) {
+            // Ignore if connection data unavailable
+        }
+    }
+}, 30000);
+
 // API Routes
+
+app.post('/api/yt-to-drive', express.json(), async (req, res) => {
+    try {
+        const { url, accessToken } = req.body;
+        if (!url || !accessToken) return res.status(400).json({ error: 'Missing url or accessToken' });
+        
+        console.log(`[Drive] Downloading ${url} to upload to Google Drive`);
+        const tempPath = path.join('/tmp', `dl_${Date.now()}`);
+        const dlPath = await globalDownloader.download({
+            url,
+            format: 'audio',
+            outputPath: tempPath,
+            quality: 'best'
+        });
+
+        const stat = fs.statSync(dlPath);
+        const fileName = path.basename(dlPath);
+
+        console.log(`[Drive] Uploading ${fileName} to Google Drive...`);
+
+        // Initialize metadata
+        const metadata = {
+            name: fileName,
+            mimeType: 'audio/mp4', // Usually m4a
+        };
+
+        const form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        const fileContent = fs.readFileSync(dlPath);
+        form.append('file', new Blob([fileContent], { type: 'audio/mp4' }), fileName);
+
+        const uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: form as any
+        });
+
+        const uData = await uploadRes.json();
+        
+        // Delete tmp file
+        try { fs.rmSync(tempPath, { recursive: true, force: true }); } catch(err) {}
+
+        if (!uploadRes.ok) throw new Error(`Drive Upload Error: ${JSON.stringify(uData)}`);
+
+        res.json({ success: true, file: uData });
+    } catch (e: any) {
+        console.error('[Drive] Error in yt-to-drive:', e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 app.get('/api/health', (req, res) => {
     logEvent('info', 'system', 'Health check performed.');
     res.status(200).send('OK');
@@ -339,12 +411,12 @@ const performSystemRepair = async () => {
             ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}),
             streamOptions: {
                 useClient: 'TV_EMBEDDED',
-                highWaterMark: 1024 * 1024 * 64,
+                highWaterMark: 1024 * 1024 * 128, // 128MB
             }
         });
         await player.extractors.loadMulti(DefaultExtractors);
         db.prepare("UPDATE system_stats SET value = ? WHERE key = 'last_repair'").run(Date.now().toString());
-        logEvent('info', 'system', 'System naprawiony pomyślnie. Zastosowano profil WEB_EMBEDDED dla audio.');
+        logEvent('info', 'system', 'System naprawiony pomyślnie. Zastosowano profil TV_EMBEDDED i ogromny bufor.');
         setTimeout(() => { repairCooldown = false; }, 60000);
         return { success: true };
     } catch (err: any) {
@@ -873,6 +945,19 @@ app.post('/api/stripe/checkout', async (req, res) => {
   } catch (err) { res.status(500).json({ error: "Failed" }); }
 });
 
+const ADVANCED_NODE_OPTIONS = {
+    volume: 80,
+    bufferingTimeout: 120000, 
+    maxSize: 10000,
+    leaveOnEnd: false,
+    leaveOnEmpty: true,
+    leaveOnEmptyCooldown: 300000,
+    leaveOnStop: false,
+    disableFallbackStream: false,
+    noEmitInsert: false,
+    preferBridgedMetadata: true,
+};
+
 player.events.on('playerStart', async (queue, track) => {
   logEvent('info', 'bot', `Gra: ${track.title}`, { guild: queue.guild.name, author: track.author });
   const history = playbackHistory.get(queue.guild.id) || [];
@@ -883,34 +968,44 @@ player.events.on('playerStart', async (queue, track) => {
 });
 
 player.events.on('error', async (queue, error) => {
-  logEvent('error', 'bot', `Error: ${error.message}`, { guild: queue.guild.name });
-  if (['decipher', 'signature', 'unavailable'].some(s => error.message.toLowerCase().includes(s))) await performSystemRepair();
+  logEvent('error', 'bot', `Queue Error: ${error.message}`, { guild: queue.guild.name });
+  if (['decipher', 'signature', 'unavailable', 'aborted'].some(s => error.message.toLowerCase().includes(s))) {
+    await performSystemRepair();
+  }
+});
+
+player.events.on('playerError', async (queue, error) => {
+  logEvent('error', 'bot', `Audio Extraction Error: ${error.message}`, { guild: queue.guild.name });
+  console.log(`[Advanced Player] Emitted playerError: ${error.message}`);
+});
+
+player.events.on('disconnect', async (queue) => {
+  logEvent('info', 'bot', `Voice channel disconnected manually or kicked.`, { guild: queue.guild.name });
 });
 
 client.on('ready', async () => {
   botStatus.state = 'online'; botStatus.tag = client.user?.tag || ''; botStatus.guilds = client.guilds.cache.size; botStartTime = Date.now();
   if (client.user) client.user.setActivity('music | /play', { type: ActivityType.Listening });
-    setTimeout(async () => {
-    try {
-      // Optymalizacja pod kątem RAM i stabilności (YouTube)
-      // Używamy TV_EMBEDDED dla maksymalnej kompatybilności strumienia
-      await player.extractors.register(YoutubeiExtractor, { 
-        useServerAbrStream: false, 
-        ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}), 
-        streamOptions: { 
-            highWaterMark: 1024 * 1024 * 128, // Zwiększony bufor dla płynności (zgodnie z prośbą o wydajność)
-            useClient: 'TV_EMBEDDED' // Najbardziej stabilny klient eliminujący "Streaming data not available"
-        } 
-      });
-      setTimeout(async () => { 
-        await player.extractors.loadMulti(DefaultExtractors); 
-        logEvent('info', 'bot', 'Extractors loaded with TV_EMBEDDED stable profile. Memory optimized.'); 
-      }, 5000);
-    } catch(e: any) { logEvent('error', 'bot', `Failed load extractors: ${e?.message}`, e); }
-  }, 3000);
   if (process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE") {
     try {
-      const commands = [...adminCommandsDefinitions, new SlashCommandBuilder().setName('join').setDescription('Join VC'), new SlashCommandBuilder().setName('play').setDescription('Play song').addStringOption(o => o.setName('song').setDescription('Song name/URL').setRequired(true)), new SlashCommandBuilder().setName('search').setDescription('Search song').addStringOption(o => o.setName('query').setDescription('Query').setRequired(true)), new SlashCommandBuilder().setName('pause').setDescription('Pause'), new SlashCommandBuilder().setName('resume').setDescription('Resume'), new SlashCommandBuilder().setName('skip').setDescription('Skip'), new SlashCommandBuilder().setName('stop').setDescription('Stop'), new SlashCommandBuilder().setName('volume').setDescription('Set volume').addIntegerOption(o => o.setName('level').setDescription('0-100').setRequired(true))].map(c => c.toJSON());
+      const commandBuilders = [
+        ...adminCommandsDefinitions, 
+        new SlashCommandBuilder().setName('join').setDescription('Join VC'), 
+        new SlashCommandBuilder().setName('play').setDescription('Play song').addStringOption(o => o.setName('song').setDescription('Song name/URL').setRequired(true)), 
+        new SlashCommandBuilder().setName('search').setDescription('Search song').addStringOption(o => o.setName('query').setDescription('Query').setRequired(true)), 
+        new SlashCommandBuilder().setName('pause').setDescription('Pause'), 
+        new SlashCommandBuilder().setName('resume').setDescription('Resume'), 
+        new SlashCommandBuilder().setName('skip').setDescription('Skip'), 
+        new SlashCommandBuilder().setName('stop').setDescription('Stop'), 
+        new SlashCommandBuilder().setName('volume').setDescription('Set volume').addIntegerOption(o => o.setName('level').setDescription('0-100').setRequired(true)),
+        new SlashCommandBuilder()
+            .setName('download')
+            .setDescription('Download audio or video from YouTube')
+            .addStringOption(o => o.setName('url').setDescription('YouTube Video URL').setRequired(true))
+            .addStringOption(o => o.setName('type').setDescription('Format type').addChoices({ name: 'Audio Only', value: 'audio'}, { name: 'Video Only', value: 'video'}, { name: 'Both separate', value: 'both'}).setRequired(true))
+            .addStringOption(o => o.setName('path').setDescription('Absolute path on disk to save (e.g. /tmp/downloads)').setRequired(true))
+      ];
+      const commands = commandBuilders.map(c => c.toJSON());
       await new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN).put(Routes.applicationCommands(client.user!.id), { body: commands });
     } catch (e) { console.error('Register commands error:', e); }
   }
@@ -1035,8 +1130,17 @@ async function bootstrapExtractors() {
         console.log('[Bot] Spotify Extractor skonfigurowany.');
     }
 
-    await player.extractors.loadDefault();
-    await player.extractors.register(YoutubeiExtractor, {});
+    await player.extractors.loadMulti(DefaultExtractors);
+    try { await player.extractors.unregister('YouTubeExtractor'); } catch(e) {}
+    try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
+    await player.extractors.register(YoutubeiExtractor, {
+        useServerAbrStream: false,
+        ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}),
+        streamOptions: {
+            highWaterMark: 1024 * 1024 * 128, // Zwiększony bufor dla ogromnych pingow
+            useClient: 'TV_EMBEDDED'
+        }
+    });
     logEvent('info', 'system', 'Ekstraktory załadowane pomyślnie.');
   } catch (e: any) {
     logEvent('error', 'system', `Błąd ładowania ekstraktorów: ${e.message}`, e);
@@ -1104,7 +1208,12 @@ client.on('interactionCreate', async interaction => {
     await interaction.deferReply();
     const res = await player.search(interaction.values[0], { requestedBy: interaction.user });
     if (res.hasTracks()) {
-      const { track } = await player.play(member.voice.channel, res, { nodeOptions: { metadata: interaction, volume: 80 } });
+      const { track } = await player.play(member.voice.channel, res, { 
+        nodeOptions: { 
+          metadata: interaction, 
+          ...ADVANCED_NODE_OPTIONS
+        } 
+      });
       await interaction.followUp(`🎵 Wybrano: **${track.title}**`);
     } else await interaction.followUp('❌ Nie znaleziono.');
   }
@@ -1114,7 +1223,10 @@ client.on('interactionCreate', async interaction => {
   const { commandName, guildId } = interaction;
   if (commandName === 'join') {
     if (!member.voice?.channel) return interaction.reply({ content: 'Musisz być na kanale!', ephemeral: true });
-    const q = player.nodes.create(interaction.guild!, { metadata: interaction, volume: 80 });
+    const q = player.nodes.create(interaction.guild!, { 
+      metadata: interaction, 
+      ...ADVANCED_NODE_OPTIONS
+    });
     await q.connect(member.voice.channel);
     await interaction.reply('✅ Dołączono!');
   } else if (commandName === 'play') {
@@ -1122,7 +1234,12 @@ client.on('interactionCreate', async interaction => {
     await interaction.deferReply();
     const res = await player.search(interaction.options.getString('song', true), { requestedBy: interaction.user });
     if (res.hasTracks()) {
-      const { track } = await player.play(member.voice.channel, res, { nodeOptions: { metadata: interaction, volume: 80 } });
+      const { track } = await player.play(member.voice.channel, res, { 
+        nodeOptions: { 
+          metadata: interaction, 
+          ...ADVANCED_NODE_OPTIONS
+        } 
+      });
       await interaction.followUp(`🎵 Dodano: **${track.title}**`);
     } else await interaction.followUp('❌ Nie znaleziono.');
   } else if (commandName === 'skip') {
@@ -1131,6 +1248,24 @@ client.on('interactionCreate', async interaction => {
   } else if (commandName === 'stop') {
     const q = player.nodes.get(guildId!);
     if (q) { q.delete(); await interaction.reply('⏹️ Zatrzymano.'); }
+  } else if (commandName === 'download') {
+    await interaction.deferReply();
+    const url = interaction.options.getString('url', true);
+    const type = interaction.options.getString('type', true) as any;
+    const savePath = interaction.options.getString('path', true);
+
+    try {
+      await interaction.followUp(`⏳ Downloading...`);
+      const dlPath = await globalDownloader.download({
+        url,
+        format: type,
+        outputPath: savePath,
+        quality: 'best'
+      });
+      await interaction.followUp(`✅ Downloaded successfully to: ${dlPath}`);
+    } catch (err: any) {
+      await interaction.followUp(`❌ Failed to download: ${err.message}`);
+    }
   }
 });
 

@@ -34,11 +34,12 @@ import { LogsTab } from './tabs/LogsTab';
 import { AdminTab } from './tabs/AdminTab';
 import { SettingsTab } from './tabs/SettingsTab';
 import { GmailTab } from './tabs/GmailTab';
+import { GoogleDriveTab } from './tabs/GoogleDriveTab';
 
 export default function App() {
   const [status, setStatus] = useState<BotStatus | null>(null);
   const [players, setPlayers] = useState<PlayerStatus[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'history' | 'logs' | 'admin' | 'settings' | 'gmail'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'history' | 'logs' | 'admin' | 'settings' | 'gmail' | 'drive'>('dashboard');
   const [clearConfirmGuildId, setClearConfirmGuildId] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -590,6 +591,7 @@ export default function App() {
                 />
               )}
               {activeTab === 'gmail' && <GmailTab />}
+              {activeTab === 'drive' && <GoogleDriveTab />}
             </motion.div>
           </AnimatePresence>
         </div>
