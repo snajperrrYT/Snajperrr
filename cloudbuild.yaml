@@ -23,6 +23,7 @@ steps:
       - --image=$_IMAGE_NAME:$COMMIT_SHA
       - --region=$_DEPLOY_REGION
       - --platform=managed
+      - --clear-base-image
       - --clear-sources
 
 substitutions:
