@@ -231,8 +231,8 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
         if (warns.length === 0) {
           await interaction.reply({ content: `${target.tag} nie ma żadnych ostrzeżeń.`, ephemeral: true });
         } else {
-          const text = warns.map((w, i) => `**${i+1}.** Powód: ${w.reason} (przez <@${w.moderator_id}>, ${new Date(w.timestamp).toLocaleDateString()})`).join('\\n');
-          await interaction.reply({ content: `Ostrzeżenia gracza ${target.tag}:\\n${text}`, ephemeral: true });
+          const text = warns.map((w, i) => `**${i+1}.** Powód: ${w.reason} (przez <@${w.moderator_id}>, ${new Date(w.timestamp).toLocaleDateString()})`).join('\n');
+          await interaction.reply({ content: `Ostrzeżenia gracza ${target.tag}:\n${text}`, ephemeral: true });
         }
       } catch(e) {
         console.error(e);
@@ -295,12 +295,12 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       const user = interaction.options.getUser('user') || interaction.user;
       const member = interaction.options.getMember('user') as GuildMember | null || interaction.member as GuildMember;
       const roleCount = member?.roles?.cache.size || 0;
-      await interaction.reply({ content: `**Info o ${user.tag}**\\nID: ${user.id}\\nDołączył do Discorda: ${user.createdAt.toLocaleDateString()}\\nKonto Bota: ${user.bot ? 'Tak' : 'Nie'}\\nIlość ról na serwerze: ${roleCount}`, ephemeral: true });
+      await interaction.reply({ content: `**Info o ${user.tag}**\nID: ${user.id}\nDołączył do Discorda: ${user.createdAt.toLocaleDateString()}\nKonto Bota: ${user.bot ? 'Tak' : 'Nie'}\nIlość ról na serwerze: ${roleCount}`, ephemeral: true });
       return true;
     }
     case 'serverinfo': {
       const g = interaction.guild!;
-      await interaction.reply({ content: `**Info o ${g.name}**\\nID: ${g.id}\\nUtworzony: ${g.createdAt.toLocaleDateString()}\\nCzłonkowie: ${g.memberCount}\\nIlość ról: ${g.roles.cache.size}\\nIlość kanałów: ${g.channels.cache.size}`, ephemeral: true });
+      await interaction.reply({ content: `**Info o ${g.name}**\nID: ${g.id}\nUtworzony: ${g.createdAt.toLocaleDateString()}\nCzłonkowie: ${g.memberCount}\nIlość ról: ${g.roles.cache.size}\nIlość kanałów: ${g.channels.cache.size}`, ephemeral: true });
       return true;
     }
     case 'nuke': {
@@ -329,7 +329,7 @@ export async function handleAdminCommands(interaction: ChatInputCommandInteracti
       try {
         const stmt = db.prepare('INSERT INTO vouchers (code, type, duration, max_uses, uses, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
         stmt.run(code, type, duration, maxUses, 0, interaction.user.id, Date.now());
-        await interaction.reply({ content: `Utworzono voucher: **${code}**\\nTyp: ${type}\\nCzas: ${durationStr}\\nUżycia: ${maxUses}`, ephemeral: true });
+        await interaction.reply({ content: `Utworzono voucher: **${code}**\nTyp: ${type}\nCzas: ${durationStr}\nUżycia: ${maxUses}`, ephemeral: true });
       } catch(e) {
         console.error(e);
         await interaction.reply({ content: 'Błąd bazy danych przy tworzeniu vouchera.', ephemeral: true });

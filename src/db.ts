@@ -20,7 +20,10 @@ db.exec(`
     premium INTEGER DEFAULT 0,
     premium_expires_at INTEGER,
     audio_quality TEXT DEFAULT 'high',
-    premium_settings TEXT DEFAULT '{}'
+    premium_settings TEXT DEFAULT '{}',
+    spotify_access_token TEXT,
+    spotify_refresh_token TEXT,
+    spotify_token_expires_at INTEGER
   );
 
   CREATE TABLE IF NOT EXISTS system_logs (
@@ -69,6 +72,14 @@ db.exec(`
     guild_id TEXT PRIMARY KEY,
     added_by TEXT,
     active INTEGER DEFAULT 1
+  );
+  
+  CREATE TABLE IF NOT EXISTS announcements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    body TEXT,
+    created_at INTEGER,
+    created_by TEXT
   );
 
   CREATE TABLE IF NOT EXISTS warnings (

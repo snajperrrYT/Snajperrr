@@ -1,0 +1,662 @@
+⚡ Slash command: /download (użytkownik: snajperrryt)
+🔍 DEBUG - url: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+🔍 DEBUG - typeof url: string
+🔍 DEBUG - format: video
+🔍 DEBUG - info: {
+  LiveStreamData: { isLive: false, dashManifestUrl: null, hlsManifestUrl: null },
+  html5player: 'https://www.youtube.com/s/player/1898687b/player_ias.vflset/en_US/base.js',
+  format: [
+    {
+      itag: 18,
+      mimeType: 'video/mp4; codecs="avc1.42001E, mp4a.40.2"',
+      bitrate: 441293,
+      width: 640,
+      height: 360,
+      lastModified: '1749083304269135',
+      quality: 'medium',
+      fps: 25,
+      qualityLabel: '360p',
+      projectionType: 'RECTANGULAR',
+      audioQuality: 'AUDIO_QUALITY_LOW',
+      approxDurationMs: '213089',
+      audioSampleRate: '44100',
+      audioChannels: 2,
+      qualityOrdinal: 'QUALITY_ORDINAL_360P',
+      s: '2=A==AwgqVb-j88qD6Yyn-KUSynJ=WiJnCkSxptuiUOkcAK3DQICEr5caAi41f5MqOlFKDYRP5-OJv-C6TnwqqmjwCIU92agIQRwsSdQfJAfJAA',
+      sp: 'sig',
+      url: 'https://rr1---sn-qxoednee.googlevideo.com/videoplayback?expire=1762991671&ei=1skUaZ6oO76KsfIPx-KMgQI&ip=35.197.22.80&id=o-AC8rytgu7F7TkmlYvdW1rEn0_IFGRILVH9vZHHO6qVEP&itag=18&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=757&met=1762970071%2C&mh=7c&mm=31%2C26&mn=sn-qxoednee%2Csn-a5meknzr&ms=au%2Conr&mv=m&mvi=1&pl=20&rms=au%2Cau&bui=AdEuB5Rkg6hGsqWWdcW2IFnOGzAXf7cE8gTcPblTfYs0TTaobPdVVh3nIzmmgRvOr4r9iTP4dnQByMp2&spc=6b0G_EzMxIO8sKERuQi9dAEazmridDrj5wH__2KFBvwevG5aICE3qeea_JZsE5Y-G_Ll_YPQaLM&vprv=1&svpuc=1&mime=video%2Fmp4&ns=fracFnS41hZxxiN7J_krqgQQ&rqh=1&cnr=14&ratebypass=yes&dur=213.089&lmt=1749083304269135&mt=1762969458&fvip=4&fexp=51355912%2C51552689%2C51565115%2C51565681%2C51580968&c=WEB&sefc=1&txp=4538534&n=8DjDCzqywEL_GHYQe&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Crqh%2Ccnr%2Cratebypass%2Cdur%2Clmt&lsparams=cps%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms&lsig=APaTxxMwRQIgOwxymyvHv7ZQRF8KqVEaV_2crB4P9SrIUmzpD5k6ZzoCIQC8ZSwgLBVr0NduNbuMxdFjVIa5xTyxpEsfpBG_CTCKNg%3D%3D'
+    },
+    {
+      itag: 313,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 18077510,
+      width: 3840,
+      height: 2160,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084546249476',
+      contentLength: '358564006',
+      quality: 'hd2160',
+      fps: 25,
+      qualityLabel: '2160p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 13464664,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_2160P'
+    },
+    {
+      itag: 401,
+      mimeType: 'video/mp4; codecs="av01.0.12M.08"',
+      bitrate: 18689941,
+      width: 3840,
+      height: 2160,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749085188214713',
+      contentLength: '238254945',
+      quality: 'hd2160',
+      fps: 25,
+      qualityLabel: '2160p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 8946862,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_2160P'
+    },
+    {
+      itag: 271,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 8984322,
+      width: 2560,
+      height: 1440,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084496950076',
+      contentLength: '151084149',
+      quality: 'hd1440',
+      fps: 25,
+      qualityLabel: '1440p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 5673456,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_1440P'
+    },
+    {
+      itag: 400,
+      mimeType: 'video/mp4; codecs="av01.0.12M.08"',
+      bitrate: 7647666,
+      width: 2560,
+      height: 1440,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084444584552',
+      contentLength: '117266121',
+      quality: 'hd1440',
+      fps: 25,
+      qualityLabel: '1440p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 4403534,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_1440P'
+    },
+    {
+      itag: 137,
+      mimeType: 'video/mp4; codecs="avc1.640028"',
+      bitrate: 4333861,
+      width: 1920,
+      height: 1080,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084015189332',
+      contentLength: '80417459',
+      quality: 'hd1080',
+      fps: 25,
+      qualityLabel: '1080p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 3019806,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_1080P'
+    },
+    {
+      itag: 248,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 3110588,
+      width: 1920,
+      height: 1080,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084325911459',
+      contentLength: '37975685',
+      quality: 'hd1080',
+      fps: 25,
+      qualityLabel: '1080p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 1426049,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_1080P'
+    },
+    {
+      itag: 399,
+      mimeType: 'video/mp4; codecs="av01.0.08M.08"',
+      bitrate: 1748012,
+      width: 1920,
+      height: 1080,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084703742906',
+      contentLength: '30823806',
+      quality: 'hd1080',
+      fps: 25,
+      qualityLabel: '1080p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 1157484,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_1080P'
+    },
+    {
+      itag: 136,
+      mimeType: 'video/mp4; codecs="avc1.4d401f"',
+      bitrate: 1059606,
+      width: 1280,
+      height: 720,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084446525343',
+      contentLength: '26267897',
+      quality: 'hd720',
+      fps: 25,
+      qualityLabel: '720p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 986402,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_720P'
+    },
+    {
+      itag: 247,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 1654580,
+      width: 1280,
+      height: 720,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084173230817',
+      contentLength: '21061662',
+      quality: 'hd720',
+      fps: 25,
+      qualityLabel: '720p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 790899,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_720P'
+    },
+    {
+      itag: 398,
+      mimeType: 'video/mp4; codecs="av01.0.05M.08"',
+      bitrate: 1049962,
+      width: 1280,
+      height: 720,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084702855680',
+      contentLength: '17402459',
+      quality: 'hd720',
+      fps: 25,
+      qualityLabel: '720p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 653490,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_720P'
+    },
+    {
+      itag: 135,
+      mimeType: 'video/mp4; codecs="avc1.4d401e"',
+      bitrate: 690838,
+      width: 854,
+      height: 480,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083282532566',
+      contentLength: '13984063',
+      quality: 'large',
+      fps: 25,
+      qualityLabel: '480p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 525124,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_480P'
+    },
+    {
+      itag: 244,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 794120,
+      width: 854,
+      height: 480,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084313379129',
+      contentLength: '11046785',
+      quality: 'large',
+      fps: 25,
+      qualityLabel: '480p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 414824,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_480P'
+    },
+    {
+      itag: 397,
+      mimeType: 'video/mp4; codecs="av01.0.04M.08"',
+      bitrate: 536423,
+      width: 854,
+      height: 480,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084358066378',
+      contentLength: '9569015',
+      quality: 'large',
+      fps: 25,
+      qualityLabel: '480p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 359332,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_480P'
+    },
+    {
+      itag: 134,
+      mimeType: 'video/mp4; codecs="avc1.4d401e"',
+      bitrate: 451747,
+      width: 640,
+      height: 360,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083184260941',
+      contentLength: '8312768',
+      quality: 'medium',
+      fps: 25,
+      qualityLabel: '360p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 312158,
+      highReplication: true,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_360P'
+    },
+    {
+      itag: 243,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 385177,
+      width: 640,
+      height: 360,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084046489117',
+      contentLength: '7928472',
+      quality: 'medium',
+      fps: 25,
+      qualityLabel: '360p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 297727,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_360P'
+    },
+    {
+      itag: 396,
+      mimeType: 'video/mp4; codecs="av01.0.01M.08"',
+      bitrate: 303344,
+      width: 640,
+      height: 360,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084714200985',
+      contentLength: '5573441',
+      quality: 'medium',
+      fps: 25,
+      qualityLabel: '360p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 209291,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_360P'
+    },
+    {
+      itag: 133,
+      mimeType: 'video/mp4; codecs="avc1.4d4015"',
+      bitrate: 234756,
+      width: 426,
+      height: 240,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083199652008',
+      contentLength: '4311925',
+      quality: 'small',
+      fps: 25,
+      qualityLabel: '240p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 161919,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_240P'
+    },
+    {
+      itag: 242,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 213538,
+      width: 426,
+      height: 240,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084169610559',
+      contentLength: '3399573',
+      quality: 'small',
+      fps: 25,
+      qualityLabel: '240p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 127659,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_240P'
+    },
+    {
+      itag: 395,
+      mimeType: 'video/mp4; codecs="av01.0.00M.08"',
+      bitrate: 157035,
+      width: 426,
+      height: 240,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083306358138',
+      contentLength: '3087878',
+      quality: 'small',
+      fps: 25,
+      qualityLabel: '240p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 115954,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_240P'
+    },
+    {
+      itag: 160,
+      mimeType: 'video/mp4; codecs="avc1.4d400c"',
+      bitrate: 109857,
+      width: 256,
+      height: 144,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083144163882',
+      contentLength: '2054540',
+      quality: 'tiny',
+      fps: 25,
+      qualityLabel: '144p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 77151,
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_144P'
+    },
+    {
+      itag: 278,
+      mimeType: 'video/webm; codecs="vp9"',
+      bitrate: 103326,
+      width: 256,
+      height: 144,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749084174161853',
+      contentLength: '1932086',
+      quality: 'tiny',
+      fps: 25,
+      qualityLabel: '144p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 72552,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_144P'
+    },
+    {
+      itag: 394,
+      mimeType: 'video/mp4; codecs="av01.0.00M.08"',
+      bitrate: 83419,
+      width: 256,
+      height: 144,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749083148908182',
+      contentLength: '1557079',
+      quality: 'tiny',
+      fps: 25,
+      qualityLabel: '144p',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 58470,
+      colorInfo: [Object],
+      approxDurationMs: '213040',
+      qualityOrdinal: 'QUALITY_ORDINAL_144P'
+    },
+    {
+      itag: 140,
+      mimeType: 'audio/mp4; codecs="mp4a.40.2"',
+      bitrate: 130678,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749082481297954',
+      contentLength: '3449447',
+      quality: 'tiny',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 129502,
+      highReplication: true,
+      audioQuality: 'AUDIO_QUALITY_MEDIUM',
+      approxDurationMs: '213089',
+      audioSampleRate: '44100',
+      audioChannels: 2,
+      loudnessDb: 0.98999977,
+      trackAbsoluteLoudnessLkfs: -13.01,
+      qualityOrdinal: 'QUALITY_ORDINAL_UNKNOWN',
+      codec: 'mp4a.40.2',
+      container: 'mp4'
+    },
+    {
+      itag: 249,
+      mimeType: 'audio/webm; codecs="opus"',
+      bitrate: 49492,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749082495002111',
+      contentLength: '1231340',
+      quality: 'tiny',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 46234,
+      audioQuality: 'AUDIO_QUALITY_LOW',
+      approxDurationMs: '213061',
+      audioSampleRate: '48000',
+      audioChannels: 2,
+      loudnessDb: 0.97999954,
+      trackAbsoluteLoudnessLkfs: -13.02,
+      qualityOrdinal: 'QUALITY_ORDINAL_UNKNOWN',
+      codec: 'opus',
+      container: 'webm'
+    },
+    {
+      itag: 250,
+      mimeType: 'audio/webm; codecs="opus"',
+      bitrate: 65513,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749082495125749',
+      contentLength: '1628535',
+      quality: 'tiny',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 61148,
+      audioQuality: 'AUDIO_QUALITY_LOW',
+      approxDurationMs: '213061',
+      audioSampleRate: '48000',
+      audioChannels: 2,
+      loudnessDb: 0.97999954,
+      trackAbsoluteLoudnessLkfs: -13.02,
+      qualityOrdinal: 'QUALITY_ORDINAL_UNKNOWN',
+      codec: 'opus',
+      container: 'webm'
+    },
+    {
+      itag: 251,
+      mimeType: 'audio/webm; codecs="opus"',
+      bitrate: 136540,
+      initRange: [Object],
+      indexRange: [Object],
+      lastModified: '1749082494991270',
+      contentLength: '3433717',
+      quality: 'tiny',
+      projectionType: 'RECTANGULAR',
+      averageBitrate: 128928,
+      audioQuality: 'AUDIO_QUALITY_MEDIUM',
+      approxDurationMs: '213061',
+      audioSampleRate: '48000',
+      audioChannels: 2,
+      loudnessDb: 0.97999954,
+      trackAbsoluteLoudnessLkfs: -13.02,
+      qualityOrdinal: 'QUALITY_ORDINAL_UNKNOWN',
+      codec: 'opus',
+      container: 'webm'
+    }
+  ],
+  video_details: YouTubeVideo {
+    id: 'dQw4w9WgXcQ',
+    url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    type: 'video',
+    title: 'Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)',
+    description: 'The official video for “Never Gonna Give You Up” by Rick Astley. \n' +
+      '\n' +
+      'Never: The Autobiography 📚 OUT NOW! \n' +
+      'Follow this link to get your copy and listen to Rick’s ‘Never’ playlist ❤️ #RickAstleyNever\n' +
+      'https://linktr.ee/rickastleynever\n' +
+      '\n' +
+      '“Never Gonna Give You Up” was a global smash on its release in July 1987, topping the charts in 25 countries including Rick’s native UK and the US Billboard Hot 100.  It also won the Brit Award for Best single in 1988. Stock Aitken and Waterman wrote and produced the track which was the lead-off single and lead track from Rick’s debut LP “Whenever You Need Somebody”.  The album was itself a UK number one and would go on to sell over 15 million copies worldwide.\n' +
+      '\n' +
+      'The legendary video was directed by Simon West – who later went on to make Hollywood blockbusters such as Con Air, Lara Croft – Tomb Raider and The Expendables 2.  The video passed the 1bn YouTube views milestone on 28 July 2021.\n' +
+      '\n' +
+      'Subscribe to the official Rick Astley YouTube channel: https://RickAstley.lnk.to/YTSubID\n' +
+      '\n' +
+      'Follow Rick Astley:\n' +
+      'Facebook: https://RickAstley.lnk.to/FBFollowID \n' +
+      'Twitter: https://RickAstley.lnk.to/TwitterID \n' +
+      'Instagram: https://RickAstley.lnk.to/InstagramID \n' +
+      'Website: https://RickAstley.lnk.to/storeID \n' +
+      'TikTok: https://RickAstley.lnk.to/TikTokID\n' +
+      '\n' +
+      'Listen to Rick Astley:\n' +
+      'Spotify: https://RickAstley.lnk.to/SpotifyID \n' +
+      'Apple Music: https://RickAstley.lnk.to/AppleMusicID \n' +
+      'Amazon Music: https://RickAstley.lnk.to/AmazonMusicID \n' +
+      'Deezer: https://RickAstley.lnk.to/DeezerID \n' +
+      '\n' +
+      'Lyrics:\n' +
+      'We’re no strangers to love\n' +
+      'You know the rules and so do I\n' +
+      'A full commitment’s what I’m thinking of\n' +
+      'You wouldn’t get this from any other guy\n' +
+      '\n' +
+      'I just wanna tell you how I’m feeling\n' +
+      'Gotta make you understand\n' +
+      '\n' +
+      'Never gonna give you up\n' +
+      'Never gonna let you down\n' +
+      'Never gonna run around and desert you\n' +
+      'Never gonna make you cry\n' +
+      'Never gonna say goodbye\n' +
+      'Never gonna tell a lie and hurt you\n' +
+      '\n' +
+      'We’ve known each other for so long\n' +
+      'Your heart’s been aching but you’re too shy to say it\n' +
+      'Inside we both know what’s been going on\n' +
+      'We know the game and we’re gonna play it\n' +
+      '\n' +
+      'And if you ask me how I’m feeling\n' +
+      'Don’t tell me you’re too blind to see\n' +
+      '\n' +
+      'Never gonna give you up\n' +
+      'Never gonna let you down\n' +
+      'Never gonna run around and desert you\n' +
+      'Never gonna make you cry\n' +
+      'Never gonna say goodbye\n' +
+      'Never gonna tell a lie and hurt you\n' +
+      '\n' +
+      '#RickAstley #NeverGonnaGiveYouUp #WheneverYouNeedSomebody #OfficialMusicVideo',
+    durationRaw: '03:33',
+    durationInSec: 213,
+    uploadedAt: '2009-10-24T23:57:33-07:00',
+    liveAt: undefined,
+    upcoming: undefined,
+    views: 1712526518,
+    thumbnails: [
+      [YouTubeThumbnail],
+      [YouTubeThumbnail],
+      [YouTubeThumbnail],
+      [YouTubeThumbnail],
+      [YouTubeThumbnail]
+    ],
+    channel: YouTubeChannel {
+      type: 'channel',
+      name: 'Rick Astley',
+      verified: false,
+      artist: false,
+      id: 'UCuAXFkgsw1L7xaCfnd5JJOw',
+      url: 'https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw',
+      icons: [Array],
+      subscribers: null
+    },
+    likes: 0,
+    live: false,
+    private: false,
+    tags: [
+      'rick astley',
+      'Never Gonna Give You Up',
+      'nggyu',
+      'never gonna give you up lyrics',
+      'rick rolled',
+      'Rick Roll',
+      'rick astley official',
+      'rickrolled',
+      'Fortnite song',
+      'Fortnite event',
+      'Fortnite dance',
+      'fortnite never gonna give you up',
+      'rick roll',
+      'rickrolling',
+      'rick rolling',
+      'never gonna give you up',
+      '80s music',
+      'rick astley new',
+      'animated video',
+      'rickroll',
+      'meme songs',
+      'never gonna give u up lyrics',
+      'Rick Astley 2022',
+      'never gonna let you down',
+      'animated',
+      'rick rolls 2022',
+      'never gonna give you up karaoke'
+    ],
+    discretionAdvised: false,
+    music: [],
+    chapters: []
+  },
+  related_videos: []
+}
+Download error: TypeError: Invalid URL
+    at new URL (node:internal/url:806:29)
+    at stream_from_info (/home/runner/workspace/node_modules/play-dl/dist/index.js:7:17328)
+    at stream (/home/runner/workspace/node_modules/play-dl/dist/index.js:7:16519)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.stream (/home/runner/workspace/node_modules/play-dl/dist/index.js:15:3190)
+    at async Object.execute (/home/runner/workspace/commands/youtube/download.js:87:22)
+    at async Client.<anonymous> (/home/runner/workspace/index.js:74:5) {
+  code: 'ERR_INVALID_URL',
+  input: 'undefined'
+}
+✅ Slash command /download wykonana pomyślnie

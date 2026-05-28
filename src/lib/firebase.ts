@@ -21,9 +21,6 @@ export const initAuth = (
       if (cachedAccessToken) {
         if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
       } else if (!isSigningIn) {
-        // If we have a user but no cached token, we can't easily get the token without a popup
-        // unless we use a more complex flow or the user just signed in.
-        // For simplicity, we'll suggest signing in again if token is lost.
         cachedAccessToken = null;
         if (onAuthFailure) onAuthFailure();
       }

@@ -1,0 +1,35 @@
+modules = ["nodejs-20", "python-3.11"]
+[agent]
+expertMode = true
+integrations = ["google-drive:1.0.0"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["ffmpeg"]
+
+[workflows]
+runButton = "Discord Bot"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Discord Bot"
+
+[[workflows.workflow]]
+name = "Discord Bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["node", "index.js"]
