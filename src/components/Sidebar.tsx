@@ -8,7 +8,8 @@ import {
   Bot, 
   Bug,
   Trash2,
-  Sparkles
+  Sparkles,
+  HardDrive
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { BotStatus } from '../types';
@@ -138,6 +139,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           <Mail className="w-4 h-4" />
           Gmail
+        </button>
+
+        <button 
+          onClick={() => setActiveTab('drive')}
+          className={cn(
+            "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-bold tracking-wide",
+            activeTab === 'drive' ? "bg-white/10 text-white" : "text-slate-400 hover:bg-white/5 hover:text-slate-300"
+          )}
+        >
+          <HardDrive className="w-4 h-4" />
+          Google Drive
         </button>
 
         <div className="pt-2">

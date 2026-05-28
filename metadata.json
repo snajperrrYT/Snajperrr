@@ -1,6 +1,6 @@
 {
-  "name": "Discord Music Bot Dashboard",
-  "description": "A full-stack Discord music bot with a real-time web control dashboard.",
+  "name": "Snajperrr",
+  "description": "Discord music bot with a web dashboard, Spotify/Discord authentication, and Stripe integration.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
