@@ -15,16 +15,19 @@ steps:
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     id: Deploy
+    entrypoint: /bin/bash
     args:
-      - gcloud
-      - run
-      - deploy
-      - $_SERVICE_NAME
-      - --image=$_IMAGE_NAME:$COMMIT_SHA
-      - --region=$_DEPLOY_REGION
-      - --platform=managed
-      - --clear-base-image
-      - --remove-annotations=run.googleapis.com/sources
+      - -c
+      - |
+        gcloud run services update $_SERVICE_NAME \
+          --region=$_DEPLOY_REGION \
+          --platform=managed \
+          --remove-annotations=run.googleapis.com/sources \
+          --clear-base-image || true
+        gcloud run deploy $_SERVICE_NAME \
+          --image=$_IMAGE_NAME:$COMMIT_SHA \
+          --region=$_DEPLOY_REGION \
+          --platform=managed
 
 substitutions:
   _SERVICE_NAME: discord-music-bot-dashboard
