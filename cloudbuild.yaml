@@ -14,19 +14,6 @@ steps:
       - '$_IMAGE_NAME:$COMMIT_SHA'
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-    id: ClearSourceAnnotation
-    args:
-      - gcloud
-      - run
-      - services
-      - update
-      - $_SERVICE_NAME
-      - --region=$_DEPLOY_REGION
-      - --platform=managed
-      - --clear-base-image
-      - --remove-annotations=run.googleapis.com/sources
-
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     id: Deploy
     args:
       - gcloud
@@ -36,6 +23,8 @@ steps:
       - --image=$_IMAGE_NAME:$COMMIT_SHA
       - --region=$_DEPLOY_REGION
       - --platform=managed
+      - --clear-base-image
+      - --remove-annotations=run.googleapis.com/sources
 
 substitutions:
   _SERVICE_NAME: discord-music-bot-dashboard
