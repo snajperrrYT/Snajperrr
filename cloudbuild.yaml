@@ -24,7 +24,7 @@ steps:
       - --region=$_DEPLOY_REGION
       - --platform=managed
       - --clear-base-image
-      - --clear-sources
+      - --remove-annotations=run.googleapis.com/sources
 
 substitutions:
   _SERVICE_NAME: discord-music-bot-dashboard
