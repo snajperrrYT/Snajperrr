@@ -130,7 +130,24 @@ setInterval(() => {
 
 // API Routes
 
-app.post('/api/yt-to-drive', express.json(), async (req, res) => {
+// Simple rate limiter for file-access routes
+const ytToDriveRateLimit = new Map<string, number[]>();
+function rateLimitMiddleware(maxRequests: number, windowMs: number) {
+    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        const ip = req.ip || req.socket.remoteAddress || 'unknown';
+        const now = Date.now();
+        const timestamps = ytToDriveRateLimit.get(ip) || [];
+        const filtered = timestamps.filter(t => now - t < windowMs);
+        if (filtered.length >= maxRequests) {
+            return res.status(429).json({ error: 'Too many requests, please try again later.' });
+        }
+        filtered.push(now);
+        ytToDriveRateLimit.set(ip, filtered);
+        next();
+    };
+}
+
+app.post('/api/yt-to-drive', rateLimitMiddleware(5, 60000), express.json(), async (req, res) => {
     try {
         const { url, accessToken } = req.body;
         if (!url || !accessToken) return res.status(400).json({ error: 'Missing url or accessToken' });
