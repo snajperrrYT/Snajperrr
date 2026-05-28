@@ -20,18 +20,21 @@ steps:
       - -c
       - |
         # Remove stale run.googleapis.com/sources annotation via a full service replace.
-        # gcloud run services update --remove-annotations fails server-side validation when
-        # the annotation already references a non-existent source, so we fetch the YAML,
-        # strip the bad annotation with Python, then replace the service atomically.
+        # We save the service YAML to a temp file first (pipe+heredoc conflict means
+        # python3 cannot read from both a pipe and a heredoc simultaneously).
         gcloud run services describe $_SERVICE_NAME \
           --region=$_DEPLOY_REGION \
           --platform=managed \
-          --format=yaml 2>/dev/null | python3 - << 'PYEOF'
-        import sys, yaml
+          --format=yaml > /tmp/svc_orig.yaml 2>/dev/null || true
 
-        svc = yaml.safe_load(sys.stdin.read())
+        if [ -s /tmp/svc_orig.yaml ]; then
+          python3 << 'PYEOF'
+        import yaml
+
+        with open('/tmp/svc_orig.yaml') as f:
+            svc = yaml.safe_load(f.read())
         if not svc:
-            sys.exit(0)
+            raise SystemExit(0)
 
         stale_keys = {'run.googleapis.com/sources', 'run.googleapis.com/build-id'}
         for section in [svc.get('metadata', {}),
@@ -51,10 +54,11 @@ steps:
         with open('/tmp/svc_clean.yaml', 'w') as f:
             yaml.dump(svc, f, default_flow_style=False)
         PYEOF
-        [ -s /tmp/svc_clean.yaml ] && \
           gcloud run services replace /tmp/svc_clean.yaml \
             --region=$_DEPLOY_REGION \
-            --platform=managed || true
+            --platform=managed
+        fi
+
         gcloud run deploy $_SERVICE_NAME \
           --image=$_IMAGE_NAME:$COMMIT_SHA \
           --region=$_DEPLOY_REGION \
