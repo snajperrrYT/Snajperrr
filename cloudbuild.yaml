@@ -19,11 +19,42 @@ steps:
     args:
       - -c
       - |
-        gcloud run services update $_SERVICE_NAME \
+        # Remove stale run.googleapis.com/sources annotation via a full service replace.
+        # gcloud run services update --remove-annotations fails server-side validation when
+        # the annotation already references a non-existent source, so we fetch the YAML,
+        # strip the bad annotation with Python, then replace the service atomically.
+        gcloud run services describe $_SERVICE_NAME \
           --region=$_DEPLOY_REGION \
           --platform=managed \
-          --remove-annotations=run.googleapis.com/sources \
-          --clear-base-image || true
+          --format=yaml 2>/dev/null | python3 - << 'PYEOF'
+        import sys, yaml
+
+        svc = yaml.safe_load(sys.stdin.read())
+        if not svc:
+            sys.exit(0)
+
+        stale_keys = {'run.googleapis.com/sources', 'run.googleapis.com/build-id'}
+        for section in [svc.get('metadata', {}),
+                        svc.get('spec', {}).get('template', {}).get('metadata', {})]:
+            for key in list(section.get('annotations', {})):
+                if key in stale_keys:
+                    del section['annotations'][key]
+
+        svc.pop('status', None)
+        server_fields = {'resourceVersion', 'uid', 'selfLink', 'generation',
+                         'creationTimestamp', 'finalizers'}
+        for meta in [svc.get('metadata', {}),
+                     svc.get('spec', {}).get('template', {}).get('metadata', {})]:
+            for field in server_fields:
+                meta.pop(field, None)
+
+        with open('/tmp/svc_clean.yaml', 'w') as f:
+            yaml.dump(svc, f, default_flow_style=False)
+        PYEOF
+        [ -s /tmp/svc_clean.yaml ] && \
+          gcloud run services replace /tmp/svc_clean.yaml \
+            --region=$_DEPLOY_REGION \
+            --platform=managed || true
         gcloud run deploy $_SERVICE_NAME \
           --image=$_IMAGE_NAME:$COMMIT_SHA \
           --region=$_DEPLOY_REGION \
