@@ -15,19 +15,33 @@ steps:
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     id: Deploy
-    entrypoint: bash
+    entrypoint: /bin/bash
     args:
       - -c
       - |
-        gcloud run services update $_SERVICE_NAME \
-          --region=$_DEPLOY_REGION \
-          --platform=managed \
-          --remove-annotations=run.googleapis.com/sources \
-          --quiet || true
-        gcloud run deploy $_SERVICE_NAME \
-          --image=$_IMAGE_NAME:$COMMIT_SHA \
-          --region=$_DEPLOY_REGION \
-          --platform=managed
+        if gcloud run services describe $_SERVICE_NAME \
+              --region=$_DEPLOY_REGION \
+              --platform=managed \
+              --format=yaml > /dev/null 2>&1; then
+          # Service exists: strip the stale sources annotation in a dedicated
+          # update call first.  Newer gcloud SDK versions route `services replace`
+          # through the same delta-validation path as `services update`, so the
+          # annotation must be removed before we deploy the new image.
+          gcloud run services update $_SERVICE_NAME \
+            --region=$_DEPLOY_REGION \
+            --platform=managed \
+            --remove-annotations=run.googleapis.com/sources,run.googleapis.com/build-id
+          gcloud run services update $_SERVICE_NAME \
+            --image=$_IMAGE_NAME:$COMMIT_SHA \
+            --region=$_DEPLOY_REGION \
+            --platform=managed
+        else
+          # Service does not exist yet — create it with a standard deploy.
+          gcloud run deploy $_SERVICE_NAME \
+            --image=$_IMAGE_NAME:$COMMIT_SHA \
+            --region=$_DEPLOY_REGION \
+            --platform=managed
+        fi
 
 substitutions:
   _SERVICE_NAME: discord-music-bot-dashboard
