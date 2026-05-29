@@ -19,53 +19,20 @@ steps:
     args:
       - -c
       - |
-        # Remove stale run.googleapis.com/sources annotation and update the image
-        # via a full service replace (bypasses delta-validation that causes the
-        # "Source annotation has sources that are not referenced by a container" error).
-        # We save the service YAML to a temp file first (pipe+heredoc conflict means
-        # python3 cannot read from both a pipe and a heredoc simultaneously).
-        gcloud run services describe $_SERVICE_NAME \
-          --region=$_DEPLOY_REGION \
-          --platform=managed \
-          --format=yaml > /tmp/svc_orig.yaml 2>/dev/null || true
-
-        if [ -s /tmp/svc_orig.yaml ]; then
-          NEW_IMAGE="$_IMAGE_NAME:$COMMIT_SHA" python3 << 'PYEOF'
-        import os, yaml
-
-        with open('/tmp/svc_orig.yaml') as f:
-            svc = yaml.safe_load(f.read())
-        if not svc:
-            raise SystemExit(0)
-
-        stale_keys = {'run.googleapis.com/sources', 'run.googleapis.com/build-id'}
-        for section in [svc.get('metadata', {}),
-                        svc.get('spec', {}).get('template', {}).get('metadata', {})]:
-            for key in list(section.get('annotations', {})):
-                if key in stale_keys:
-                    del section['annotations'][key]
-
-        svc.pop('status', None)
-        server_fields = {'resourceVersion', 'uid', 'selfLink', 'generation',
-                         'creationTimestamp', 'finalizers'}
-        for meta in [svc.get('metadata', {}),
-                     svc.get('spec', {}).get('template', {}).get('metadata', {})]:
-            for field in server_fields:
-                meta.pop(field, None)
-
-        # Update the container image so services replace deploys the new image.
-        new_image = os.environ['NEW_IMAGE']
-        containers = (svc.get('spec', {})
-                         .get('template', {})
-                         .get('spec', {})
-                         .get('containers', []))
-        if containers:
-            containers[0]['image'] = new_image
-
-        with open('/tmp/svc_clean.yaml', 'w') as f:
-            yaml.dump(svc, f, default_flow_style=False)
-        PYEOF
-          gcloud run services replace /tmp/svc_clean.yaml \
+        if gcloud run services describe $_SERVICE_NAME \
+              --region=$_DEPLOY_REGION \
+              --platform=managed \
+              --format=yaml > /dev/null 2>&1; then
+          # Service exists: strip the stale sources annotation in a dedicated
+          # update call first.  Newer gcloud SDK versions route `services replace`
+          # through the same delta-validation path as `services update`, so the
+          # annotation must be removed before we deploy the new image.
+          gcloud run services update $_SERVICE_NAME \
+            --region=$_DEPLOY_REGION \
+            --platform=managed \
+            --remove-annotations=run.googleapis.com/sources,run.googleapis.com/build-id
+          gcloud run services update $_SERVICE_NAME \
+            --image=$_IMAGE_NAME:$COMMIT_SHA \
             --region=$_DEPLOY_REGION \
             --platform=managed
         else
