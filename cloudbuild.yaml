@@ -19,7 +19,9 @@ steps:
     args:
       - -c
       - |
-        # Remove stale run.googleapis.com/sources annotation via a full service replace.
+        # Remove stale run.googleapis.com/sources annotation and update the image
+        # via a full service replace (bypasses delta-validation that causes the
+        # "Source annotation has sources that are not referenced by a container" error).
         # We save the service YAML to a temp file first (pipe+heredoc conflict means
         # python3 cannot read from both a pipe and a heredoc simultaneously).
         gcloud run services describe $_SERVICE_NAME \
@@ -28,8 +30,8 @@ steps:
           --format=yaml > /tmp/svc_orig.yaml 2>/dev/null || true
 
         if [ -s /tmp/svc_orig.yaml ]; then
-          python3 << 'PYEOF'
-        import yaml
+          NEW_IMAGE="$_IMAGE_NAME:$COMMIT_SHA" python3 << 'PYEOF'
+        import os, yaml
 
         with open('/tmp/svc_orig.yaml') as f:
             svc = yaml.safe_load(f.read())
@@ -51,18 +53,28 @@ steps:
             for field in server_fields:
                 meta.pop(field, None)
 
+        # Update the container image so services replace deploys the new image.
+        new_image = os.environ['NEW_IMAGE']
+        containers = (svc.get('spec', {})
+                         .get('template', {})
+                         .get('spec', {})
+                         .get('containers', []))
+        if containers:
+            containers[0]['image'] = new_image
+
         with open('/tmp/svc_clean.yaml', 'w') as f:
             yaml.dump(svc, f, default_flow_style=False)
         PYEOF
           gcloud run services replace /tmp/svc_clean.yaml \
             --region=$_DEPLOY_REGION \
             --platform=managed
+        else
+          # Service does not exist yet — create it with a standard deploy.
+          gcloud run deploy $_SERVICE_NAME \
+            --image=$_IMAGE_NAME:$COMMIT_SHA \
+            --region=$_DEPLOY_REGION \
+            --platform=managed
         fi
-
-        gcloud run deploy $_SERVICE_NAME \
-          --image=$_IMAGE_NAME:$COMMIT_SHA \
-          --region=$_DEPLOY_REGION \
-          --platform=managed
 
 substitutions:
   _SERVICE_NAME: discord-music-bot-dashboard
