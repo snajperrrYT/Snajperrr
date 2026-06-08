@@ -183,6 +183,27 @@ app.post('/api/yt-to-drive', express.json(), async (req, res) => {
     }
 });
 
+// GenAI proxy endpoint - server-side only. The client should call this endpoint instead of importing server SDKs.
+app.post('/api/genai/query', express.json(), async (req, res) => {
+  try {
+    const { prompt } = req.body;
+    if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
+    if (!aiAssistant) return res.status(500).json({ error: 'GenAI not configured' });
+
+    // Use the same shape as client did - adapt if SDK differs
+    const response = await aiAssistant.models.generateContent({
+      model: "gemini-flash-latest",
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    });
+
+    const text = (response && (response.text || response.output_text)) || JSON.stringify(response);
+    res.json({ success: true, text, raw: response });
+  } catch (err: any) {
+    console.error('[GenAI] Error:', err);
+    res.status(500).json({ error: err.message || 'GenAI error' });
+  }
+});
+
 app.get('/api/health', (req, res) => {
     logEvent('info', 'system', 'Health check performed.');
     res.status(200).send('OK');
