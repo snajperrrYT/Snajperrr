@@ -3,16 +3,37 @@ const fs = require('fs');
 const path = require('path');
 
 const economyPath = path.join(__dirname, '../../data/economy.json');
+const tmpEconomyPath = path.join(__dirname, '../../data/economy.json.tmp');
 
 function getEconomy() {
-  if (!fs.existsSync(economyPath)) {
-    fs.writeFileSync(economyPath, '{}');
+  try {
+    if (!fs.existsSync(economyPath)) {
+      fs.writeFileSync(economyPath, '{}');
+    }
+    const raw = fs.readFileSync(economyPath, 'utf8');
+    try {
+      return JSON.parse(raw || '{}');
+    } catch (e) {
+      console.error('Corrupted economy.json, resetting file.', e);
+      fs.writeFileSync(economyPath, '{}');
+      return {};
+    }
+  } catch (err) {
+    console.error('Error reading economy file:', err);
+    return {};
   }
-  return JSON.parse(fs.readFileSync(economyPath, 'utf8'));
 }
 
 function saveEconomy(economy) {
-  fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2));
+  try {
+    // atomic write: write to temp file and rename
+    fs.writeFileSync(tmpEconomyPath, JSON.stringify(economy, null, 2));
+    fs.renameSync(tmpEconomyPath, economyPath);
+  } catch (err) {
+    console.error('Error saving economy file:', err);
+    // best-effort fallback
+    try { fs.writeFileSync(economyPath, JSON.stringify(economy, null, 2)); } catch (e) { console.error('Fallback write failed:', e); }
+  }
 }
 
 const cooldowns = new Map();
@@ -22,7 +43,7 @@ module.exports = {
     .setName('rob')
     .setDescription('Okradnij użytkownika')
     .addUserOption(option =>
-      option.setName('użytkownik')
+      option.setName('user')
         .setDescription('Użytkownik którego chcesz okraść')
         .setRequired(true)
     ),
@@ -30,7 +51,9 @@ module.exports = {
   async execute(interaction) {
     try {
       const robber = interaction.user;
-      const target = interaction.options.getUser('użytkownik');
+      const target = interaction.options.getUser('user');
+
+      if (!target) return interaction.reply({ content: '❌ Nie znaleziono użytkownika.', ephemeral: true });
 
       if (target.id === robber.id) {
         return await interaction.reply({ content: '❌ Nie możesz okraść samego siebie!', ephemeral: true });
@@ -78,7 +101,7 @@ module.exports = {
         const embed = new EmbedBuilder()
           .setColor('#00FF00')
           .setTitle('💰 Udana Kradzież!')
-          .setDescription(`Udało Ci się ukraść **${stolen} 🪙** od ${target}!`)
+          .setDescription(`Udało Ci się ukraść **${stolen} 🪙** od <@${target.id}>!`)
           .addFields(
             { name: '💼 Twoje saldo', value: `${economy[robber.id].balance} 🪙` }
           )
@@ -105,7 +128,7 @@ module.exports = {
       }
     } catch (error) {
       console.error('Błąd w komendzie rob:', error);
-      await interaction.reply({ content: '❌ Wystąpił błąd podczas kradzieży!', ephemeral: true });
+      try { await interaction.reply({ content: '❌ Wystąpił błąd podczas kradzieży!', ephemeral: true }); } catch(e) { console.error('Reply failed:', e); }
     }
   },
 };
