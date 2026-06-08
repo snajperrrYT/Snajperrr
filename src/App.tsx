@@ -3,7 +3,6 @@ import {
   AnimatePresence, 
   motion 
 } from 'motion/react';
-import { GoogleGenAI } from "@google/genai";
 import { arrayMove } from '@dnd-kit/sortable';
 import { 
   KeyboardSensor, 
@@ -75,10 +74,8 @@ export default function App() {
   const [checkingVersion, setCheckingVersion] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Check if GEMINI_API_KEY is available (in Vite it would need to be VITE_GEMINI_API_KEY if on client, 
-  // but here it is usually server-side. However, the original code used process.env.GEMINI_API_KEY)
+  // Check if GEMINI_API_KEY is available (in Vite it would need to be VITE_GEMINI_API_KEY if on client)
   const geminiKey = (import.meta as any).env.VITE_GEMINI_API_KEY || '';
-  const ai = geminiKey ? new GoogleGenAI(geminiKey) : null;
 
   // Bug report state (user)
   const [showBugModal, setShowBugModal] = useState(false);
@@ -424,17 +421,29 @@ export default function App() {
     } catch {}
   };
 
+  // Helper to call server-side GenAI endpoint (prevents bundling server SDK into client)
+  async function callGenAI(prompt: string) {
+    const res = await fetch('/api/genai/query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`GenAI error: ${res.status} ${txt}`);
+    }
+    const data = await res.json();
+    return data?.text ?? data?.data ?? data;
+  }
+
   const handleAnalyzeWithAI = async (logId: number) => {
-    if (!ai) return alert("AI not configured (Missing VITE_GEMINI_API_KEY)");
+    if (!geminiKey) return alert("AI not configured (Missing VITE_GEMINI_API_KEY)");
     setAnalyzingLogId(logId);
     try {
       const log = systemLogs.find(l => l.id === logId);
       const prompt = `Analizuj błąd: ${log.message}. Podaj krótkie rozwiązanie (Markdown, PL).`;
-      const response = await ai.models.generateContent({
-        model: "gemini-flash-latest",
-        contents: [{ role: 'user', parts: [{ text: prompt }] }]
-      });
-      const analysis = response.text || "Błąd analizy AI.";
+      const response = await callGenAI(prompt);
+      const analysis = typeof response === 'string' ? response : (response.text || "Błąd analizy AI.");
       setAiAnalysis(prev => {
         const next = { ...prev };
         next[logId] = analysis;
@@ -445,7 +454,7 @@ export default function App() {
         body: JSON.stringify({ solution: analysis })
       });
       fetchAdminLogs();
-    } catch { alert('Błąd AI'); }
+    } catch (e) { console.error(e); alert('Błąd AI'); }
     finally { setAnalyzingLogId(null); }
   };
 
@@ -598,7 +607,7 @@ export default function App() {
       </main>
 
       {clearConfirmGuildId && <ConfirmModal onCancel={() => setClearConfirmGuildId(null)} onConfirm={() => handleClearQueue(clearConfirmGuildId)} />}
-      {showBugModal && <BugReportModal title={bugTitle} setTitle={setBugTitle} description={bugDescription} setDescription={setBugDescription} priority={bugPriority} setPriority={setBugPriority} onCancel={() => setShowBugModal(false)} onConfirm={handleSubmitBug} submitting={isSubmittingBug} />}
+      {showBugModal && <BugReportModal title={bugTitle} setTitle={setBugTitle} description={bugDescription} setDescription={setBugDescription} priority={bugPriority} setPriority={setBugPriority} [...] />}
       {showChangelog && <ChangelogModal onClose={() => { localStorage.setItem('changelog_version', CHANGELOG_VERSION); setShowChangelog(false); }} />}
     </div>
   );
