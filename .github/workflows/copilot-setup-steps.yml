@@ -1,1 +1,38 @@
-napraw to jak najszybcciej musze to wgrać na host claud run
+name: CI Build
+
+on:
+  push:
+    branches: ["main", "master", "fix/all-fixes"]
+  pull_request:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Install, Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build --if-present
+
+      - name: Run tests
+        run: pnpm run test --if-present
