@@ -1,0 +1,28 @@
+# Node / project ignores
+node_modules/
+.pnp/
+.pnp.js
+.env
+.env.local
+.env.*.local
+.DS_Store
+dist/
+coverage/
+.vscode/
+.idea/
+*.log
+*.tmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+.pnpm-store/
+.cache/
+/.turbo/
+
+# OS
+Thumbs.db
+
+# Optional editor files
+*.sublime-workspace
+*.sublime-project
