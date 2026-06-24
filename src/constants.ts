@@ -1,7 +1,21 @@
 import { ChangelogEntry } from "./types";
 
-export const CHANGELOG_VERSION = '2.9.0';
+export const CHANGELOG_VERSION = '3.0.0';
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.0',
+    date: '2026-06-25',
+    title: 'Panel Zarządzania Interfejsem & Nowy Przepotężny Silnik',
+    features: [
+      { type: 'new', text: 'Zarządzanie Kluczami & Sekretami – Pełny panel administracyjny do zarządzania kluczami konfiguracyjnymi interfejsu webowego i bota Discord bezpośrednio z panelu administratora.' },
+      { type: 'new', text: 'Generowanie Sekretu JWT – Automatyczne generowanie nowych sekretów JWT dla interfejsu webowego z jednym kliknięciem.' },
+      { type: 'new', text: 'Konfiguracja Persistentna – Wszystkie ustawienia konfiguracyjne są automatycznie zapisywane w bazie danych i przywracane po restarcie serwera.' },
+      { type: 'new', text: 'Nowy Silnik Przepotężny – Wdrożono nowy, znacznie wydajniejszy silnik przetwarzania z obsługą równoległego przetwarzania do 4 strumieni jednocześnie.' },
+      { type: 'improvement', text: 'Restart Bota z Nową Konfiguracją – Dodano możliwość zmiany tokenu Discord i natychmiastowego restartu bota bez przerywania serwera.' },
+      { type: 'improvement', text: 'Bezpieczeństwo Kluczy – Wszystkie sekretne klucze są maskowane w interfejsie webowym (pokazywane są tylko ostatnie 4 znaki).' },
+      { type: 'improvement', text: 'Interfejs Konfiguracji – Redesign panelu administracyjnego z lepszą organizacją i nowymi ikonami dla wszystkich opcji konfiguracyjnych.' },
+    ],
+  },
   {
     version: '2.9.0',
     date: '2026-05-28',
