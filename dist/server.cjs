@@ -1733,9 +1733,23 @@ app.post("/api/admin/config", import_express.default.json(), isAdmin, (req, res)
       return res.status(400).json({ success: false, error: "Warto\u015B\u0107 musi by\u0107 tekstem." });
     }
     process.env[key] = value;
+    if (key === "JWT_SECRET") JWT_SECRET = value;
+    if (key === "DISCORD_TOKEN") DISCORD_TOKEN = value;
     db_default.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run(`config_${key}`, value);
     logEvent("info", "admin", `Zaktualizowano klucz konfiguracji: ${key}`);
     res.json({ success: true, message: `Zaktualizowano ${key}` });
+  } catch (err) {
+    res.status(500).json({ success: false });
+  }
+});
+app.post("/api/admin/config/generate-secret", isAdmin, (req, res) => {
+  try {
+    const newSecret = import_crypto2.default.randomBytes(32).toString("hex");
+    process.env.JWT_SECRET = newSecret;
+    JWT_SECRET = newSecret;
+    db_default.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run("config_JWT_SECRET", newSecret);
+    logEvent("info", "admin", "Wygenerowano nowy sekret JWT. Wszyscy u\u017Cytkownicy b\u0119d\u0105 musieli si\u0119 zalogowa\u0107 ponownie.");
+    res.json({ success: true, message: "Nowy sekret JWT wygenerowany. Wszyscy u\u017Cytkownicy b\u0119d\u0105 musieli si\u0119 zalogowa\u0107 ponownie." });
   } catch (err) {
     res.status(500).json({ success: false });
   }
@@ -2016,7 +2030,31 @@ app.post("/api/players/:guildId/play", async (req, res) => {
     } else res.status(404).json({ error: "Not found" });
   } else res.status(400).json({ error: "Connect on Discord first." });
 });
+function restorePersistedConfig() {
+  const PERSISTED_KEYS = [
+    "DISCORD_TOKEN",
+    "DISCORD_CLIENT_ID",
+    "DISCORD_CLIENT_SECRET",
+    "SPOTIFY_CLIENT_ID",
+    "SPOTIFY_CLIENT_SECRET",
+    "GEMINI_API_KEY",
+    "STRIPE_SECRET_KEY",
+    "JWT_SECRET",
+    "YOUTUBE_COOKIES",
+    "APP_URL"
+  ];
+  for (const key of PERSISTED_KEYS) {
+    const row = db_default.prepare("SELECT value FROM global_settings WHERE key = ?").get(`config_${key}`);
+    if (row?.value) {
+      process.env[key] = row.value;
+      if (key === "JWT_SECRET") JWT_SECRET = row.value;
+      if (key === "DISCORD_TOKEN") DISCORD_TOKEN = row.value;
+      console.log(`[Config] Przywr\xF3cono klucz z bazy: ${key}`);
+    }
+  }
+}
 async function start() {
+  restorePersistedConfig();
   process.on("SIGTERM", () => shutdown("SIGTERM"));
   process.on("SIGINT", () => shutdown("SIGINT"));
   server = app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));

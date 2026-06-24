@@ -137,6 +137,7 @@ const ConfigPanel = () => {
   const [showSecret, setShowSecret] = React.useState<Record<string, boolean>>({});
   const [saving, setSaving] = React.useState<string | null>(null);
   const [restartingBot, setRestartingBot] = React.useState(false);
+  const [generatingSecret, setGeneratingSecret] = React.useState(false);
   const [successKey, setSuccessKey] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -182,6 +183,24 @@ const ConfigPanel = () => {
     finally { setRestartingBot(false); }
   };
 
+  const handleGenerateSecret = async () => {
+    if (!window.confirm('Czy na pewno chcesz wygenerować nowy sekret JWT? Wszyscy zalogowani użytkownicy będą musieli zalogować się ponownie.')) return;
+    setGeneratingSecret(true);
+    try {
+      const res = await fetch('/api/admin/config/generate-secret', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        setConfigValues(prev => ({ ...prev, JWT_SECRET: '••••••(nowy)' }));
+        setSuccessKey('JWT_SECRET');
+        setTimeout(() => setSuccessKey(null), 3000);
+        alert(data.message);
+      } else {
+        alert('Błąd generowania sekretu.');
+      }
+    } catch { alert('Błąd serwera'); }
+    finally { setGeneratingSecret(false); }
+  };
+
   return (
     <div className="space-y-8">
       <div className="bg-[#18181B]/50 border border-white/5 rounded-3xl p-8">
@@ -195,21 +214,32 @@ const ConfigPanel = () => {
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Konfiguracja interfejsu webowego i bota</p>
             </div>
           </div>
-          <button
-            onClick={handleRestartBot}
-            disabled={restartingBot}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
-          >
-            {restartingBot ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
-            Restartuj Bota
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleGenerateSecret}
+              disabled={generatingSecret}
+              className="px-5 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-amber-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-amber-600/20 flex items-center gap-2"
+              title="Wygeneruj nowy losowy sekret JWT dla interfejsu webowego"
+            >
+              {generatingSecret ? <Loader2 className="w-3 h-3 animate-spin" /> : <Key className="w-3 h-3" />}
+              Nowy Sekret JWT
+            </button>
+            <button
+              onClick={handleRestartBot}
+              disabled={restartingBot}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
+            >
+              {restartingBot ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
+              Restartuj Bota
+            </button>
+          </div>
         </div>
 
         <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 mb-8">
           <div className="flex items-start gap-3">
             <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-400/80 leading-relaxed">
-              Zmiana kluczy zostanie zastosowana natychmiast w pamięci. Aby bot użył nowego tokenu Discord, kliknij "Restartuj Bota". Klucze są przechowywane bezpiecznie w bazie danych.
+              Zmiana kluczy zostanie zastosowana natychmiast w pamięci. Aby bot użył nowego tokenu Discord, kliknij "Restartuj Bota". Kliknij "Nowy Sekret JWT" aby wygenerować nowy klucz bezpieczeństwa interfejsu webowego — spowoduje to wylogowanie wszystkich użytkowników. Klucze są przechowywane bezpiecznie w bazie danych i przywracane automatycznie po restarcie serwera.
             </p>
           </div>
         </div>
@@ -227,12 +257,25 @@ const ConfigPanel = () => {
                   <p className="text-[10px] text-slate-500 mt-0.5">{field.description}</p>
                 </div>
                 {editingKey !== field.key && (
-                  <button
-                    onClick={() => { setEditingKey(field.key); setEditValue(''); }}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-white/5"
-                  >
-                    Zmień
-                  </button>
+                  <div className="flex gap-2">
+                    {field.key === 'JWT_SECRET' && (
+                      <button
+                        onClick={handleGenerateSecret}
+                        disabled={generatingSecret}
+                        className="px-3 py-2 bg-amber-600/10 hover:bg-amber-600/20 text-amber-400 font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-amber-600/20 flex items-center gap-1.5"
+                        title="Wygeneruj losowy nowy sekret"
+                      >
+                        {generatingSecret ? <Loader2 className="w-3 h-3 animate-spin" /> : <Key className="w-3 h-3" />}
+                        Generuj
+                      </button>
+                    )}
+                    <button
+                      onClick={() => { setEditingKey(field.key); setEditValue(''); }}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-white/5"
+                    >
+                      Zmień
+                    </button>
+                  </div>
                 )}
               </div>
 
