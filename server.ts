@@ -195,7 +195,7 @@ app.post('/api/genai/query', express.json(), async (req, res) => {
       contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
 
-    const text = (response && response.text) || JSON.stringify(response);
+    const text = (response && response.text) || 'AI response unavailable';
     res.json({ success: true, text, raw: response });
   } catch (err: any) {
     console.error('[GenAI] Error:', err);

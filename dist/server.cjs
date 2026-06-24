@@ -713,7 +713,7 @@ app.post("/api/genai/query", import_express.default.json(), async (req, res) => 
       model: "gemini-flash-latest",
       contents: [{ role: "user", parts: [{ text: prompt }] }]
     });
-    const text = response && response.text || JSON.stringify(response);
+    const text = response && response.text || "AI response unavailable";
     res.json({ success: true, text, raw: response });
   } catch (err) {
     console.error("[GenAI] Error:", err);
