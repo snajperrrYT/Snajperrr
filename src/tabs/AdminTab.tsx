@@ -1,12 +1,12 @@
 import React from 'react';
-import { Settings, Plus, List, Trash2, Zap, AlertCircle, Info, Activity, Wand2, ShieldCheck, ArrowUpRight, Loader2, Play, Bot, RefreshCw, Terminal, Cpu, HardDrive, Users, Music, Bell, Sparkles } from 'lucide-react';
+import { Settings, Plus, List, Trash2, Zap, AlertCircle, Info, Activity, Wand2, ShieldCheck, ArrowUpRight, Loader2, Play, Bot, RefreshCw, Terminal, Cpu, HardDrive, Users, Music, Bell, Sparkles, Key, Eye, EyeOff, Save, RotateCcw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { CHANGELOG } from '../constants';
 
 interface AdminTabProps {
-  adminTab: 'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news';
-  setAdminTab: (v: 'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news') => void;
+  adminTab: 'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news' | 'config';
+  setAdminTab: (v: 'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news' | 'config') => void;
   systemLogs: any[];
   systemStats: any;
   voucherType: string;
@@ -117,6 +117,177 @@ const DiagnosticView = ({ data, handleSystemRepair, isRepairing }: { data: any, 
   );
 };
 
+const CONFIG_FIELDS = [
+  { key: 'DISCORD_TOKEN', label: 'Discord Bot Token', description: 'Token bota Discord z Developer Portal', sensitive: true },
+  { key: 'DISCORD_CLIENT_ID', label: 'Discord Client ID', description: 'Client ID aplikacji Discord OAuth2', sensitive: false },
+  { key: 'DISCORD_CLIENT_SECRET', label: 'Discord Client Secret', description: 'Client Secret aplikacji Discord OAuth2', sensitive: true },
+  { key: 'SPOTIFY_CLIENT_ID', label: 'Spotify Client ID', description: 'Client ID z Spotify Developer Dashboard', sensitive: false },
+  { key: 'SPOTIFY_CLIENT_SECRET', label: 'Spotify Client Secret', description: 'Client Secret z Spotify Developer Dashboard', sensitive: true },
+  { key: 'GEMINI_API_KEY', label: 'Gemini API Key', description: 'Klucz API Google Gemini (AI)', sensitive: true },
+  { key: 'STRIPE_SECRET_KEY', label: 'Stripe Secret Key', description: 'Klucz tajny Stripe do obsługi płatności', sensitive: true },
+  { key: 'JWT_SECRET', label: 'JWT Secret', description: 'Sekret do podpisywania tokenów JWT (auth)', sensitive: true },
+  { key: 'YOUTUBE_COOKIES', label: 'YouTube Cookies', description: 'Cookies YouTube dla lepszej ekstrakcji audio', sensitive: true },
+  { key: 'APP_URL', label: 'App URL', description: 'Publiczny URL panelu (np. https://your-app.run.app)', sensitive: false },
+];
+
+const ConfigPanel = () => {
+  const [configValues, setConfigValues] = React.useState<Record<string, string>>({});
+  const [editingKey, setEditingKey] = React.useState<string | null>(null);
+  const [editValue, setEditValue] = React.useState('');
+  const [showSecret, setShowSecret] = React.useState<Record<string, boolean>>({});
+  const [saving, setSaving] = React.useState<string | null>(null);
+  const [restartingBot, setRestartingBot] = React.useState(false);
+  const [successKey, setSuccessKey] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    fetch('/api/admin/config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setConfigValues(data.config);
+      });
+  }, []);
+
+  const handleSave = async (key: string) => {
+    if (!editValue.trim()) return;
+    setSaving(key);
+    try {
+      const res = await fetch('/api/admin/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value: editValue })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setConfigValues(prev => ({ ...prev, [key]: key === 'APP_URL' || key === 'DISCORD_CLIENT_ID' || key === 'SPOTIFY_CLIENT_ID' ? editValue : '••••••' + editValue.slice(-4) }));
+        setEditingKey(null);
+        setEditValue('');
+        setSuccessKey(key);
+        setTimeout(() => setSuccessKey(null), 3000);
+      } else {
+        alert(data.error || 'Błąd zapisu');
+      }
+    } catch { alert('Błąd serwera'); }
+    finally { setSaving(null); }
+  };
+
+  const handleRestartBot = async () => {
+    if (!window.confirm('Czy na pewno chcesz zrestartować bota z nową konfiguracją? Bot będzie offline przez kilka sekund.')) return;
+    setRestartingBot(true);
+    try {
+      const res = await fetch('/api/admin/config/restart-bot', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) alert(data.message);
+      else alert('Błąd restartu bota.');
+    } catch { alert('Błąd serwera'); }
+    finally { setRestartingBot(false); }
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="bg-[#18181B]/50 border border-white/5 rounded-3xl p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center">
+              <Key className="w-6 h-6 text-amber-400" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-white">Zarządzanie Kluczami & Sekretami</h3>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Konfiguracja interfejsu webowego i bota</p>
+            </div>
+          </div>
+          <button
+            onClick={handleRestartBot}
+            disabled={restartingBot}
+            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
+          >
+            {restartingBot ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
+            Restartuj Bota
+          </button>
+        </div>
+
+        <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 mb-8">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+            <p className="text-xs text-amber-400/80 leading-relaxed">
+              Zmiana kluczy zostanie zastosowana natychmiast w pamięci. Aby bot użył nowego tokenu Discord, kliknij "Restartuj Bota". Klucze są przechowywane bezpiecznie w bazie danych.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {CONFIG_FIELDS.map(field => (
+            <div key={field.key} className="bg-black/40 border border-white/5 rounded-2xl p-5 group hover:border-white/10 transition-all">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-white">{field.label}</span>
+                    {field.sensitive && <span className="px-1.5 py-0.5 bg-red-500/10 text-red-400 text-[8px] font-black uppercase rounded border border-red-500/20">SECRET</span>}
+                    {successKey === field.key && <span className="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-400 text-[8px] font-black uppercase rounded border border-emerald-500/20">ZAPISANO</span>}
+                  </div>
+                  <p className="text-[10px] text-slate-500 mt-0.5">{field.description}</p>
+                </div>
+                {editingKey !== field.key && (
+                  <button
+                    onClick={() => { setEditingKey(field.key); setEditValue(''); }}
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-white/5"
+                  >
+                    Zmień
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                {editingKey === field.key ? (
+                  <div className="flex-1 flex gap-2">
+                    <div className="flex-1 relative">
+                      <input
+                        type={field.sensitive && !showSecret[field.key] ? 'password' : 'text'}
+                        value={editValue}
+                        onChange={e => setEditValue(e.target.value)}
+                        placeholder={`Wpisz nowy ${field.label}...`}
+                        className="w-full bg-[#09090B] border border-indigo-500/30 text-white rounded-xl px-4 py-3 text-sm font-mono pr-10 focus:outline-none focus:border-indigo-500"
+                        autoFocus
+                      />
+                      {field.sensitive && (
+                        <button
+                          onClick={() => setShowSecret(prev => ({ ...prev, [field.key]: !prev[field.key] }))}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                        >
+                          {showSecret[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleSave(field.key)}
+                      disabled={saving === field.key || !editValue.trim()}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-600/50 text-white font-black uppercase rounded-xl text-[10px] transition-all flex items-center gap-2"
+                    >
+                      {saving === field.key ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                      Zapisz
+                    </button>
+                    <button
+                      onClick={() => { setEditingKey(null); setEditValue(''); }}
+                      className="px-4 py-2 bg-white/5 hover:bg-white/10 text-slate-400 font-black uppercase rounded-xl text-[10px] transition-all"
+                    >
+                      Anuluj
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex-1 bg-[#09090B] border border-white/5 rounded-xl px-4 py-3">
+                    <code className="text-xs font-mono text-slate-400">
+                      {configValues[field.key] || <span className="text-slate-600 italic">Nie ustawiono</span>}
+                    </code>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const AdminTab: React.FC<AdminTabProps> = ({
   adminTab, setAdminTab, systemLogs, systemStats, voucherType, setVoucherType, voucherDuration, setVoucherDuration, voucherMaxUses, setVoucherMaxUses, handleCreateVoucher, createdVoucher, setCreatedVoucher, vouchers, adminUsers, handleAdminUserPremium, analyzingLogId, handleAnalyzeWithAI, aiAnalysis, bugReports, handleUpdateBugStatus, versionInfo, checkingVersion, fetchVersionInfo, handleTriggerUpdate, isUpdating, handleSystemRepair, isRepairing, fetchAdminLogs, diagData, handleDeleteVoucher, handleSendAnnouncement
 }) => {
@@ -202,6 +373,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               { id: 'players', label: 'Aktywni Gracze', icon: Music },
               { id: 'logs', label: 'System Logs', icon: Terminal },
               { id: 'diag', label: 'Diagnostyka', icon: ShieldCheck },
+              { id: 'config', label: 'Konfiguracja', icon: Key },
               { id: 'news', label: 'Ogłoszenia', icon: Bell },
               { id: 'bugs', label: 'Zgłoszenia Błędów', icon: Activity },
               { id: 'updates', label: 'Maintenance & Repairs', icon: Wand2 },
@@ -554,6 +726,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                    </tbody>
                 </table>
              </div>
+          )}
+
+          {adminTab === 'config' && (
+            <ConfigPanel />
           )}
 
           {adminTab === 'diag' && (

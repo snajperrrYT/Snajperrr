@@ -62,7 +62,7 @@ export default function App() {
   const [voucherMaxUses, setVoucherMaxUses] = useState(1);
   const [vouchers, setVouchers] = useState<any[]>([]);
   const [createdVoucher, setCreatedVoucher] = useState<any>(null);
-  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news'>('vouchers');
+  const [adminTab, setAdminTab] = useState<'vouchers' | 'users' | 'logs' | 'bugs' | 'updates' | 'diag' | 'players' | 'news' | 'config'>('vouchers');
   const [adminUsers, setAdminUsers] = useState<any[]>([]);
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [bugReports, setBugReports] = useState<any[]>([]);

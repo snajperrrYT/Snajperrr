@@ -1225,6 +1225,71 @@ app.post('/api/admin/system/maintenance', express.json(), isAdmin, (req, res) =>
     } catch(err) { res.status(500).json({ success: false }); }
 });
 
+// ====== Config Management (Secrets/Keys) ======
+app.get('/api/admin/config', isAdmin, (req, res) => {
+    try {
+        res.json({
+            success: true,
+            config: {
+                DISCORD_TOKEN: process.env.DISCORD_TOKEN ? '••••••' + (process.env.DISCORD_TOKEN.slice(-4) || '') : '',
+                DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID || '',
+                DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET ? '••••••' + (process.env.DISCORD_CLIENT_SECRET.slice(-4) || '') : '',
+                SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || '',
+                SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET ? '••••••' + (process.env.SPOTIFY_CLIENT_SECRET.slice(-4) || '') : '',
+                GEMINI_API_KEY: process.env.GEMINI_API_KEY ? '••••••' + (process.env.GEMINI_API_KEY.slice(-4) || '') : '',
+                STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ? '••••••' + (process.env.STRIPE_SECRET_KEY.slice(-4) || '') : '',
+                JWT_SECRET: process.env.JWT_SECRET ? '••••••' + (process.env.JWT_SECRET.slice(-4) || '') : '',
+                YOUTUBE_COOKIES: process.env.YOUTUBE_COOKIES ? '(ustawione)' : '',
+                APP_URL: process.env.APP_URL || '',
+            }
+        });
+    } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/admin/config', express.json(), isAdmin, (req, res) => {
+    try {
+        const { key, value } = req.body;
+        const ALLOWED_KEYS = [
+            'DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'DISCORD_CLIENT_SECRET',
+            'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'GEMINI_API_KEY',
+            'STRIPE_SECRET_KEY', 'JWT_SECRET', 'YOUTUBE_COOKIES', 'APP_URL'
+        ];
+        if (!key || !ALLOWED_KEYS.includes(key)) {
+            return res.status(400).json({ success: false, error: 'Nieprawidłowy klucz konfiguracji.' });
+        }
+        if (typeof value !== 'string') {
+            return res.status(400).json({ success: false, error: 'Wartość musi być tekstem.' });
+        }
+
+        // Apply to running process
+        process.env[key] = value;
+
+        // Store in db for persistence across restarts
+        db.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run(`config_${key}`, value);
+
+        logEvent('info', 'admin', `Zaktualizowano klucz konfiguracji: ${key}`);
+        res.json({ success: true, message: `Zaktualizowano ${key}` });
+    } catch(err) { res.status(500).json({ success: false }); }
+});
+
+app.post('/api/admin/config/restart-bot', express.json(), isAdmin, async (req, res) => {
+    try {
+        logEvent('info', 'admin', 'Administrator zażądał restartu bota z nową konfiguracją.');
+        try { client.destroy(); } catch {}
+        botStatus.state = 'offline';
+        reconnectAttempts = 0;
+        botLoginInFlight = false;
+
+        // Re-bootstrap with new token
+        setTimeout(async () => {
+            await bootstrapExtractors();
+            await bootstrapBot(true);
+        }, 2000);
+
+        res.json({ success: true, message: 'Bot jest restartowany z nową konfiguracją.' });
+    } catch(err) { res.status(500).json({ success: false }); }
+});
+
 async function bootstrapExtractors() {
   try {
     console.log('[Bot] Ładowanie ekstraktorów...');
