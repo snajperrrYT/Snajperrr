@@ -40,6 +40,11 @@ steps:
         ]:
             for k in stale:
                 ann.pop(k, None)
+        template = svc.setdefault('spec', {}).setdefault('template', {})
+        template_annotations = template.setdefault('metadata', {}).setdefault('annotations', {})
+        template_annotations['autoscaling.knative.dev/minScale'] = '1'
+        template_annotations['run.googleapis.com/cpu-throttling'] = 'false'
+        template_annotations['run.googleapis.com/startup-cpu-boost'] = 'true'
         svc['spec']['template']['spec']['containers'][0]['image'] = image
         with open('/tmp/service.yaml', 'w') as f:
             yaml.dump(svc, f, default_flow_style=False)
@@ -52,7 +57,9 @@ steps:
           gcloud run deploy $_SERVICE_NAME \
             --image=$_IMAGE_NAME:$COMMIT_SHA \
             --region=$_DEPLOY_REGION \
-            --platform=managed
+            --platform=managed \
+            --min-instances=1 \
+            --no-cpu-throttling
         fi
 
 substitutions:
