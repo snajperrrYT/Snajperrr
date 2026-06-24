@@ -22,6 +22,18 @@ export const initAuth = (
       if (cachedAccessToken) {
         if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
       } else if (!isSigningIn) {
+        // Token missing but user is signed in - try to get a fresh ID token
+        // rather than immediately failing
+        try {
+          const idToken = await user.getIdToken();
+          if (idToken) {
+            cachedAccessToken = idToken;
+            if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
+            return;
+          }
+        } catch (e) {
+          console.error('Failed to refresh ID token:', e);
+        }
         cachedAccessToken = null;
         if (onAuthFailure) onAuthFailure();
       }
