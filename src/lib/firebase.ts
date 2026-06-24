@@ -31,7 +31,9 @@ export const initAuth = (
             if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
             return;
           }
-        } catch {}
+        } catch (e) {
+          console.error('Failed to refresh ID token:', e);
+        }
         cachedAccessToken = null;
         if (onAuthFailure) onAuthFailure();
       }

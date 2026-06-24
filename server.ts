@@ -1491,7 +1491,7 @@ client.on('interactionCreate', async interaction => {
     const type = interaction.options.getString('type', true) as any;
     const rawPath = interaction.options.getString('path', true);
     const savePath = path.resolve(rawPath);
-    if (!savePath.startsWith('/tmp')) {
+    if (!savePath.startsWith('/tmp/') && savePath !== '/tmp') {
       return interaction.followUp('❌ Ze względów bezpieczeństwa ścieżka musi zaczynać się od /tmp.');
     }
 

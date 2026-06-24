@@ -1965,7 +1965,7 @@ client.on("interactionCreate", async (interaction) => {
     const type = interaction.options.getString("type", true);
     const rawPath = interaction.options.getString("path", true);
     const savePath = import_path2.default.resolve(rawPath);
-    if (!savePath.startsWith("/tmp")) {
+    if (!savePath.startsWith("/tmp/") && savePath !== "/tmp") {
       return interaction.followUp("\u274C Ze wzgl\u0119d\xF3w bezpiecze\u0144stwa \u015Bcie\u017Cka musi zaczyna\u0107 si\u0119 od /tmp.");
     }
     try {
