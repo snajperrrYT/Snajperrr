@@ -607,7 +607,7 @@ export default function App() {
       </main>
 
       {clearConfirmGuildId && <ConfirmModal onCancel={() => setClearConfirmGuildId(null)} onConfirm={() => handleClearQueue(clearConfirmGuildId)} />}
-      {showBugModal && <BugReportModal title={bugTitle} setTitle={setBugTitle} description={bugDescription} setDescription={setBugDescription} priority={bugPriority} setPriority={setBugPriority} [...] />}
+      {showBugModal && <BugReportModal title={bugTitle} setTitle={setBugTitle} description={bugDescription} setDescription={setBugDescription} priority={bugPriority} setPriority={setBugPriority} onCancel={() => setShowBugModal(false)} onConfirm={handleSubmitBug} submitting={isSubmittingBug} />}
       {showChangelog && <ChangelogModal onClose={() => { localStorage.setItem('changelog_version', CHANGELOG_VERSION); setShowChangelog(false); }} />}
     </div>
   );
