@@ -5,7 +5,7 @@ export const CHANGELOG: ChangelogEntry[] = [
   {
     version: '3.0.0',
     date: '2026-06-25',
-    title: 'Panel Zarządzania Interfejsem & Nowy Potężny Silnik',
+    title: 'Panel Zarządzania Interfejsem & Nowy Przepotężny Silnik',
     features: [
       { type: 'new', text: 'Zarządzanie Kluczami & Sekretami – Pełny panel administracyjny do zarządzania kluczami konfiguracyjnymi interfejsu webowego i bota Discord bezpośrednio z panelu administratora.' },
       { type: 'new', text: 'Generowanie Sekretu JWT – Automatyczne generowanie nowych sekretów JWT dla interfejsu webowego z jednym kliknięciem.' },
