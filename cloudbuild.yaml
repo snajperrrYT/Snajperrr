@@ -60,5 +60,10 @@ substitutions:
   _DEPLOY_REGION: us-west2
   _IMAGE_NAME: us-west2-docker.pkg.dev/gen-lang-client-0542481418/cloud-run-source-deploy/snajperrr/discord-music-bot-dashboard
 
+serviceAccount: projects/gen-lang-client-0542481418/serviceAccounts/moje-konto@gen-lang-client-0542481418.iam.gserviceaccount.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
   - '$_IMAGE_NAME:$COMMIT_SHA'
