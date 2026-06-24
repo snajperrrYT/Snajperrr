@@ -419,7 +419,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               { id: 'config', label: 'Konfiguracja', icon: Key },
               { id: 'news', label: 'Ogłoszenia', icon: Bell },
               { id: 'bugs', label: 'Zgłoszenia Błędów', icon: Activity },
-              { id: 'updates', label: 'Maintenance & Repairs', icon: Wand2 },
+              { id: 'updates', label: 'Co nowego', icon: Sparkles },
             ].map(tab => (
               <button key={tab.id} onClick={() => setAdminTab(tab.id as any)} className={cn("px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2", adminTab === tab.id ? "bg-white/10 text-white shadow-lg" : "text-slate-500 hover:text-white")}>
                  <tab.icon className="w-3.5 h-3.5" />
@@ -637,9 +637,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-[#18181B]/50 border border-white/5 rounded-3xl p-8 relative overflow-hidden group">
                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-all rotate-12">
-                      <Bot className="w-32 h-32" />
+                      <Sparkles className="w-32 h-32" />
                    </div>
-                   <h3 className="text-xl font-black text-white mb-6">Wersja & Naprawa</h3>
+                   <h3 className="text-xl font-black text-white mb-6">Aktualizacja Systemu & Naprawa</h3>
                    <div className="space-y-4 mb-10">
                       <div className="flex justify-between items-center p-4 bg-black/40 rounded-2xl border border-white/5">
                          <span className="text-[10px] font-black text-slate-500 uppercase">Aktualna Wersja</span>
