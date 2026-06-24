@@ -1344,8 +1344,8 @@ client.on('interactionCreate', async interaction => {
   if (commandName === 'join') {
     if (!member.voice?.channel) return interaction.reply({ content: 'Musisz być na kanale!', ephemeral: true });
     try {
-      const q = player.nodes.create(interaction.guild!, { 
-        metadata: interaction, 
+      const q = player.nodes.create(interaction.guild!, {
+        metadata: interaction,
         ...ADVANCED_NODE_OPTIONS
       });
       await q.connect(member.voice.channel);
@@ -1363,11 +1363,11 @@ client.on('interactionCreate', async interaction => {
     try {
       const res = await player.search(interaction.options.getString('song', true), { requestedBy: interaction.user });
       if (res.hasTracks()) {
-        const { track } = await player.play(member.voice.channel, res, { 
-          nodeOptions: { 
-            metadata: interaction, 
+        const { track } = await player.play(member.voice.channel, res, {
+          nodeOptions: {
+            metadata: interaction,
             ...ADVANCED_NODE_OPTIONS
-          } 
+          }
         });
         await interaction.followUp(`🎵 Dodano: **${track.title}**`);
       } else await interaction.followUp('❌ Nie znaleziono.');
