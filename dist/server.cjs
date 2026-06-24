@@ -581,6 +581,30 @@ U\u017Cycia: ${maxUses}`, ephemeral: true });
   return false;
 }
 
+// src/lib/botStability.ts
+var DISCORD_TOKEN_PLACEHOLDER = "YOUR_DISCORD_BOT_TOKEN_HERE";
+var RECOVERABLE_AUDIO_ERROR_PATTERNS = [
+  "aborted",
+  "decipher",
+  "ffmpeg",
+  "premature close",
+  "signature",
+  "streaming data not available",
+  "unavailable",
+  "voice connection"
+];
+function hasConfiguredDiscordToken(token) {
+  return !!token && token !== DISCORD_TOKEN_PLACEHOLDER && token.length > 20;
+}
+function isRecoverableAudioError(message) {
+  const normalizedMessage = message?.toLowerCase() || "";
+  return RECOVERABLE_AUDIO_ERROR_PATTERNS.some((pattern) => normalizedMessage.includes(pattern));
+}
+function getReconnectDelay(attempt) {
+  if (attempt <= 1) return 5e3;
+  return Math.min(3e5, 5e3 * 2 ** (attempt - 1));
+}
+
 // server.ts
 var app = (0, import_express.default)();
 var portEnv = process.env.PORT;
@@ -601,8 +625,10 @@ if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
 console.log(`[Config] Discord Client ID: ${DISCORD_CLIENT_ID.substring(0, 6)}... | Secret set: ${!!DISCORD_CLIENT_SECRET}`);
 var JWT_SECRET = process.env.JWT_SECRET || "dev_secret_jwt";
 var YOUTUBE_COOKIES = process.env.YOUTUBE_COOKIES || "";
+var DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 var client;
 var player;
+var server = null;
 var botStartTime = 0;
 var botStatus = {
   state: "offline",
@@ -611,6 +637,44 @@ var botStatus = {
   tag: "",
   uptime: 0
 };
+function clearReconnectTimer() {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+}
+function scheduleBotReconnect(reason) {
+  if (shuttingDown || !hasConfiguredDiscordToken(DISCORD_TOKEN) || botLoginInFlight || reconnectTimer || client.isReady()) {
+    return;
+  }
+  reconnectAttempts += 1;
+  const delay = getReconnectDelay(reconnectAttempts);
+  botStatus.state = "reconnecting";
+  logEvent("warn", "discord", `Po\u0142\u0105czenie z Discord zosta\u0142o przerwane (${reason}). Ponowna pr\xF3ba za ${Math.round(delay / 1e3)}s.`);
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    void bootstrapBot(true);
+  }, delay);
+}
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  clearReconnectTimer();
+  botStatus.state = "offline";
+  logEvent("warn", "system", `Otrzymano ${signal}. Rozpoczynam bezpieczne zamykanie us\u0142ugi.`);
+  const closeServer = server ? new Promise((resolve) => server.close(() => resolve())) : Promise.resolve();
+  for (const queue of player.nodes.cache.values()) {
+    try {
+      queue.delete();
+    } catch {
+    }
+  }
+  try {
+    client.destroy();
+  } catch {
+  }
+  closeServer.catch(() => void 0).finally(() => process.exit(0));
+}
 app.use("/api", (req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
@@ -630,6 +694,10 @@ var stripeClient = null;
 var aiAssistant = null;
 var repairCooldown = false;
 var lastRepairAttempt = 0;
+var reconnectTimer = null;
+var reconnectAttempts = 0;
+var botLoginInFlight = false;
+var shuttingDown = false;
 var geminiKey = process.env.GEMINI_API_KEY;
 if (geminiKey && geminiKey !== "MY_GEMINI_API_KEY" && !geminiKey.startsWith("YOUR_")) {
   aiAssistant = new import_genai.GoogleGenAI({ apiKey: geminiKey });
@@ -857,8 +925,7 @@ ${details.stack}`;
     const result = db_default.prepare("INSERT INTO system_logs (level, source, message, details, created_at) VALUES (?, ?, ?, ?, ?)").run(level, source, message, detailsStr, Date.now());
     const logId = result.lastInsertRowid;
     if (level === "error" || level === "warn") {
-      const msg = message.toLowerCase();
-      if (level === "error" && (msg.includes("decipher") || msg.includes("signature") || msg.includes("youtubejs") || msg.includes("streaming data not available"))) {
+      if (level === "error" && (isRecoverableAudioError(message) || message.toLowerCase().includes("youtubejs"))) {
         performSystemRepair();
       }
       if (aiAssistant && level === "error") {
@@ -1455,24 +1522,29 @@ player.events.on("playerStart", async (queue, track) => {
 });
 player.events.on("error", async (queue, error) => {
   logEvent("error", "bot", `Queue Error: ${error.message}`, { guild: queue.guild.name });
-  if (["decipher", "signature", "unavailable", "aborted"].some((s) => error.message.toLowerCase().includes(s))) {
+  if (isRecoverableAudioError(error.message)) {
     await performSystemRepair();
   }
 });
 player.events.on("playerError", async (queue, error) => {
   logEvent("error", "bot", `Audio Extraction Error: ${error.message}`, { guild: queue.guild.name });
   console.log(`[Advanced Player] Emitted playerError: ${error.message}`);
+  if (isRecoverableAudioError(error.message)) {
+    await performSystemRepair();
+  }
 });
 player.events.on("disconnect", async (queue) => {
   logEvent("info", "bot", `Voice channel disconnected manually or kicked.`, { guild: queue.guild.name });
 });
 client.on("ready", async () => {
+  clearReconnectTimer();
+  reconnectAttempts = 0;
   botStatus.state = "online";
   botStatus.tag = client.user?.tag || "";
   botStatus.guilds = client.guilds.cache.size;
   botStartTime = Date.now();
   if (client.user) client.user.setActivity("music | /play", { type: import_discord2.ActivityType.Listening });
-  if (process.env.DISCORD_TOKEN && process.env.DISCORD_TOKEN !== "YOUR_DISCORD_BOT_TOKEN_HERE") {
+  if (hasConfiguredDiscordToken(DISCORD_TOKEN)) {
     try {
       const commandBuilders = [
         ...adminCommandsDefinitions,
@@ -1487,11 +1559,32 @@ client.on("ready", async () => {
         new import_discord2.SlashCommandBuilder().setName("download").setDescription("Download audio or video from YouTube").addStringOption((o) => o.setName("url").setDescription("YouTube Video URL").setRequired(true)).addStringOption((o) => o.setName("type").setDescription("Format type").addChoices({ name: "Audio Only", value: "audio" }, { name: "Video Only", value: "video" }, { name: "Both separate", value: "both" }).setRequired(true)).addStringOption((o) => o.setName("path").setDescription("Absolute path on disk to save (e.g. /tmp/downloads)").setRequired(true))
       ];
       const commands = commandBuilders.map((c) => c.toJSON());
-      await new import_discord2.REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN).put(import_discord2.Routes.applicationCommands(client.user.id), { body: commands });
+      await new import_discord2.REST({ version: "10" }).setToken(DISCORD_TOKEN).put(import_discord2.Routes.applicationCommands(client.user.id), { body: commands });
     } catch (e) {
       console.error("Register commands error:", e);
     }
   }
+});
+client.on("shardDisconnect", (_event, shardId) => {
+  if (shuttingDown) return;
+  scheduleBotReconnect(`shard ${shardId}`);
+});
+client.on("shardError", (error, shardId) => {
+  logEvent("error", "discord", `B\u0142\u0105d shard ${shardId}: ${error.message}`, error);
+  scheduleBotReconnect(`b\u0142\u0105d shard ${shardId}`);
+});
+client.on("shardReconnecting", (shardId) => {
+  botStatus.state = "reconnecting";
+  logEvent("warn", "discord", `Shard ${shardId} pr\xF3buje wznowi\u0107 po\u0142\u0105czenie.`);
+});
+client.on("shardResume", (_replayedEvents, shardId) => {
+  reconnectAttempts = 0;
+  botStatus.state = "online";
+  logEvent("info", "discord", `Shard ${shardId} wznowi\u0142 po\u0142\u0105czenie.`);
+});
+client.on("invalidated", () => {
+  botStatus.state = "error";
+  logEvent("error", "discord", "Sesja Discord zosta\u0142a uniewa\u017Cniona. Sprawd\u017A token i wdro\u017Cenie us\u0142ugi.");
 });
 var isAdmin = (req, res, next) => {
   const token = req.cookies.auth_token;
@@ -1630,19 +1723,29 @@ async function bootstrapExtractors() {
     logEvent("error", "system", `B\u0142\u0105d \u0142adowania ekstraktor\xF3w: ${e.message}`, e);
   }
 }
-async function bootstrapBot() {
-  const token = process.env.DISCORD_TOKEN;
-  if (token && token !== "YOUR_DISCORD_BOT_TOKEN_HERE" && token.length > 20) {
-    console.log("[Bot] Pr\xF3ba logowania...");
-    try {
-      await client.login(token);
-      logEvent("info", "system", "Discord Bot zalogowany pomy\u015Blnie.");
-    } catch (e) {
-      logEvent("error", "system", `Nieudane logowanie do Discord: ${e.message}`, e);
-      botStatus.state = "error";
-    }
-  } else {
+async function bootstrapBot(_force = false) {
+  if (!hasConfiguredDiscordToken(DISCORD_TOKEN)) {
     logEvent("warn", "system", "Brak poprawnego DISCORD_TOKEN. Bot pozostanie offline.");
+    return;
+  }
+  if (shuttingDown || botLoginInFlight || client.isReady()) return;
+  clearReconnectTimer();
+  botLoginInFlight = true;
+  console.log("[Bot] Pr\xF3ba logowania...");
+  let loginError = null;
+  try {
+    await client.login(DISCORD_TOKEN);
+    reconnectAttempts = 0;
+    logEvent("info", "system", "Discord Bot zalogowany pomy\u015Blnie.");
+  } catch (e) {
+    loginError = e instanceof Error ? e : new Error(String(e));
+    logEvent("error", "system", `Nieudane logowanie do Discord: ${loginError.message}`, loginError);
+    botStatus.state = "error";
+  } finally {
+    botLoginInFlight = false;
+  }
+  if (loginError) {
+    scheduleBotReconnect(loginError.message);
   }
 }
 app.get("/api/players", (req, res) => {
@@ -1705,25 +1808,41 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName, guildId } = interaction;
   if (commandName === "join") {
     if (!member.voice?.channel) return interaction.reply({ content: "Musisz by\u0107 na kanale!", ephemeral: true });
-    const q = player.nodes.create(interaction.guild, {
-      metadata: interaction,
-      ...ADVANCED_NODE_OPTIONS
-    });
-    await q.connect(member.voice.channel);
-    await interaction.reply("\u2705 Do\u0142\u0105czono!");
+    try {
+      const q = player.nodes.create(interaction.guild, {
+        metadata: interaction,
+        ...ADVANCED_NODE_OPTIONS
+      });
+      await q.connect(member.voice.channel);
+      await interaction.reply("\u2705 Do\u0142\u0105czono!");
+    } catch (err) {
+      logEvent("error", "bot", `B\u0142\u0105d do\u0142\u0105czania do kana\u0142u g\u0142osowego: ${err.message}`, err);
+      if (isRecoverableAudioError(err.message)) {
+        await performSystemRepair();
+      }
+      await interaction.reply({ content: "\u274C Nie uda\u0142o si\u0119 do\u0142\u0105czy\u0107 do kana\u0142u g\u0142osowego. Spr\xF3buj ponownie za chwil\u0119.", ephemeral: true });
+    }
   } else if (commandName === "play") {
     if (!member.voice?.channel) return interaction.reply({ content: "Musisz by\u0107 na kanale!", ephemeral: true });
     await interaction.deferReply();
-    const res = await player.search(interaction.options.getString("song", true), { requestedBy: interaction.user });
-    if (res.hasTracks()) {
-      const { track } = await player.play(member.voice.channel, res, {
-        nodeOptions: {
-          metadata: interaction,
-          ...ADVANCED_NODE_OPTIONS
-        }
-      });
-      await interaction.followUp(`\u{1F3B5} Dodano: **${track.title}**`);
-    } else await interaction.followUp("\u274C Nie znaleziono.");
+    try {
+      const res = await player.search(interaction.options.getString("song", true), { requestedBy: interaction.user });
+      if (res.hasTracks()) {
+        const { track } = await player.play(member.voice.channel, res, {
+          nodeOptions: {
+            metadata: interaction,
+            ...ADVANCED_NODE_OPTIONS
+          }
+        });
+        await interaction.followUp(`\u{1F3B5} Dodano: **${track.title}**`);
+      } else await interaction.followUp("\u274C Nie znaleziono.");
+    } catch (err) {
+      logEvent("error", "bot", `B\u0142\u0105d odtwarzania audio: ${err.message}`, err);
+      if (isRecoverableAudioError(err.message)) {
+        await performSystemRepair();
+      }
+      await interaction.followUp("\u274C Nie uda\u0142o si\u0119 odtworzy\u0107 utworu. Silnik audio zosta\u0142 od\u015Bwie\u017Cony \u2014 spr\xF3buj ponownie.");
+    }
   } else if (commandName === "skip") {
     const q = player.nodes.get(guildId);
     if (q) {
@@ -1788,7 +1907,9 @@ app.post("/api/players/:guildId/play", async (req, res) => {
   } else res.status(400).json({ error: "Connect on Discord first." });
 });
 async function start() {
-  app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+  server = app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));
   if (process.env.NODE_ENV !== "production") {
     const { createServer } = await import("vite");
     const v = await createServer({ server: { middlewareMode: true }, appType: "spa" });
