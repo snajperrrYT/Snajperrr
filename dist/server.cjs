@@ -1707,7 +1707,8 @@ app.get("/api/admin/config", isAdmin, (req, res) => {
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ? "\u2022\u2022\u2022\u2022\u2022\u2022" + (process.env.STRIPE_SECRET_KEY.slice(-4) || "") : "",
         JWT_SECRET: process.env.JWT_SECRET ? "\u2022\u2022\u2022\u2022\u2022\u2022" + (process.env.JWT_SECRET.slice(-4) || "") : "",
         YOUTUBE_COOKIES: process.env.YOUTUBE_COOKIES ? "(ustawione)" : "",
-        APP_URL: process.env.APP_URL || ""
+        APP_URL: process.env.APP_URL || "",
+        ADMIN_EMAIL: process.env.ADMIN_EMAIL || ""
       }
     });
   } catch (err) {
@@ -1727,7 +1728,8 @@ app.post("/api/admin/config", import_express.default.json(), isAdmin, (req, res)
       "STRIPE_SECRET_KEY",
       "JWT_SECRET",
       "YOUTUBE_COOKIES",
-      "APP_URL"
+      "APP_URL",
+      "ADMIN_EMAIL"
     ];
     if (!key || !ALLOWED_KEYS.includes(key)) {
       return res.status(400).json({ success: false, error: "Nieprawid\u0142owy klucz konfiguracji." });
@@ -1740,6 +1742,18 @@ app.post("/api/admin/config", import_express.default.json(), isAdmin, (req, res)
     db_default.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run(`config_${key}`, value);
     logEvent("info", "admin", `Zaktualizowano klucz konfiguracji: ${key}`);
     res.json({ success: true, message: `Zaktualizowano ${key}` });
+  } catch (err) {
+    res.status(500).json({ success: false });
+  }
+});
+app.post("/api/admin/config/generate-secret", isAdmin, (req, res) => {
+  try {
+    const newSecret = import_crypto2.default.randomBytes(48).toString("hex");
+    process.env.JWT_SECRET = newSecret;
+    JWT_SECRET = newSecret;
+    db_default.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run("config_JWT_SECRET", newSecret);
+    logEvent("info", "admin", "Administrator wygenerowa\u0142 nowy klucz JWT_SECRET.");
+    res.json({ success: true, secret: newSecret });
   } catch (err) {
     res.status(500).json({ success: false });
   }
