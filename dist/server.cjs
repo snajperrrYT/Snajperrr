@@ -1912,23 +1912,62 @@ client.on("interactionCreate", async (interaction) => {
       }
       await interaction.followUp("\u274C Nie uda\u0142o si\u0119 odtworzy\u0107 utworu. Silnik audio zosta\u0142 od\u015Bwie\u017Cony \u2014 spr\xF3buj ponownie.");
     }
+  } else if (commandName === "pause") {
+    const q = player.nodes.get(guildId);
+    if (q) {
+      q.node.setPaused(true);
+      await interaction.reply("\u23F8\uFE0F Wstrzymano.");
+    } else await interaction.reply({ content: "\u274C Brak aktywnej kolejki.", ephemeral: true });
+  } else if (commandName === "resume") {
+    const q = player.nodes.get(guildId);
+    if (q) {
+      q.node.setPaused(false);
+      await interaction.reply("\u25B6\uFE0F Wznowiono.");
+    } else await interaction.reply({ content: "\u274C Brak aktywnej kolejki.", ephemeral: true });
   } else if (commandName === "skip") {
     const q = player.nodes.get(guildId);
     if (q) {
       q.node.skip();
       await interaction.reply("\u23ED\uFE0F Pomini\u0119to.");
-    }
+    } else await interaction.reply({ content: "\u274C Brak aktywnej kolejki.", ephemeral: true });
   } else if (commandName === "stop") {
     const q = player.nodes.get(guildId);
     if (q) {
       q.delete();
       await interaction.reply("\u23F9\uFE0F Zatrzymano.");
+    } else await interaction.reply({ content: "\u274C Brak aktywnej kolejki.", ephemeral: true });
+  } else if (commandName === "volume") {
+    const q = player.nodes.get(guildId);
+    if (q) {
+      const level = interaction.options.getInteger("level", true);
+      const clamped = Math.max(0, Math.min(100, level));
+      q.node.setVolume(clamped);
+      await interaction.reply(`\u{1F50A} G\u0142o\u015Bno\u015B\u0107 ustawiona na **${clamped}%**.`);
+    } else await interaction.reply({ content: "\u274C Brak aktywnej kolejki.", ephemeral: true });
+  } else if (commandName === "search") {
+    if (!member.voice?.channel) return interaction.reply({ content: "Musisz by\u0107 na kanale!", ephemeral: true });
+    await interaction.deferReply();
+    try {
+      const query = interaction.options.getString("query", true);
+      const res = await player.search(query, { requestedBy: interaction.user });
+      if (!res.hasTracks()) return interaction.followUp("\u274C Nie znaleziono.");
+      const top = res.tracks.slice(0, 10);
+      const menu = new import_discord2.StringSelectMenuBuilder().setCustomId("search_results").setPlaceholder("Wybierz utw\xF3r").addOptions(top.map((t, i) => new import_discord2.StringSelectMenuOptionBuilder().setLabel(`${i + 1}. ${t.title}`.substring(0, 100)).setDescription(t.author.substring(0, 100)).setValue(t.url)));
+      const row = new import_discord2.ActionRowBuilder().addComponents(menu);
+      await interaction.followUp({ content: `\u{1F50D} Wyniki wyszukiwania dla: **${query}**`, components: [row] });
+    } catch (err) {
+      logEvent("error", "bot", `B\u0142\u0105d wyszukiwania: ${err.message}`, err);
+      await interaction.followUp("\u274C B\u0142\u0105d wyszukiwania.");
     }
   } else if (commandName === "download") {
     await interaction.deferReply();
     const url = interaction.options.getString("url", true);
     const type = interaction.options.getString("type", true);
-    const savePath = interaction.options.getString("path", true);
+    const rawPath = interaction.options.getString("path", true);
+    const savePath = import_path2.default.resolve(rawPath);
+    if (!savePath.startsWith("/tmp")) {
+      return interaction.followUp("\u274C Ze wzgl\u0119d\xF3w bezpiecze\u0144stwa \u015Bcie\u017Cka musi zaczyna\u0107 si\u0119 od /tmp.");
+    }
     try {
       await interaction.followUp(`\u23F3 Downloading...`);
       const dlPath = await globalDownloader.download({
@@ -1959,7 +1998,9 @@ app.post("/api/players/:guildId/playback", (req, res) => {
 });
 app.get("/api/search", async (req, res) => {
   try {
-    const r = await player.search(req.query.query);
+    const query = req.query.query;
+    if (!query || typeof query !== "string") return res.status(400).json({ success: false, error: "Missing query parameter" });
+    const r = await player.search(query);
     res.json({ success: true, tracks: r.tracks.slice(0, 10).map((t) => ({ title: t.title, author: t.author, duration: t.duration, url: t.url, thumbnail: t.thumbnail })) });
   } catch {
     res.status(500).json({ success: false });
@@ -1988,8 +2029,8 @@ async function start() {
     app.use(import_express.default.static(d));
     app.get("*", (req, res) => res.sendFile(import_path2.default.join(d, "index.html")));
   }
-  bootstrapExtractors();
-  bootstrapBot();
+  await bootstrapExtractors();
+  await bootstrapBot();
 }
 start();
 //# sourceMappingURL=server.cjs.map

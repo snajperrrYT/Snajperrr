@@ -1443,17 +1443,57 @@ client.on('interactionCreate', async interaction => {
       }
       await interaction.followUp('❌ Nie udało się odtworzyć utworu. Silnik audio został odświeżony — spróbuj ponownie.');
     }
+  } else if (commandName === 'pause') {
+    const q = player.nodes.get(guildId!);
+    if (q) { q.node.setPaused(true); await interaction.reply('⏸️ Wstrzymano.'); }
+    else await interaction.reply({ content: '❌ Brak aktywnej kolejki.', ephemeral: true });
+  } else if (commandName === 'resume') {
+    const q = player.nodes.get(guildId!);
+    if (q) { q.node.setPaused(false); await interaction.reply('▶️ Wznowiono.'); }
+    else await interaction.reply({ content: '❌ Brak aktywnej kolejki.', ephemeral: true });
   } else if (commandName === 'skip') {
     const q = player.nodes.get(guildId!);
     if (q) { q.node.skip(); await interaction.reply('⏭️ Pominięto.'); }
+    else await interaction.reply({ content: '❌ Brak aktywnej kolejki.', ephemeral: true });
   } else if (commandName === 'stop') {
     const q = player.nodes.get(guildId!);
     if (q) { q.delete(); await interaction.reply('⏹️ Zatrzymano.'); }
+    else await interaction.reply({ content: '❌ Brak aktywnej kolejki.', ephemeral: true });
+  } else if (commandName === 'volume') {
+    const q = player.nodes.get(guildId!);
+    if (q) {
+      const level = interaction.options.getInteger('level', true);
+      const clamped = Math.max(0, Math.min(100, level));
+      q.node.setVolume(clamped);
+      await interaction.reply(`🔊 Głośność ustawiona na **${clamped}%**.`);
+    } else await interaction.reply({ content: '❌ Brak aktywnej kolejki.', ephemeral: true });
+  } else if (commandName === 'search') {
+    if (!member.voice?.channel) return interaction.reply({ content: 'Musisz być na kanale!', ephemeral: true });
+    await interaction.deferReply();
+    try {
+      const query = interaction.options.getString('query', true);
+      const res = await player.search(query, { requestedBy: interaction.user });
+      if (!res.hasTracks()) return interaction.followUp('❌ Nie znaleziono.');
+      const top = res.tracks.slice(0, 10);
+      const menu = new StringSelectMenuBuilder()
+        .setCustomId('search_results')
+        .setPlaceholder('Wybierz utwór')
+        .addOptions(top.map((t, i) => new StringSelectMenuOptionBuilder().setLabel(`${i + 1}. ${t.title}`.substring(0, 100)).setDescription(t.author.substring(0, 100)).setValue(t.url)));
+      const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu);
+      await interaction.followUp({ content: `🔍 Wyniki wyszukiwania dla: **${query}**`, components: [row] });
+    } catch (err: any) {
+      logEvent('error', 'bot', `Błąd wyszukiwania: ${err.message}`, err);
+      await interaction.followUp('❌ Błąd wyszukiwania.');
+    }
   } else if (commandName === 'download') {
     await interaction.deferReply();
     const url = interaction.options.getString('url', true);
     const type = interaction.options.getString('type', true) as any;
-    const savePath = interaction.options.getString('path', true);
+    const rawPath = interaction.options.getString('path', true);
+    const savePath = path.resolve(rawPath);
+    if (!savePath.startsWith('/tmp')) {
+      return interaction.followUp('❌ Ze względów bezpieczeństwa ścieżka musi zaczynać się od /tmp.');
+    }
 
     try {
       await interaction.followUp(`⏳ Downloading...`);
@@ -1484,7 +1524,9 @@ app.post("/api/players/:guildId/playback", (req, res) => {
 
 app.get("/api/search", async (req, res) => {
   try {
-    const r = await player.search(req.query.query as string);
+    const query = req.query.query;
+    if (!query || typeof query !== 'string') return res.status(400).json({ success: false, error: 'Missing query parameter' });
+    const r = await player.search(query);
     res.json({ success: true, tracks: r.tracks.slice(0, 10).map(t => ({ title: t.title, author: t.author, duration: t.duration, url: t.url, thumbnail: t.thumbnail })) });
   } catch { res.status(500).json({ success: false }); }
 });
@@ -1511,7 +1553,7 @@ async function start() {
     app.use(express.static(d));
     app.get('*', (req, res) => res.sendFile(path.join(d, 'index.html')));
   }
-  bootstrapExtractors();
-  bootstrapBot();
+  await bootstrapExtractors();
+  await bootstrapBot();
 }
 start();
