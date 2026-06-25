@@ -138,8 +138,8 @@ const ConfigPanel = () => {
   const [showSecret, setShowSecret] = React.useState<Record<string, boolean>>({});
   const [saving, setSaving] = React.useState<string | null>(null);
   const [restartingBot, setRestartingBot] = React.useState(false);
-  const [successKey, setSuccessKey] = React.useState<string | null>(null);
   const [generatingSecret, setGeneratingSecret] = React.useState(false);
+  const [successKey, setSuccessKey] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     fetch('/api/admin/config')
@@ -214,21 +214,32 @@ const ConfigPanel = () => {
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Konfiguracja interfejsu webowego i bota</p>
             </div>
           </div>
-          <button
-            onClick={handleRestartBot}
-            disabled={restartingBot}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
-          >
-            {restartingBot ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
-            Restartuj Bota
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleGenerateSecret}
+              disabled={generatingSecret}
+              className="px-5 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-amber-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-amber-600/20 flex items-center gap-2"
+              title="Wygeneruj nowy losowy sekret JWT dla interfejsu webowego"
+            >
+              {generatingSecret ? <Loader2 className="w-3 h-3 animate-spin" /> : <Key className="w-3 h-3" />}
+              Nowy Sekret JWT
+            </button>
+            <button
+              onClick={handleRestartBot}
+              disabled={restartingBot}
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2"
+            >
+              {restartingBot ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
+              Restartuj Bota
+            </button>
+          </div>
         </div>
 
         <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 mb-8">
           <div className="flex items-start gap-3">
             <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-400/80 leading-relaxed">
-              Zmiana kluczy zostanie zastosowana natychmiast w pamięci. Aby bot użył nowego tokenu Discord, kliknij "Restartuj Bota". Klucze są przechowywane bezpiecznie w bazie danych.
+              Zmiana kluczy zostanie zastosowana natychmiast w pamięci. Aby bot użył nowego tokenu Discord, kliknij "Restartuj Bota". Kliknij "Nowy Sekret JWT" aby wygenerować nowy klucz bezpieczeństwa interfejsu webowego — spowoduje to wylogowanie wszystkich użytkowników. Klucze są przechowywane bezpiecznie w bazie danych i przywracane automatycznie po restarcie serwera.
             </p>
           </div>
         </div>
@@ -408,7 +419,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
               { id: 'config', label: 'Konfiguracja', icon: Key },
               { id: 'news', label: 'Ogłoszenia', icon: Bell },
               { id: 'bugs', label: 'Zgłoszenia Błędów', icon: Activity },
-              { id: 'updates', label: 'Maintenance & Repairs', icon: Wand2 },
+              { id: 'updates', label: 'Co nowego', icon: Sparkles },
             ].map(tab => (
               <button key={tab.id} onClick={() => setAdminTab(tab.id as any)} className={cn("px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2", adminTab === tab.id ? "bg-white/10 text-white shadow-lg" : "text-slate-500 hover:text-white")}>
                  <tab.icon className="w-3.5 h-3.5" />
@@ -626,9 +637,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-[#18181B]/50 border border-white/5 rounded-3xl p-8 relative overflow-hidden group">
                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-all rotate-12">
-                      <Bot className="w-32 h-32" />
+                      <Sparkles className="w-32 h-32" />
                    </div>
-                   <h3 className="text-xl font-black text-white mb-6">Wersja & Naprawa</h3>
+                   <h3 className="text-xl font-black text-white mb-6">Aktualizacja Systemu & Naprawa</h3>
                    <div className="space-y-4 mb-10">
                       <div className="flex justify-between items-center p-4 bg-black/40 rounded-2xl border border-white/5">
                          <span className="text-[10px] font-black text-slate-500 uppercase">Aktualna Wersja</span>

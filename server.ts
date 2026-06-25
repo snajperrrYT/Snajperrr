@@ -56,7 +56,7 @@ if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_SECRET) {
 console.log(`[Config] Discord Client ID: ${DISCORD_CLIENT_ID.substring(0, 6)}... | Secret set: ${!!DISCORD_CLIENT_SECRET}`);
 let JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
 const YOUTUBE_COOKIES = process.env.YOUTUBE_COOKIES || '';
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+let DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
 // Shared globally
 let client: Client;
@@ -1269,8 +1269,9 @@ app.post('/api/admin/config', express.json(), isAdmin, (req, res) => {
         // Apply to running process
         process.env[key] = value;
 
-        // Update in-memory variables for immediate effect
+        // Keep mutable module-level variables in sync
         if (key === 'JWT_SECRET') JWT_SECRET = value;
+        if (key === 'DISCORD_TOKEN') DISCORD_TOKEN = value;
 
         // Store in db for persistence across restarts
         db.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run(`config_${key}`, value);
@@ -1286,8 +1287,8 @@ app.post('/api/admin/config/generate-secret', isAdmin, (req, res) => {
         process.env.JWT_SECRET = newSecret;
         JWT_SECRET = newSecret;
         db.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run('config_JWT_SECRET', newSecret);
-        logEvent('info', 'admin', 'Administrator wygenerował nowy klucz JWT_SECRET.');
-        res.json({ success: true, secret: newSecret });
+        logEvent('info', 'admin', 'Wygenerowano nowy sekret JWT. Wszyscy użytkownicy będą musieli się zalogować ponownie.');
+        res.json({ success: true, secret: newSecret, message: 'Nowy sekret JWT wygenerowany. Wszyscy użytkownicy będą musieli się zalogować ponownie.' });
     } catch(err) { res.status(500).json({ success: false }); }
 });
 
@@ -1563,7 +1564,25 @@ app.post("/api/players/:guildId/play", async (req, res) => {
   } else res.status(400).json({ error: "Connect on Discord first." });
 });
 
+function restorePersistedConfig() {
+    const PERSISTED_KEYS = [
+        'DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'DISCORD_CLIENT_SECRET',
+        'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'GEMINI_API_KEY',
+        'STRIPE_SECRET_KEY', 'JWT_SECRET', 'YOUTUBE_COOKIES', 'APP_URL'
+    ];
+    for (const key of PERSISTED_KEYS) {
+        const row = db.prepare("SELECT value FROM global_settings WHERE key = ?").get(`config_${key}`) as any;
+        if (row?.value) {
+            process.env[key] = row.value;
+            if (key === 'JWT_SECRET') JWT_SECRET = row.value;
+            if (key === 'DISCORD_TOKEN') DISCORD_TOKEN = row.value;
+            console.log(`[Config] Przywrócono klucz z bazy: ${key}`);
+        }
+    }
+}
+
 async function start() {
+  restorePersistedConfig();
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
   server = app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));
