@@ -79,7 +79,7 @@ function clearReconnectTimer() {
 }
 
 function scheduleBotReconnect(reason: string) {
-    if (shuttingDown || !hasConfiguredDiscordToken(DISCORD_TOKEN) || botLoginInFlight || reconnectTimer || client.isReady()) {
+    if (shuttingDown || !hasConfiguredDiscordToken(process.env.DISCORD_TOKEN) || botLoginInFlight || reconnectTimer || client.isReady()) {
         return;
     }
 
@@ -1068,7 +1068,7 @@ client.on('ready', async () => {
   reconnectAttempts = 0;
   botStatus.state = 'online'; botStatus.tag = client.user?.tag || ''; botStatus.guilds = client.guilds.cache.size; botStartTime = Date.now();
   if (client.user) client.user.setActivity('music | /play', { type: ActivityType.Listening });
-  if (hasConfiguredDiscordToken(DISCORD_TOKEN)) {
+  if (hasConfiguredDiscordToken(process.env.DISCORD_TOKEN)) {
     try {
       const commandBuilders = [
         ...adminCommandsDefinitions, 
@@ -1088,7 +1088,10 @@ client.on('ready', async () => {
             .addStringOption(o => o.setName('path').setDescription('Absolute path on disk to save (e.g. /tmp/downloads)').setRequired(true))
       ];
       const commands = commandBuilders.map(c => c.toJSON());
-      await new REST({ version: '10' }).setToken(DISCORD_TOKEN).put(Routes.applicationCommands(client.user!.id), { body: commands });
+      const discordToken = process.env.DISCORD_TOKEN;
+      if (discordToken) {
+        await new REST({ version: '10' }).setToken(discordToken).put(Routes.applicationCommands(client.user!.id), { body: commands });
+      }
     } catch (e) { console.error('Register commands error:', e); }
   }
 });
@@ -1241,6 +1244,7 @@ app.get('/api/admin/config', isAdmin, (req, res) => {
                 JWT_SECRET: process.env.JWT_SECRET ? '••••••' + (process.env.JWT_SECRET.slice(-4) || '') : '',
                 YOUTUBE_COOKIES: process.env.YOUTUBE_COOKIES ? '(ustawione)' : '',
                 APP_URL: process.env.APP_URL || '',
+                ADMIN_EMAIL: process.env.ADMIN_EMAIL || '',
             }
         });
     } catch(err) { res.status(500).json({ success: false }); }
@@ -1252,7 +1256,8 @@ app.post('/api/admin/config', express.json(), isAdmin, (req, res) => {
         const ALLOWED_KEYS = [
             'DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'DISCORD_CLIENT_SECRET',
             'SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_SECRET', 'GEMINI_API_KEY',
-            'STRIPE_SECRET_KEY', 'JWT_SECRET', 'YOUTUBE_COOKIES', 'APP_URL'
+            'STRIPE_SECRET_KEY', 'JWT_SECRET', 'YOUTUBE_COOKIES', 'APP_URL',
+            'ADMIN_EMAIL'
         ];
         if (!key || !ALLOWED_KEYS.includes(key)) {
             return res.status(400).json({ success: false, error: 'Nieprawidłowy klucz konfiguracji.' });
@@ -1278,12 +1283,12 @@ app.post('/api/admin/config', express.json(), isAdmin, (req, res) => {
 
 app.post('/api/admin/config/generate-secret', isAdmin, (req, res) => {
     try {
-        const newSecret = crypto.randomBytes(32).toString('hex');
+        const newSecret = crypto.randomBytes(48).toString('hex');
         process.env.JWT_SECRET = newSecret;
         JWT_SECRET = newSecret;
         db.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run('config_JWT_SECRET', newSecret);
         logEvent('info', 'admin', 'Wygenerowano nowy sekret JWT. Wszyscy użytkownicy będą musieli się zalogować ponownie.');
-        res.json({ success: true, message: 'Nowy sekret JWT wygenerowany. Wszyscy użytkownicy będą musieli się zalogować ponownie.' });
+        res.json({ success: true, secret: newSecret, message: 'Nowy sekret JWT wygenerowany. Wszyscy użytkownicy będą musieli się zalogować ponownie.' });
     } catch(err) { res.status(500).json({ success: false }); }
 });
 
@@ -1309,11 +1314,15 @@ async function bootstrapExtractors() {
   try {
     console.log('[Bot] Ładowanie ekstraktorów...');
     
+    const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || '';
+    const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || '';
+    const youtubeCookies = process.env.YOUTUBE_COOKIES || '';
+
     // Register Spotify first with credentials for better metadata bridging
-    if (SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET) {
+    if (spotifyClientId && spotifyClientSecret) {
         await player.extractors.register(SpotifyExtractor, {
-            clientId: SPOTIFY_CLIENT_ID,
-            clientSecret: SPOTIFY_CLIENT_SECRET
+            clientId: spotifyClientId,
+            clientSecret: spotifyClientSecret
         });
         console.log('[Bot] Spotify Extractor skonfigurowany.');
     }
@@ -1323,7 +1332,7 @@ async function bootstrapExtractors() {
     try { await player.extractors.unregister(YoutubeiExtractor.identifier); } catch(e) {}
     await player.extractors.register(YoutubeiExtractor, {
         useServerAbrStream: false,
-        ...(YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {}),
+        ...(youtubeCookies ? { cookie: youtubeCookies } : {}),
         streamOptions: {
             highWaterMark: 1024 * 1024 * 128, // Zwiększony bufor dla ogromnych pingow
             useClient: 'TV_EMBEDDED'
@@ -1336,7 +1345,7 @@ async function bootstrapExtractors() {
 }
 
 async function bootstrapBot(_force = false) {
-  if (!hasConfiguredDiscordToken(DISCORD_TOKEN)) {
+  if (!hasConfiguredDiscordToken(process.env.DISCORD_TOKEN)) {
     logEvent('warn', 'system', 'Brak poprawnego DISCORD_TOKEN. Bot pozostanie offline.');
     return;
   }
@@ -1347,7 +1356,7 @@ async function bootstrapBot(_force = false) {
   console.log('[Bot] Próba logowania...');
   let loginError: Error | null = null;
   try {
-      await client.login(DISCORD_TOKEN);
+      await client.login(process.env.DISCORD_TOKEN);
       reconnectAttempts = 0;
       logEvent('info', 'system', 'Discord Bot zalogowany pomyślnie.');
   } catch (e: any) {
@@ -1577,6 +1586,23 @@ async function start() {
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
   server = app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));
+
+  // Load saved configs from DB into process.env for persistence across restarts
+  try {
+    const savedConfigs = db.prepare("SELECT key, value FROM global_settings WHERE key LIKE 'config_%'").all() as { key: string; value: string }[];
+    for (const row of savedConfigs) {
+      const envKey = row.key.replace('config_', '');
+      if (row.value != null) {
+        process.env[envKey] = row.value;
+        console.log(`[Config] Załadowano z bazy danych: ${envKey}`);
+      }
+    }
+    // Re-sync in-memory variables after DB load
+    JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_jwt';
+  } catch (e) {
+    console.error('[Config] Błąd ładowania konfiguracji z bazy danych:', e);
+  }
+
   if (process.env.NODE_ENV !== "production") {
     const { createServer } = await import("vite");
     const v = await createServer({ server: { middlewareMode: true }, appType: "spa" });

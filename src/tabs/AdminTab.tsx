@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Plus, List, Trash2, Zap, AlertCircle, Info, Activity, Wand2, ShieldCheck, ArrowUpRight, Loader2, Play, Bot, RefreshCw, Terminal, Cpu, HardDrive, Users, Music, Bell, Sparkles, Key, Eye, EyeOff, Save, RotateCcw } from 'lucide-react';
+import { Settings, Plus, List, Trash2, Zap, AlertCircle, Info, Activity, Wand2, ShieldCheck, ArrowUpRight, Loader2, Play, Bot, RefreshCw, Terminal, Cpu, HardDrive, Users, Music, Bell, Sparkles, Key, Eye, EyeOff, Save, RotateCcw, Shuffle } from 'lucide-react';
 import { cn } from '../lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { CHANGELOG } from '../constants';
@@ -125,9 +125,10 @@ const CONFIG_FIELDS = [
   { key: 'SPOTIFY_CLIENT_SECRET', label: 'Spotify Client Secret', description: 'Client Secret z Spotify Developer Dashboard', sensitive: true },
   { key: 'GEMINI_API_KEY', label: 'Gemini API Key', description: 'Klucz API Google Gemini (AI)', sensitive: true },
   { key: 'STRIPE_SECRET_KEY', label: 'Stripe Secret Key', description: 'Klucz tajny Stripe do obsługi płatności', sensitive: true },
-  { key: 'JWT_SECRET', label: 'JWT Secret', description: 'Sekret do podpisywania tokenów JWT (auth)', sensitive: true },
+  { key: 'JWT_SECRET', label: 'JWT Secret', description: 'Sekret do podpisywania tokenów JWT (auth) — można wygenerować losowy', sensitive: true },
   { key: 'YOUTUBE_COOKIES', label: 'YouTube Cookies', description: 'Cookies YouTube dla lepszej ekstrakcji audio', sensitive: true },
   { key: 'APP_URL', label: 'App URL', description: 'Publiczny URL panelu (np. https://your-app.run.app)', sensitive: false },
+  { key: 'ADMIN_EMAIL', label: 'Admin E-mail', description: 'Adres e-mail konta z uprawnieniami admina w interfejsie webowym', sensitive: false },
 ];
 
 const ConfigPanel = () => {
@@ -159,7 +160,7 @@ const ConfigPanel = () => {
       });
       const data = await res.json();
       if (data.success) {
-        setConfigValues(prev => ({ ...prev, [key]: key === 'APP_URL' || key === 'DISCORD_CLIENT_ID' || key === 'SPOTIFY_CLIENT_ID' ? editValue : '••••••' + editValue.slice(-4) }));
+        setConfigValues(prev => ({ ...prev, [key]: key === 'APP_URL' || key === 'DISCORD_CLIENT_ID' || key === 'SPOTIFY_CLIENT_ID' || key === 'ADMIN_EMAIL' ? editValue : '••••••' + editValue.slice(-4) }));
         setEditingKey(null);
         setEditValue('');
         setSuccessKey(key);
@@ -184,18 +185,17 @@ const ConfigPanel = () => {
   };
 
   const handleGenerateSecret = async () => {
-    if (!window.confirm('Czy na pewno chcesz wygenerować nowy sekret JWT? Wszyscy zalogowani użytkownicy będą musieli zalogować się ponownie.')) return;
+    if (!window.confirm('Wygenerować nowy losowy klucz JWT? Wszyscy zalogowani użytkownicy zostaną wylogowani.')) return;
     setGeneratingSecret(true);
     try {
       const res = await fetch('/api/admin/config/generate-secret', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        setConfigValues(prev => ({ ...prev, JWT_SECRET: '••••••(nowy)' }));
+        setConfigValues(prev => ({ ...prev, JWT_SECRET: '••••••' + data.secret.slice(-4) }));
         setSuccessKey('JWT_SECRET');
         setTimeout(() => setSuccessKey(null), 3000);
-        alert(data.message);
       } else {
-        alert('Błąd generowania sekretu.');
+        alert('Błąd generowania klucza.');
       }
     } catch { alert('Błąd serwera'); }
     finally { setGeneratingSecret(false); }
@@ -257,15 +257,15 @@ const ConfigPanel = () => {
                   <p className="text-[10px] text-slate-500 mt-0.5">{field.description}</p>
                 </div>
                 {editingKey !== field.key && (
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2">
                     {field.key === 'JWT_SECRET' && (
                       <button
                         onClick={handleGenerateSecret}
                         disabled={generatingSecret}
-                        className="px-3 py-2 bg-amber-600/10 hover:bg-amber-600/20 text-amber-400 font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-amber-600/20 flex items-center gap-1.5"
-                        title="Wygeneruj losowy nowy sekret"
+                        title="Wygeneruj losowy bezpieczny klucz JWT"
+                        className="px-4 py-2 bg-violet-600/20 hover:bg-violet-600/30 text-violet-400 font-black uppercase tracking-widest rounded-lg text-[9px] transition-all border border-violet-500/20 flex items-center gap-1.5"
                       >
-                        {generatingSecret ? <Loader2 className="w-3 h-3 animate-spin" /> : <Key className="w-3 h-3" />}
+                        {generatingSecret ? <Loader2 className="w-3 h-3 animate-spin" /> : <Shuffle className="w-3 h-3" />}
                         Generuj
                       </button>
                     )}

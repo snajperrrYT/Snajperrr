@@ -644,7 +644,7 @@ function clearReconnectTimer() {
   }
 }
 function scheduleBotReconnect(reason) {
-  if (shuttingDown || !hasConfiguredDiscordToken(DISCORD_TOKEN) || botLoginInFlight || reconnectTimer || client.isReady()) {
+  if (shuttingDown || !hasConfiguredDiscordToken(process.env.DISCORD_TOKEN) || botLoginInFlight || reconnectTimer || client.isReady()) {
     return;
   }
   reconnectAttempts += 1;
@@ -1544,7 +1544,7 @@ client.on("ready", async () => {
   botStatus.guilds = client.guilds.cache.size;
   botStartTime = Date.now();
   if (client.user) client.user.setActivity("music | /play", { type: import_discord2.ActivityType.Listening });
-  if (hasConfiguredDiscordToken(DISCORD_TOKEN)) {
+  if (hasConfiguredDiscordToken(process.env.DISCORD_TOKEN)) {
     try {
       const commandBuilders = [
         ...adminCommandsDefinitions,
@@ -1559,7 +1559,10 @@ client.on("ready", async () => {
         new import_discord2.SlashCommandBuilder().setName("download").setDescription("Download audio or video from YouTube").addStringOption((o) => o.setName("url").setDescription("YouTube Video URL").setRequired(true)).addStringOption((o) => o.setName("type").setDescription("Format type").addChoices({ name: "Audio Only", value: "audio" }, { name: "Video Only", value: "video" }, { name: "Both separate", value: "both" }).setRequired(true)).addStringOption((o) => o.setName("path").setDescription("Absolute path on disk to save (e.g. /tmp/downloads)").setRequired(true))
       ];
       const commands = commandBuilders.map((c) => c.toJSON());
-      await new import_discord2.REST({ version: "10" }).setToken(DISCORD_TOKEN).put(import_discord2.Routes.applicationCommands(client.user.id), { body: commands });
+      const discordToken = process.env.DISCORD_TOKEN;
+      if (discordToken) {
+        await new import_discord2.REST({ version: "10" }).setToken(discordToken).put(import_discord2.Routes.applicationCommands(client.user.id), { body: commands });
+      }
     } catch (e) {
       console.error("Register commands error:", e);
     }
@@ -1704,7 +1707,8 @@ app.get("/api/admin/config", isAdmin, (req, res) => {
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY ? "\u2022\u2022\u2022\u2022\u2022\u2022" + (process.env.STRIPE_SECRET_KEY.slice(-4) || "") : "",
         JWT_SECRET: process.env.JWT_SECRET ? "\u2022\u2022\u2022\u2022\u2022\u2022" + (process.env.JWT_SECRET.slice(-4) || "") : "",
         YOUTUBE_COOKIES: process.env.YOUTUBE_COOKIES ? "(ustawione)" : "",
-        APP_URL: process.env.APP_URL || ""
+        APP_URL: process.env.APP_URL || "",
+        ADMIN_EMAIL: process.env.ADMIN_EMAIL || ""
       }
     });
   } catch (err) {
@@ -1724,7 +1728,8 @@ app.post("/api/admin/config", import_express.default.json(), isAdmin, (req, res)
       "STRIPE_SECRET_KEY",
       "JWT_SECRET",
       "YOUTUBE_COOKIES",
-      "APP_URL"
+      "APP_URL",
+      "ADMIN_EMAIL"
     ];
     if (!key || !ALLOWED_KEYS.includes(key)) {
       return res.status(400).json({ success: false, error: "Nieprawid\u0142owy klucz konfiguracji." });
@@ -1744,12 +1749,12 @@ app.post("/api/admin/config", import_express.default.json(), isAdmin, (req, res)
 });
 app.post("/api/admin/config/generate-secret", isAdmin, (req, res) => {
   try {
-    const newSecret = import_crypto2.default.randomBytes(32).toString("hex");
+    const newSecret = import_crypto2.default.randomBytes(48).toString("hex");
     process.env.JWT_SECRET = newSecret;
     JWT_SECRET = newSecret;
     db_default.prepare("INSERT OR REPLACE INTO global_settings (key, value) VALUES (?, ?)").run("config_JWT_SECRET", newSecret);
     logEvent("info", "admin", "Wygenerowano nowy sekret JWT. Wszyscy u\u017Cytkownicy b\u0119d\u0105 musieli si\u0119 zalogowa\u0107 ponownie.");
-    res.json({ success: true, message: "Nowy sekret JWT wygenerowany. Wszyscy u\u017Cytkownicy b\u0119d\u0105 musieli si\u0119 zalogowa\u0107 ponownie." });
+    res.json({ success: true, secret: newSecret, message: "Nowy sekret JWT wygenerowany. Wszyscy u\u017Cytkownicy b\u0119d\u0105 musieli si\u0119 zalogowa\u0107 ponownie." });
   } catch (err) {
     res.status(500).json({ success: false });
   }
@@ -1776,10 +1781,13 @@ app.post("/api/admin/config/restart-bot", import_express.default.json(), isAdmin
 async function bootstrapExtractors() {
   try {
     console.log("[Bot] \u0141adowanie ekstraktor\xF3w...");
-    if (SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET) {
+    const spotifyClientId = process.env.SPOTIFY_CLIENT_ID || "";
+    const spotifyClientSecret = process.env.SPOTIFY_CLIENT_SECRET || "";
+    const youtubeCookies = process.env.YOUTUBE_COOKIES || "";
+    if (spotifyClientId && spotifyClientSecret) {
       await player.extractors.register(import_extractor.SpotifyExtractor, {
-        clientId: SPOTIFY_CLIENT_ID,
-        clientSecret: SPOTIFY_CLIENT_SECRET
+        clientId: spotifyClientId,
+        clientSecret: spotifyClientSecret
       });
       console.log("[Bot] Spotify Extractor skonfigurowany.");
     }
@@ -1794,7 +1802,7 @@ async function bootstrapExtractors() {
     }
     await player.extractors.register(import_discord_player_youtubei.YoutubeiExtractor, {
       useServerAbrStream: false,
-      ...YOUTUBE_COOKIES ? { cookie: YOUTUBE_COOKIES } : {},
+      ...youtubeCookies ? { cookie: youtubeCookies } : {},
       streamOptions: {
         highWaterMark: 1024 * 1024 * 128,
         // Zwiększony bufor dla ogromnych pingow
@@ -1807,7 +1815,7 @@ async function bootstrapExtractors() {
   }
 }
 async function bootstrapBot(_force = false) {
-  if (!hasConfiguredDiscordToken(DISCORD_TOKEN)) {
+  if (!hasConfiguredDiscordToken(process.env.DISCORD_TOKEN)) {
     logEvent("warn", "system", "Brak poprawnego DISCORD_TOKEN. Bot pozostanie offline.");
     return;
   }
@@ -1817,7 +1825,7 @@ async function bootstrapBot(_force = false) {
   console.log("[Bot] Pr\xF3ba logowania...");
   let loginError = null;
   try {
-    await client.login(DISCORD_TOKEN);
+    await client.login(process.env.DISCORD_TOKEN);
     reconnectAttempts = 0;
     logEvent("info", "system", "Discord Bot zalogowany pomy\u015Blnie.");
   } catch (e) {
@@ -2058,6 +2066,19 @@ async function start() {
   process.on("SIGTERM", () => shutdown("SIGTERM"));
   process.on("SIGINT", () => shutdown("SIGINT"));
   server = app.listen(PORT, "0.0.0.0", () => console.log(`Run on ${PORT}`));
+  try {
+    const savedConfigs = db_default.prepare("SELECT key, value FROM global_settings WHERE key LIKE 'config_%'").all();
+    for (const row of savedConfigs) {
+      const envKey = row.key.replace("config_", "");
+      if (row.value != null) {
+        process.env[envKey] = row.value;
+        console.log(`[Config] Za\u0142adowano z bazy danych: ${envKey}`);
+      }
+    }
+    JWT_SECRET = process.env.JWT_SECRET || "dev_secret_jwt";
+  } catch (e) {
+    console.error("[Config] B\u0142\u0105d \u0142adowania konfiguracji z bazy danych:", e);
+  }
   if (process.env.NODE_ENV !== "production") {
     const { createServer } = await import("vite");
     const v = await createServer({ server: { middlewareMode: true }, appType: "spa" });
